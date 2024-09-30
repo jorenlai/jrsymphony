@@ -1,0 +1,16 @@
+{
+    "JRFields":2222
+    ,"dataFrom":"This data is from api"
+    ,"name":"API"
+    ,"phoneNumber":"(65) 85736278977"
+    ,"address":{
+        "city":{
+            "en":"台北API"
+        }
+        ,"dist":"文山區API"
+        ,"road":"景興路API"
+    }
+    ,"gender":"Male"
+    ,"dist":"楠梓API"
+    ,"1":3
+}
