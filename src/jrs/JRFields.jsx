@@ -15,6 +15,8 @@ function checkMap(_name,inputValue,mapValue,nameList){
     }
 }
 
+
+
 const StyledGrid = styled.div`
     flex:1;
     display: grid;
@@ -42,7 +44,7 @@ const StyledColumn=styled.div`
     }}
     
     > label,> main{
-        border:2px solid gray;
+        border:1px solid gray;
         xbackground:#3d3d3d;
     }
 `
@@ -86,7 +88,19 @@ const StyledColumnValue=styled.main`
     overflow: hidden;
 
     text-align: start;
-`
+    ${({$validateValue})=>{
+        if($validateValue!=null){
+            return `
+                > * {
+                    border:1px solid red;
+                }
+            `
+            }
+        }}
+        `
+const ColumnMessage=({value})=>{
+    return value?.$message?.msg ?? value?.$message
+}
 const StyledColumnFooter=styled.div`
     &:empty{
             display: none;
@@ -99,44 +113,89 @@ const StyledColumnFooter=styled.div`
         }
     }}
     height:25px;
-    border:1px solid red;
+    color:#ff6060;
 `
 
 const requiredValidator=({name,value})=>{
     if(value==null || value==''){
-        return 'This field is required'
-    }else{
-        return false
+        return {
+            msg:'This field is required'
+            ,color:'red'
+        }
     } 
 }
+const maxValidator=({name,value,max})=>{
+    if(typeof value==='string' && value.length>max){
+        return `Max is ${max}`
+    }else if(value>max){
+        return `Max is ${max}`
+    } 
+}
+
 
 export default class JRFields extends JRSubmit {
     // constructor(props){
     //     super(props)
     //     po('JRFields----------------------',props)
     // }
-    validate(value,validators){
+    //-----------------------------------------------------------------------------------
+    setInMap(_name,inputValue,result,mapValue,nameList){
+        if(nameList?.length) {
+            const name=nameList.shift()
+            if(mapValue[name]===undefined) mapValue[name]={}
+            return this.setInMap(_name,inputValue,result,mapValue[name],nameList)
+        }else if(_name){
+            mapValue[_name]={
+                $message:result
+            }
+            return  mapValue[_name]
+        }else{
+            return mapValue
+        }
+    }
+    //-----------------------------------------------------------------------------------
+    get fromValidateValue(){
+        return this.props.validateValue===undefined?'state':'props'
+    }
+    getValidateValue(createIfNull){
+        // if(this[this.fromValidateValue]?.validateValue!=null){
+            return this[this.fromValidateValue]?.validateValue  
+        // }else if(createIfNull ){
+        //     po('create validateValue')
+        //     this.setValidateValue({})
+        //     return this[this.fromValidateValue]?.validateValue 
+        // }
+    }
+    setValidateValue(validateValue){
+        if(this.props.setValidateValue){
+            this.props.setValidateValue(validateValue)
+        }else{
+            this.setState({validateValue})
+        }
+    }
+    validateResult(value,validators){
         for(var x=0;x<validators.length;x++){
-            const result=validators[x]({value})
+            const result=validators[x]({value,record:this.getValue()})
             if(result){
                 return result
             }
         }
     }
-    setValidateValue(name,value,validators){
-        po('validating this ',name)
-        let validateValue={...this.state?.validateValue}
-
-        const result=this.validate(value,validators)
-        po('---validateValue---',validateValue)
-        if(result){
-            validateValue[name]={
-                _message:result
+    validate(name,value,validators,parentName,validateValue){
+        let _validateValue={...validateValue}
+        const result=this.validateResult(value,validators)
+        try{
+            if(result){
+                validateValue[name]={
+                    $message:result
+                }
+            }else{
+                delete validateValue[name]
             }
-        }else{
-            validateValue[name]=null
+             
+        }catch(e){
+            const v=this.setInMap(name,value,result,this.getValidateValue(),parentName)
         }
-        this.setState({validateValue})
     }
     //-------------------------------------------------------------------------------------------
     get colon(){
@@ -148,7 +207,9 @@ export default class JRFields extends JRSubmit {
     //         po('validate')
     //     },500)
     // }
-    createColumn(propsValue,{name,colSpan,rowSpan,style,required,...column},index,parentName){
+    createColumn(propsValue,{name,colSpan,rowSpan,style,required,max,validate,...column},index,parentName
+        , validateValue
+    ){
         const label=column.label
         const _style={}
         if (colSpan) _style.gridColumn = `span ${colSpan}`
@@ -162,10 +223,20 @@ export default class JRFields extends JRSubmit {
         if(required===true){
             validators.push(requiredValidator)
         }
+        if(max!=null){
+            validators.push(({name,value})=>{
+                return maxValidator({name,value,max})
+            })
+        }
+        if(validate){
+            validators.push(validate)
+        }
+
+        
 
         const onChange=(inputValue)=>{
             if(validators.length){
-                this.setValidateValue(name,inputValue,validators)
+                this.validate(name,inputValue,validators,parentName, validateValue)
             }
             try{
                 propsValue[name]=inputValue.target?.value ?? inputValue
@@ -184,6 +255,7 @@ export default class JRFields extends JRSubmit {
 
         if(column.type){
             content=<StyledColumnValue className={'value'}
+                $validateValue={validateValue?.[name]}
                 style={{
                     gap:column.columns?'12px':null
                     ,gridColumn:label==null?'span 2':null
@@ -198,6 +270,7 @@ export default class JRFields extends JRSubmit {
                         name?value:propsValue
                         ,column.columns
                         ,_parentName
+                        ,name?validateValue?.[name]:validateValue
                     )
                 }
             </StyledGrid>
@@ -233,40 +306,44 @@ export default class JRFields extends JRSubmit {
             }
             {content}
             {
-                required && <StyledColumnFooter $layout={layout}>
-                    {this.state?.validateValue?.[name]?._message}
+                validateValue?.[name]!==undefined && <StyledColumnFooter $layout={layout}>
+                    {/* {validateValue?.[name]?.$message} */}
+                    <ColumnMessage value={validateValue?.[name]}/>
                 </StyledColumnFooter>
             }
             
         </StyledColumn>
     }
 
-    createColumns(value,columns,parentName){
+    createColumns(value,columns,parentName, validateValue){
         return columns?.map((column,index)=>{
-            return this.createColumn(value,column,index,parentName)
+            return this.createColumn(value,column,index,parentName, validateValue)
         })
     }
 
     render(){
+        if(this.getValidateValue()==null){
+            this.setValidateValue({})
+        }
         return <StyledGrid cols={this.props.cols} className={'grid'} style={this.props.style}>
             {
                 this.createColumns(
                     this.props.name?this.getValue()?.[this.props.name]:this.getValue()
                     ,this.props.columns
                     ,this.props.name?[this.props.name]:[]
+
+                    ,this.props.name?this.getValidateValue()?.[this.props.name]:this.getValidateValue()
                 )
             }
-            <pre style={{
+            {/* <pre style={{
                 // gridColumn:'span 3'
             }}>
                 ({this.isDirty?"Is dirty":null})
             {JSON.stringify(this.getValue(),null,4)}
-            </pre>
+            </pre> */}
 
-            <pre style={{
-                // gridColumn:'span 3'
-            }}>
-            {JSON.stringify(this.state?.validateValue,null,4)}
+            <pre>
+            {JSON.stringify(this.getValidateValue(),null,4)}
             </pre>
         </StyledGrid>
     }

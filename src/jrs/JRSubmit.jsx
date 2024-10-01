@@ -24,7 +24,6 @@ export default class JRSubmit extends React.Component {
             }
         }
     }
-
     componentDidMount() {
         this.#methods
         .filter((method) => this[method] && this.props[method] && this.props[method].autoRun)
@@ -45,7 +44,7 @@ export default class JRSubmit extends React.Component {
         )
         this.submit(config)
     }
-
+    
     post(config = {}) {
         config = Object.assign(
             {
@@ -63,7 +62,7 @@ export default class JRSubmit extends React.Component {
     get from(){
         return this.props.value===undefined?'state':'props'
     }
-
+    
     get isDirty(){
         return this.state?.isDirty
     }

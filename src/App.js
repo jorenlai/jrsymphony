@@ -9,7 +9,7 @@ import JRTable from './jrs/JRTable';
 import { useRef, useState } from 'react';
 import { po } from './jrs/JRUtils';
 import styled from 'styled-components';
-import { Input, Select } from 'antd';
+import { Input, InputNumber, Select } from 'antd';
 
 const StyledApp = styled.div`
     html,*,*:before,*:after {
@@ -29,6 +29,19 @@ const JRInput=({value,onChange})=>{
 function App() {
 	const mapp=Object.assign({a:1},{b:2})
 	const ref1=useRef()
+	const [validateValue,setValidateValue]=useState(
+		{
+			"gender": {
+				"$message": "This field is required"
+			}
+			// ,address:{
+			// 	dist: {
+			// 		"$message": "This field is required"
+			// 	}
+			// }
+					
+		}
+	)
 	const [value,setValue]=useState({
 		info:{
 			data:'Init value'
@@ -119,14 +132,36 @@ function App() {
 				}}
 
 				columns={[
-					{label:'Name',name:'name',type:JRInput,required:true}
+					{label:'Name',name:'name',type:JRInput,required:true//,max:3
+						,validate({value,...props}){
+							po('validate',props)
+							if(value!=='aaa'){
+								return 'Must be aaa'
+							}
+						}
+
+					}
 					,{label:'Address',name:'address',xrequired:true
 						,columns:[
-							{label:'Dist',name:'dist',type:JRInput,xrequired:true}
-							,{label:'Load',name:'road',type:JRInput,xrequired:true}
+							{label:'Dist',name:'dist',type:JRInput,required:true}
+							,{label:'Load',name:'road',type:JRInput,required:true}
+							,{label:'City',name:'city',xrequired:true
+								,columns:[
+									{label:'中',name:'zh',type:JRInput,required:true}
+									,{label:'Eng',name:'en',type:JRInput,required:false}
+								]
+							}
 						]
 					}
-					,{label:'Age',name:'age',type:JRInput}
+					,{label:'Age',name:'age',type:InputNumber,max:300
+
+						,validate({value,...props}){
+							po('validate',props)
+							if(value<0){
+								return 'Must > 0'
+							}
+						}
+					}
 					,{label:'Gender',name:'gender',type:JRInput,required:true}
 				]}
 
@@ -139,6 +174,8 @@ function App() {
 
 				}}
 				// name={'info'}
+				validateValue={validateValue}
+				setValidateValue={setValidateValue}
 				xvalue={value}
 				xonChange={(value)=>{
 					// po('setValue',value)
