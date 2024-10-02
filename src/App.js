@@ -15,9 +15,10 @@ const StyledApp = styled.div`
     html,*,*:before,*:after {
         box-sizing: border-box;
     }
+	padding:22px;
 `
 
-const JRInput=({value,onChange})=>{
+export const JRInput=({value,onChange,name})=>{
 	return <Input value={value}
 		onChange={(e)=>{
 			onChange(e.target.value)
@@ -43,8 +44,8 @@ function App() {
 		}
 	)
 	const [value,setValue]=useState({
-		info:{
-			data:'Init value'
+		// info:{
+			data:'useState value'
 			,name:'Value from useState'
 			,phoneNumber:'00000000'
 			,Xaddress:{
@@ -52,8 +53,8 @@ function App() {
 					zh:'台南'
 				}
 			}
-			,dist:"楠梓useState"
-		}
+			// ,dist:"楠梓useState"
+		// }
 		// ,data:[{a:1}]
 	})
 
@@ -62,6 +63,14 @@ function App() {
 	// po('AAAAAAA',typeof [1,2,3])
 	return (
 		<StyledApp >
+			<button
+				onClick={()=>{
+					ref1.current.validate()
+				}}
+			>
+				Validate
+			</button>
+
 			<button
 				onClick={()=>{
 					ref1.current.reset()
@@ -112,7 +121,7 @@ function App() {
 			>
 			XXX
 			</button>
-			
+
 			<JRFields
 				ref={ref1}
 				cols={1}
@@ -121,52 +130,37 @@ function App() {
 					,layout:'h'
 					,colon:': '
 				}}
-				initValue={{
-					// info:{
-						'1':2
-						,'2':2
-						,'3':{
-							'3_1':31
-						}
-					// }
+				xinitValue={{
+					name:'Init name'
+					,address:{
+
+					}
 				}}
 
 				columns={[
-					{label:'Name',name:'name',type:JRInput,required:true//,max:3
-						,validate({value,...props}){
-							po('validate',props)
-							if(value!=='aaa'){
-								return 'Must be aaa'
-							}
-						}
-
-					}
-					,{label:'Address',name:'address',xrequired:true
+					{label:'Name',name:'name',type:JRInput}
+					,{label:'Age',name:'age',type:JRInput},
+					 ,
+					{label:'Address'
+						,name:'address'
+						,required:true
+						,type:JRFields
 						,columns:[
+							// {label:'City',name:'city',xrequired:true
+							// 	,columns:[
+							// 		{label:'中',name:'zh',type:JRInput,required:true}
+							// 		// ,{label:'Eng',name:'en',type:JRInput,required:false}
+							// 	]
+							// }
 							{label:'Dist',name:'dist',type:JRInput,required:true}
-							,{label:'Load',name:'road',type:JRInput,required:true}
-							,{label:'City',name:'city',xrequired:true
-								,columns:[
-									{label:'中',name:'zh',type:JRInput,required:true}
-									,{label:'Eng',name:'en',type:JRInput,required:false}
-								]
-							}
+							// ,{label:'Load',name:'road',type:JRInput,required:true}
 						]
 					}
-					,{label:'Age',name:'age',type:InputNumber,max:300
 
-						,validate({value,...props}){
-							po('validate',props)
-							if(value<0){
-								return 'Must > 0'
-							}
-						}
-					}
-					,{label:'Gender',name:'gender',type:JRInput,required:true}
 				]}
 
 				get={{
-					autoRun:true
+					autoRun:false
 					,url:'api/JRFields.json'
 				}}
 				post={{
@@ -174,25 +168,14 @@ function App() {
 
 				}}
 				// name={'info'}
-				validateValue={validateValue}
-				setValidateValue={setValidateValue}
-				xvalue={value}
-				xonChange={(value)=>{
-					// po('setValue',value)
-					setValue(value)
-				}}
+				// validateValue={validateValue}
+				// setValidateValue={setValidateValue}
+				// value={value}
+				// onChange={(value)=>{
+				// 	// po('setValue',value)
+				// 	setValue(value)
+				// }}
 			/> 
-			{/* <JRSubmit
-				get={{
-					url:'api/JRSubmit'
-					,autoRun:true
-				}}
-			/> */}
-			<hr/>
-			{/* {JSON.stringify(value)} */}
-			<Input onChange={(e)=>{
-				po('e',e.target?.value ?? e)
-			}}/>
 		</StyledApp>
 	);
 }

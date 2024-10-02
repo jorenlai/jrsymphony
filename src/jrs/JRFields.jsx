@@ -2,9 +2,10 @@ import styled from "styled-components";
 import JRSubmit from "./JRSubmit";
 import { po } from "./JRUtils";
 import React from "react";
+import { JRInput } from "../App";
 
 function checkMap(_name,inputValue,mapValue,nameList){
-    if(nameList?.length) {
+    if(nameList.length) {
         const name=nameList.shift()
         if(typeof mapValue[name]!='object' ){
             mapValue[name]={}
@@ -18,6 +19,7 @@ function checkMap(_name,inputValue,mapValue,nameList){
 
 
 const StyledGrid = styled.div`
+    border:2px solid red;
     flex:1;
     display: grid;
     grid: ${({ grid, cols, children }) =>
@@ -132,6 +134,9 @@ const maxValidator=({name,value,max})=>{
     } 
 }
 
+const StyleJRFields=styled.div`
+    border:2px solid green;
+`
 
 export default class JRFields extends JRSubmit {
     // constructor(props){
@@ -181,7 +186,7 @@ export default class JRFields extends JRSubmit {
             }
         }
     }
-    validate(name,value,validators,parentName,validateValue){
+    _validate(name,value,validators,parentName,validateValue){
         let _validateValue={...validateValue}
         const result=this.validateResult(value,validators)
         try{
@@ -197,6 +202,12 @@ export default class JRFields extends JRSubmit {
             const v=this.setInMap(name,value,result,this.getValidateValue(),parentName)
         }
     }
+    validate(){
+        po('validating all fields')
+    }
+    get isValid(){
+        return 
+    }
     //-------------------------------------------------------------------------------------------
     get colon(){
         return this.props.labelProps?.colon===undefined ?':':this.props.labelProps?.colon
@@ -207,15 +218,16 @@ export default class JRFields extends JRSubmit {
     //         po('validate')
     //     },500)
     // }
-    createColumn(propsValue,{name,colSpan,rowSpan,style,required,max,validate,...column},index,parentName
+    createColumn(value1,propsValue,{name,colSpan,rowSpan,style,required,max,validate,...column},index,parentName
         , validateValue
     ){
+        const value=name?propsValue?.[name]:propsValue
         const label=column.label
         const _style={}
         if (colSpan) _style.gridColumn = `span ${colSpan}`
         if (rowSpan) _style.gridRow = `span ${rowSpan}`
         Object.assign(_style,style)
-        const value=propsValue?.[name]
+
 
         let content
 
@@ -235,16 +247,24 @@ export default class JRFields extends JRSubmit {
         
 
         const onChange=(inputValue)=>{
+            po('---------------------------------------')
+            const targetValue=inputValue.target?.value ?? inputValue
             if(validators.length){
-                this.validate(name,inputValue,validators,parentName, validateValue)
+                this._validate(name,targetValue,validators,[...parentName], validateValue)
             }
             try{
-                propsValue[name]=inputValue.target?.value ?? inputValue
+                // value1=inputValue.target?.value ?? inputValue
+                po(`0 ${name}`,propsValue )
+                po(`0 set propsValue[${name}]=`,targetValue)
+                propsValue[name]=targetValue
+                po(`0 propsValue`,propsValue)
                 this.setValue({...this.getValue()})
+                // po(`set propsValue[${name}] to `,targetValue)
             }catch(e){
                 const _value=this.getValue()??{}
-                checkMap(name,inputValue.target?.value ?? inputValue,_value,parentName)
+                checkMap(name,targetValue,_value,[...parentName])
                 this.setValue(_value)
+                // po(`catch propsValue[${name}] to `,targetValue)
             }
         }
 
@@ -261,13 +281,14 @@ export default class JRFields extends JRSubmit {
                     ,gridColumn:label==null?'span 2':null
                 }}
             >
-                {React.createElement(column.type,{value:name?value:propsValue,onChange,parentName:_parentName,...column})}
+                {React.createElement(column.type,{value:value1,onChange,parentName:_parentName,...column})}
             </StyledColumnValue>
         }else if(column.columns){
             content=<StyledGrid cols={column.cols} className={'grid'}>
                 {
                     this.createColumns(
-                        name?value:propsValue
+                        value1
+                        ,value
                         ,column.columns
                         ,_parentName
                         ,name?validateValue?.[name]:validateValue
@@ -315,9 +336,12 @@ export default class JRFields extends JRSubmit {
         </StyledColumn>
     }
 
-    createColumns(value,columns,parentName, validateValue){
+    createColumns(value1,value2,columns,parentName, validateValue){
         return columns?.map((column,index)=>{
-            return this.createColumn(value,column,index,parentName, validateValue)
+            return this.createColumn(
+                column.name?value1?.[column.name]:value1?.[column.name]
+                ,value2,column,index,parentName, validateValue
+            )
         })
     }
 
@@ -325,26 +349,27 @@ export default class JRFields extends JRSubmit {
         if(this.getValidateValue()==null){
             this.setValidateValue({})
         }
-        return <StyledGrid cols={this.props.cols} className={'grid'} style={this.props.style}>
-            {
-                this.createColumns(
-                    this.props.name?this.getValue()?.[this.props.name]:this.getValue()
-                    ,this.props.columns
-                    ,this.props.name?[this.props.name]:[]
+        return <StyleJRFields  style={this.props.style}>
+            <StyledGrid cols={this.props.cols} className={'grid'}>
+                {
+                    this.createColumns(
+                        this.props.name?this.getValue()?.[this.props.name]:this.getValue()
+                        ,this.props.name?this.getValue()?.[this.props.name]:this.getValue()
+                        ,this.props.columns
+                        ,this.props.name?[this.props.name]:[]
 
-                    ,this.props.name?this.getValidateValue()?.[this.props.name]:this.getValidateValue()
-                )
-            }
-            {/* <pre style={{
-                // gridColumn:'span 3'
-            }}>
-                ({this.isDirty?"Is dirty":null})
-            {JSON.stringify(this.getValue(),null,4)}
-            </pre> */}
+                        ,this.props.name?this.getValidateValue()?.[this.props.name]:this.getValidateValue()
+                    )
+                }
+                <pre>
+                    ({this.isDirty?"Is dirty":null})
+                    {JSON.stringify(this.getValue(),null,4)}
+                </pre>
 
-            <pre>
-            {JSON.stringify(this.getValidateValue(),null,4)}
-            </pre>
-        </StyledGrid>
+                <pre>
+                    {JSON.stringify(this.getValidateValue(),null,4)}
+                </pre>
+            </StyledGrid>
+        </StyleJRFields>
     }
 }
