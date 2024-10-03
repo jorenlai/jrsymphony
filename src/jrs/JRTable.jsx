@@ -6,8 +6,7 @@ import { useMemo } from "react";
 const StyledJRColumns = styled.div`
     border:2px solid green;
 `
-const JRColumns=({columns,setTest})=>{
-    setTest(2000)
+const JRColumns=({columns})=>{
     po('Render JRColumns')
     const header=useMemo(()=>{
         po('\tcolumns')
@@ -25,11 +24,16 @@ const StyledJRTableData = styled.pre`
     border:2px solid blue;
     margin:0;
 `
-const JRTableData=({value,test})=>{
+const JRTableData=({dataSourceName,value,test})=>{
+
+    const dataSource= dataSourceName 
+            ?value?.[dataSourceName]
+            :value 
+
     po('Render JRTableData')
     const data=useMemo(()=>{
         po('\tdata')
-        return JSON.stringify(value??{},4,null)
+        return JSON.stringify(dataSource??{},4,null)
     },[value])
     return <StyledJRTableData>
         test={test}
@@ -53,6 +57,19 @@ export default class JRTable extends JRSubmit {
             }
         }
     }
+    UNSAFE_componentWillMount(){
+        po('1 UNSAFE_componentWillMount',this.getValue())
+        this._columns=<div>AAAA columns</div>
+    }
+    UNSAFE_componentWillUpdate(nextProps, nextState){
+        po('2 UNSAFE_componentWillUpdate',this.getValue())
+        this._columns=<div>BBBB columns</div>
+        this.isSame=JSON.stringify(nextProps.columns)===JSON.stringify(this.props.columns)
+        if(this.columnsFrom==='props'){
+            po('nextProps',nextProps.columns)
+            po('currentProps',this.props.columns)
+        }
+    }
     componentDidUpdate(prevProps, prevState, snapshot){
         po('-----------componentDidUpdate-----------')
         po('columnsFrom',this.columnsFrom)
@@ -72,17 +89,19 @@ export default class JRTable extends JRSubmit {
     }
     //--------------------------------------------------------------------------------------
     getValue(){
-        return this.props.dataSourceName 
-            ?this[this.from]?.value[this.props.dataSourceName]
-            :this[this.from]?.value 
+        return this[this.from]?.value 
+        // return this.props.dataSourceName 
+        //     ?this[this.from]?.value[this.props.dataSourceName]
+        //     :this[this.from]?.value 
     }
     //--------------------------------------------------------------------------------------
     render(){
-        let test=1
+        po('--------------render',this.isSame)
         return <StyledJRTable>
             <div>
-            <JRColumns columns={this.getColumns()} test={test} setTest={(value)=>{test=value}}/>
-            <JRTableData value={this.getValue()} test={test}/>
+                {this._columns}
+            <JRColumns columns={this.getColumns()}/>
+            <JRTableData value={this.getValue()} dataSourceName={this.props.dataSourceName}/>
             </div>
         </StyledJRTable>
     }

@@ -126,16 +126,21 @@ function App() {
 				ref={ref1}
 				get={{
 					url:'api/JRFields.json'
-					,autoRun:true
+					// ,autoRun:true
 					,response(res){
-						setColumns([{"name":"name","label":"Name"}])
+						setColumns([{"name":"age","label":"Age"}])
 						return res
 					}
 				}}
 				columns={columns}
-				initValue={[
-					{data:1}
-				]}
+				initValue={{
+					list:[
+						{data:1},{data:2}
+					]
+					,info:{
+						name:'Data'
+					}
+				}}
 				dataSourceName={'list'}
 			/>
 			{/* <JRFields
