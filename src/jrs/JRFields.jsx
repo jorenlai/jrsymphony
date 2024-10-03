@@ -218,7 +218,7 @@ export default class JRFields extends JRSubmit {
     //         po('validate')
     //     },500)
     // }
-    createColumn(value1,propsValue,{name,colSpan,rowSpan,style,required,max,validate,...column},index,parentName
+    createColumn(value1,propsValue,{type,name,colSpan,rowSpan,style,required,max,validate,...column},index,parentName
         , validateValue
     ){
         const value=name?propsValue?.[name]:propsValue
@@ -273,17 +273,7 @@ export default class JRFields extends JRSubmit {
             _parentName.push(name)
         }
 
-        if(column.type){
-            content=<StyledColumnValue className={'value'}
-                $validateValue={validateValue?.[name]}
-                style={{
-                    gap:column.columns?'12px':null
-                    ,gridColumn:label==null?'span 2':null
-                }}
-            >
-                {React.createElement(column.type,{value:value1,onChange,parentName:_parentName,...column})}
-            </StyledColumnValue>
-        }else if(column.columns){
+        if(column.columns){
             content=<StyledGrid cols={column.cols} className={'grid'}>
                 {
                     this.createColumns(
@@ -295,6 +285,16 @@ export default class JRFields extends JRSubmit {
                     )
                 }
             </StyledGrid>
+        }else if(type){
+            content=<StyledColumnValue className={'value'}
+                $validateValue={validateValue?.[name]}
+                style={{
+                    gap:column.columns?'12px':null
+                    ,gridColumn:label==null?'span 2':null
+                }}
+            >
+                {React.createElement(type,{value:value1,onChange,parentName:_parentName,...column})}
+            </StyledColumnValue>
         }else if(name || column.render ){
             content=<StyledColumnValue className={'value'}
                 style={{
@@ -303,8 +303,9 @@ export default class JRFields extends JRSubmit {
                 }}
             >
                 {
-                    column.render?.bind(this)({onChange,value,record:this.getValue()})
-                    ?? typeof value ==='object'?JSON.stringify(value):value
+                    column.render
+                    ?column.render.bind(this)({onChange,value,record:this.getValue()})
+                    :typeof value ==='object'?JSON.stringify(value):value
                 }
             </StyledColumnValue>
         }
@@ -346,6 +347,7 @@ export default class JRFields extends JRSubmit {
     }
 
     render(){
+        po('---------------')
         if(this.getValidateValue()==null){
             this.setValidateValue({})
         }

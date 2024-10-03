@@ -138,7 +138,10 @@ function App() {
 				}}
 
 				columns={[
-					{label:'Name',name:'name',type:JRInput}
+					{label:'Name',render({value}){
+						po('vvvvvvv',value)
+						return 'AAAAAA'
+					}}
 					,{label:'Age',name:'age',type:JRInput},
 					 ,
 					{label:'Address'
