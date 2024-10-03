@@ -28,6 +28,7 @@ export const JRInput=({value,onChange,name})=>{
 
 
 function App() {
+	const [columns,setColumns]=useState([{"name":"name","label":"Name"}])
 	const mapp=Object.assign({a:1},{b:2})
 	const ref1=useRef()
 	const [validateValue,setValidateValue]=useState(
@@ -80,10 +81,10 @@ function App() {
 			</button>
 			<button
 				onClick={()=>{
-					ref1.current.post()
+					ref1.current.get()
 				}}
 			>
-			Submit
+			get
 			</button>
 			<button
 				onClick={()=>{
@@ -121,9 +122,26 @@ function App() {
 			>
 			XXX
 			</button>
-
-			<JRFields
+			<JRTable
 				ref={ref1}
+				get={{
+					url:'api/JRFields.json'
+					,autoRun:true
+					,response(res){
+						setColumns([{"name":"name","label":"Name"}])
+						return res
+					}
+				}}
+				columns={columns}
+				initValue={[
+					{data:1}
+				]}
+				dataSourceName={'list'}
+			/>
+			{/* <JRFields
+
+				ref={ref1}
+				gap={'1px'}
 				cols={1}
 				labelProps={{
 					horizontal:true
@@ -149,14 +167,14 @@ function App() {
 						,required:true
 						,type:JRFields
 						,columns:[
-							// {label:'City',name:'city',xrequired:true
-							// 	,columns:[
-							// 		{label:'中',name:'zh',type:JRInput,required:true}
-							// 		// ,{label:'Eng',name:'en',type:JRInput,required:false}
-							// 	]
-							// }
-							{label:'Dist',name:'dist',type:JRInput,required:true}
-							// ,{label:'Load',name:'road',type:JRInput,required:true}
+							{label:'City',name:'city',xrequired:true
+								,columns:[
+									{label:'中',name:'zh',type:JRInput,required:true}
+									// ,{label:'Eng',name:'en',type:JRInput,required:false}
+								]
+							}
+							,{label:'Dist',name:'dist',type:JRInput,required:true}
+							,{label:'Load',name:'road',type:JRInput,required:true}
 						]
 					}
 
@@ -178,7 +196,7 @@ function App() {
 				// 	// po('setValue',value)
 				// 	setValue(value)
 				// }}
-			/> 
+			/>  */}
 		</StyledApp>
 	);
 }

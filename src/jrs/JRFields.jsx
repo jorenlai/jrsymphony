@@ -30,7 +30,7 @@ const StyledGrid = styled.div`
                 .map(() => "1fr")
                 .join(" ")}`};
 
-    gap: ${({ gap }) => gap ?? "12px"};
+    gap: ${({ $gap }) => $gap ?? "12px"};
 `
 
 const StyledColumn=styled.div`
@@ -352,7 +352,7 @@ export default class JRFields extends JRSubmit {
             this.setValidateValue({})
         }
         return <StyleJRFields  style={this.props.style}>
-            <StyledGrid cols={this.props.cols} className={'grid'}>
+            <StyledGrid cols={this.props.cols} className={'grid'} $gap={this.props.gap}>
                 {
                     this.createColumns(
                         this.props.name?this.getValue()?.[this.props.name]:this.getValue()
