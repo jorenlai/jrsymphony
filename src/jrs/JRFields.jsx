@@ -1,230 +1,450 @@
-import React from 'react'
-import axios from 'axios'
-import { colonValueString, po } from './JRUtils'
-import { displaySpinner } from '../jrx/LoadingBar'
-import msg from '../jrx/IMessage'
+import styled from "styled-components";
+import JRSubmit from "./JRSubmit";
+import { po } from "./JRUtils";
+import React from "react";
+import { JRInput } from "../App";
+
+function checkMap(_name,inputValue,mapValue,nameList){
+    if(nameList.length) {
+        const name=nameList.shift()
+        if(typeof mapValue[name]!='object' ){
+            mapValue[name]={}
+        }
+        checkMap(_name,inputValue,mapValue[name],nameList)
+    }else{
+        mapValue[_name]=inputValue
+    }
+}
 
 
-const axiosSubmit = axios.create({
-    authorization: `Bearer ${localStorage.getItem("accessToken")}`
-    ,timeout: 120000
-    ,maxBodyLength: 104857600 //100mb 104857600
-    ,maxContentLength: 104857600 //100mb
-})
 
-export default class JRSubmit extends React.Component {
-    #methods = ['get', 'post', 'put','patch','delete','download']
+const StyledGrid = styled.div`
+    border:2px solid red;
+    flex:1;
+    display: grid;
+    grid: ${({ grid, cols, children }) =>
+        grid
+            ? grid
+            : `auto / ${Array(cols ?? 1)
+                .fill()
+                .map(() => "1fr")
+                .join(" ")}`};
 
-    constructor(props) {
-        super(props)
-        if(this.props.value===undefined && this.props.initValue!==undefined ){
-            if(this.props.onChange===undefined){
-                this.state={
-                    value:props.initValue
-                    ,rawValue:JSON.parse(JSON.stringify(props.initValue))
+    gap: ${({ $gap }) => $gap ?? "12px"};
+`
+
+const StyledColumn=styled.div`
+    flex:1;
+    display: grid;
+
+    ${({$layout,$labelwidth})=>{
+        if($layout=='v'){
+            return `grid: auto 1fr / 1fr;`
+        }else{
+            return `grid: 1fr / ${$labelwidth} 1fr;`
+        }
+    }}
+    
+    > label,> main{
+        border:1px solid gray;
+        xbackground:#3d3d3d;
+    }
+`
+const StyledColumnLabel=styled.label`
+    text-wrap: nowrap;
+    padding-right: 10px;
+
+    ${({$layout})=>{
+        if($layout=='v'){
+            return `text-align: start;`
+        }else{
+            return `text-align: end;`
+        }
+    }}
+
+    ${({$required})=>{
+        if($required!==undefined && $required)
+            return `
+                &:not(:empty)::before{
+                    padding-right:4px;
+                    color:red;
+                    content:'*';
                 }
+            `
+    }}
+
+    ${({$colon})=>{
+        if($colon){
+            return `
+                &:not(:empty)::after{
+                    content:'${$colon}';
+                }
+            `
+        }
+    }}
+
+`
+const StyledColumnValue=styled.main`
+    flex:1;
+    display:flex;
+    overflow: hidden;
+
+    text-align: start;
+    ${({$validateValue})=>{
+        if($validateValue!=null){
+            return `
+                > * {
+                    border:1px solid red;
+                }
+            `
+            }
+        }}
+        `
+const ColumnMessage=({value})=>{
+    return value?.$message?.msg ?? value?.$message
+}
+const StyledColumnFooter=styled.div`
+    &:empty{
+            display: none;
+    }
+    ${({$layout})=>{
+        if($layout=='v'){
+            return ``
+        }else{
+            return `grid-column-start:2;`
+        }
+    }}
+    height:25px;
+    color:#ff6060;
+`
+
+const requiredValidator=({name,value})=>{
+    if(value==null || value==''){
+        return {
+            msg:'This field is required'
+            ,color:'red'
+        }
+    } 
+}
+const maxValidator=({name,value,max})=>{
+    if(typeof value==='string' && value.length>max){
+        return `Max is ${max}`
+    }else if(value>max){
+        return `Max is ${max}`
+    } 
+}
+
+const StyleJRFields=styled.div`
+    border:2px solid green;
+`
+
+export default class JRFields extends JRSubmit {
+    // constructor(props){
+    //     super(props)
+    //     po('JRFields----------------------',props)
+    // }
+    //-----------------------------------------------------------------------------------
+    setInMap(_name,inputValue,result,mapValue,nameList){
+        if(nameList?.length) {
+            const name=nameList.shift()
+            if(mapValue[name]===undefined) mapValue[name]={}
+            return this.setInMap(_name,inputValue,result,mapValue[name],nameList)
+        }else if(_name){
+            mapValue[_name]={
+                $message:result
+            }
+            return  mapValue[_name]
+        }else{
+            return mapValue
+        }
+    }
+    //-----------------------------------------------------------------------------------
+    get fromValidateValue(){
+        return this.props.validateValue===undefined?'state':'props'
+    }
+    getValidateValue(createIfNull){
+        
+        // if(this[this.fromValidateValue]?.validateValue!=null){
+            return this[this.fromValidateValue]?.validateValue  
+        // }else if(createIfNull ){
+        //     po('create validateValue')
+        //     this.setValidateValue({})
+        //     return this[this.fromValidateValue]?.validateValue 
+        // }
+    }
+    setValidateValue(validateValue){
+        if(this.props.setValidateValue){
+            this.props.setValidateValue(validateValue)
+        }else{
+            this.setState({validateValue})
+        }
+    }
+    validateResult(value,validators){
+        for(var x=0;x<validators.length;x++){
+            const result=validators[x]({value,record:this.getValue()})
+            if(result){
+                return result
             }
         }
     }
-    componentDidMount() {
-        this.#methods
-        .filter((method) => this[method] && this.props[method] && this.props[method].autoRun)
-        .forEach((method) => {
-            this[method]()
+    _validate(name,value,validators,parentName,validateValue){
+        let _validateValue={...validateValue}
+        const result=this.validateResult(value,validators)
+        try{
+            if(result){
+                validateValue[name]={
+                    $message:result
+                }
+            }else{
+                delete validateValue[name]
+            }
+             
+        }catch(e){
+            const v=this.setInMap(name,value,result,this.getValidateValue(),parentName)
+        }
+    }
+    get isValid(){
+        return 
+    }
+
+
+    findValidator({name,required,max,validate,...column},value,_validateValue,tab){
+        po(`${tab}name,value`,name,'=',value)
+        const validators=[]
+        if(required===true){
+            validators.push(requiredValidator)
+        }
+        if(max!=null){
+            validators.push(({name,value})=>{
+                return maxValidator({name,value,max})
+            })
+        }
+        if(validate){
+            validators.push(validate)
+        }
+        return validators
+        // po('findValidator',column)
+    }
+
+
+    _validateFields(_columns,_value,_validateValue,parentName,tab){
+        _columns?.forEach((column,index)=>{
+            const validateValue=column?.name? _validateValue?.[column.name]:_validateValue
+            const value=column?.name? _value?.[column.name]:_value
+            const validators=this.findValidator(column,value,validateValue,tab)
+
+            const validateResult=this.validateResult(value,validators)
+            // try{
+                
+            if(validateResult){
+                po(`set ${column.name}`)
+                try{
+                        _validateValue[column.name]={
+                        }
+                        _validateValue[column.name].$message='validateResult'
+                        
+                        po(`${tab}set ${column.name} validateValue`,validateValue)
+                    }catch(e){
+
+                    }
+                    // validateValue[column.name]={
+                    //     $message:validateResult
+                    // }
+                    
+                }else{
+                    // delete validateValue[column.name]
+                }
+                 
+            // }catch(e){
+            //     const v=this.setInMap(column.name,value,validateResult,this.getValidateValue(),parentName)
+            // }
+
+            this._validateFields(column.columns,value,validateValue,parentName,`\t${tab}`)
         })
     }
-    get(_config = {}) {
-        const config = Object.assign(
-            {
-                method:'get'
-                ,value:this.getSubmitValue()
-                ,updateValue:true
-                // ,updateRawValue:true
-            }
-            ,this.props['get']
-            ,_config
-        )
-        this.submit(config)
+    validateFields(){
+        const value=this.getValue()
+        const columns=this.getColumns()
+        const validateValue=this.getValidateValue()
+        this._validateFields(columns,value,validateValue,[],'\t')
+        this.setValidateValue({...this.getValidateValue()})
     }
+    //--------------------------------------------------------------------------------------
+    get columnsFrom(){
+        return this.props.initColumns!==undefined?'state':'props'
+    }
+    getColumns(){
+        return this[this.columnsFrom]?.columns
+    }
+    //-------------------------------------------------------------------------------------------
     
-    post(config = {}) {
-        config = Object.assign(
-            {
-                method:'post'
-                ,value:this.getSubmitValue()
-                ,updateValue:false
-                // ,updateRawValue:true
-            }
-            ,this.props['post']
-            ,config
-        )
-        this.submit(config)
+    get colon(){
+        return this.props.labelProps?.colon===undefined ?':':this.props.labelProps?.colon
     }
+    // componentDidUpdate(){
+    //     clearTimeout(this.validateTimeout)
+    //     this.validateTimeout=setTimeout(()=>{
+    //         po('validate')
+    //     },500)
+    // }
+    createColumn(value1
+        ,propsValue
+        ,{type,name,colSpan,rowSpan,style,required,validate,typeStyle,...column}
+        ,index
+        ,parentName
+        , validateValue
+    ){
+        const value=name?propsValue?.[name]:propsValue
+        const label=column.label
+        const _style={}
+        if (colSpan) _style.gridColumn = `span ${colSpan}`
+        if (rowSpan) _style.gridRow = `span ${rowSpan}`
+        Object.assign(_style,style)
 
-    put(config = {}) {
-        config = Object.assign(
-            {
-                method:'put'
-                ,value:this.getSubmitValue()
-                ,updateValue:false
-            }
-            ,this.props['put']
-            ,config
-        )
-        this.submit(config)
-    }
 
-    get from(){
-        return this.props.value===undefined?'state':'props'
-    }
-    
-    get isDirty(){
-        return this.state?.isDirty
-    }
-    set isDirty(isDirty){
-        this.setState({isDirty})
-    }
-    get rawValue(){
-        return this.state?.rawValue//{info:{1:1}}//
-    }
-    setRawValue(rawValue){
-        this.setState({rawValue:JSON.parse(JSON.stringify(rawValue))})
-    }
-    reset(){
-        if(this.props.onChange){
-            this.props.onChange(this.rawValue)
-        }else{
-            this.setState({value:JSON.parse(JSON.stringify(this.rawValue))})
+        let content
+
+        const validators=[]
+        if(required===true){
+            validators.push(requiredValidator)
         }
-        this.isDirty=false
-    }
-    setValue(value){
-        this.isDirty=true
-        if(this.props.onChange){
-            this.props.onChange(value)
-        }else{
-            this.setState({value})
-        }
-    }
-    getValue(){
-        return this[this.from]?.value 
-    }
-
-    getSubmitValue(){
-        return this.getValue()
-    }
-
-    getAxiosParams({url,method,value,...params}){
-        const payload=typeof value === 'function'
-            ?value.bind(this)(this.getValue())
-            :value
-
-        const headers={
-           authorization: `Bearer ${localStorage.getItem("accessToken")}`
-        }    
-        const params1=method=='get'
-            ?{
-                params:payload
-                ,headers
-            }
-            :payload
-
-        const params2=method=='get'
-            ?{}
-            :{headers}
-
-        return {
-            url//:colonValueString(url,payload)
-            ,method
-            ,params1
-            ,params2
-            ,payload
-        }
-    }
-
-    submit(config){
-        displaySpinner({mask:config.mask})
-        let _payload
-        ;(()=>{
-            if (Array.isArray(config.url)) {
-                _payload=[]
-                return Promise.allSettled(
-                    config.url.map((_url) => {
-                        const urlParams=typeof _url === 'object'
-                            ?_url
-                            :{url: _url}
-                        const finalConfig=Object.assign(config,urlParams)
-                        const {url,method,params1,params2,payload}=this.getAxiosParams(finalConfig)
-                        _payload.push(payload)
-                        return axiosSubmit[method](url,params1,params2)
-                    })
-                )
-            }else{
-                const {url,method,params1,params2,payload}=this.getAxiosParams(config)
-                _payload=payload
-                return axiosSubmit[method](url,params1,params2)
-            }
-        })()
-            .then((res)=>{
-                this.handleResponse(res,_payload,config)
+        if(column.max!=null){
+            validators.push(({name,value})=>{
+                return maxValidator({name,value,max:column.max})
             })
-            .catch((res)=>{
-                this.handleResponse(res,_payload,config)
-            })
-            // .finally(function (a,b,c) {
-            //     console.log('finally',a,b,c);
-            //     displaySpinner({mask:false})
-            // })
-    }
-
-    setRes(isSuccess,response,config){
-        if (isSuccess) {
-            if(config.updateValue){
-                const rawValue=config.formatValue?.bind(this)(response.data)??response.data
-                this.setRawValue(rawValue)
-                this.setValue(rawValue)
-                this.isDirty=false
-            }
-        } else {
-            if(config.updateValue){
-                this.setValue(null)
-                this.isDirty=false
-            }
-        }  
-    }
-
-    handleResponse=(response,payload,config)=>{
-        if(Array.isArray(response)){
-            response=response.map((re,index)=>{
-                if(re.value){
-                    re.value.payload=payload[index]
-                }else if(re.reason){
-                    re.reason.payload=payload[index]
-                }
-                return re
-            })
-        }else{
-            response.payload=payload
         }
-            
-        response = config?.response?.(response,payload) ?? response
-        const isSuccess = response.status >= 200 && response.status <= 299
+        if(validate){
+            validators.push(validate)
+        }
+
         
-        this.setRes(isSuccess,response,config)
-        if (isSuccess) {
-            if (config.successMessage) {
-                msg.success({ message:config.successMessage });
+
+        const onChange=(inputValue)=>{
+            po('---------------------------------------')
+            const targetValue=inputValue?.target?.value ?? inputValue
+            if(validators.length){
+                this._validate(name,targetValue,validators,[...parentName], validateValue)
             }
-        } else {
-            if (config.failedMessage) {
-                msg.error({ message:config.failedMessage });
+            try{
+                // value1=inputValue.target?.value ?? inputValue
+                po(`0 ${name}`,propsValue )
+                po(`0 set propsValue[${name}]=`,targetValue)
+                propsValue[name]=targetValue
+                po(`0 propsValue`,propsValue)
+                this.setValue({...this.getValue()})
+                // po(`set propsValue[${name}] to `,targetValue)
+            }catch(e){
+                const _value=this.getValue()??{}
+                checkMap(name,targetValue,_value,[...parentName])
+                this.setValue(_value)
+                // po(`catch propsValue[${name}] to `,targetValue)
             }
-        }    
-        config.callback?.bind(this)(isSuccess,response,payload)
-        displaySpinner({mask:false})
+        }
+
+        const _parentName=[...parentName]
+        if(name!==undefined){
+            _parentName.push(name)
+        }
+
+        if(column.columns){
+            content=<StyledGrid cols={column.cols} className={'grid'}>
+                {
+                    this.createColumns(
+                        value1
+                        ,value
+                        ,column.columns
+                        ,_parentName
+                        ,name?validateValue?.[name]:validateValue
+                    )
+                }
+            </StyledGrid>
+        }else if(type){
+            content=<StyledColumnValue className={'value'}
+                $validateValue={validateValue?.[name]}
+                style={{
+                    gap:column.columns?'12px':null
+                    ,gridColumn:label==null?'span 2':null
+                }}
+            >
+                {React.createElement(type,{value:value1,onChange,parentName:_parentName,style:typeStyle,...column})}
+            </StyledColumnValue>
+        }else if(name || column.render ){
+            content=<StyledColumnValue className={'value'}
+                style={{
+                    gap:column.columns?'12px':null
+                    ,gridColumn:label==null?'span 2':null
+                }}
+            >
+                {
+                    column.render
+                    ?column.render.bind(this)({onChange,value,record:this.getValue()})
+                    :typeof value ==='object'?JSON.stringify(value):value
+                }
+            </StyledColumnValue>
+        }
+        const layout=column.labelProps?.layout===undefined ? this.props.labelProps?.layout: column.labelProps?.layout
+        return <StyledColumn 
+            $layout={layout}
+            key={`f${index}`} 
+            style={_style} 
+            className={'columns'}
+            $labelwidth={ column.labelProps?.width ?? this.props.labelProps?.width ?? '120px'}
+        >
+            {
+                label!=null 
+                && <StyledColumnLabel 
+                    $required={required}
+                    className={'label'} 
+                    $layout={layout}
+                    $colon={column.labelProps?.colon===undefined ? this.colon:column.labelProps?.colon}>{label}
+                </StyledColumnLabel>
+            }
+            {content}
+            {
+                validateValue?.[name]!==undefined && <StyledColumnFooter $layout={layout}>
+                    {/* {validateValue?.[name]?.$message} */}
+                    <ColumnMessage value={validateValue?.[name]}/>
+                </StyledColumnFooter>
+            }
+            
+        </StyledColumn>
     }
-    
-    render() {
-        return
+
+    createColumns(value1,value2,columns,parentName, validateValue){
+        return columns?.map((column,index)=>{
+            return this.createColumn(
+                column.name?value1?.[column.name]:value1?.[column.name]
+                ,value2,column,index,parentName, validateValue
+            )
+        })
+    }
+
+    render(){
+        po('---------------')
+        if(this.getValidateValue()==null){
+            this.setValidateValue({})
+        }
+        return <StyleJRFields  style={this.props.style}>
+            <StyledGrid cols={this.props.cols} className={'grid'} $gap={this.props.gap}>
+                {
+                    this.createColumns(
+                        this.props.name?this.getValue()?.[this.props.name]:this.getValue()
+                        ,this.props.name?this.getValue()?.[this.props.name]:this.getValue()
+                        ,this.props.columns
+                        ,this.props.name?[this.props.name]:[]
+
+                        ,this.props.name?this.getValidateValue()?.[this.props.name]:this.getValidateValue()
+                    )
+                }
+                <pre>
+                    ({this.isDirty?"Is dirty":null})
+                    {JSON.stringify(this.getValue(),null,4)}
+                </pre>
+
+                <pre>
+                    {JSON.stringify(this.getValidateValue(),null,4)}
+                </pre>
+            </StyledGrid>
+        </StyleJRFields>
     }
 }

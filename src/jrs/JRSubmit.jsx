@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import { colonValueString, po } from './JRUtils'
+import { displaySpinner } from '../jrx/LoadingBar'
+import msg from '../jrx/IMessage'
 
 
 const axiosSubmit = axios.create({
@@ -59,6 +61,19 @@ export default class JRSubmit extends React.Component {
         this.submit(config)
     }
 
+    put(config = {}) {
+        config = Object.assign(
+            {
+                method:'put'
+                ,value:this.getSubmitValue()
+                ,updateValue:false
+            }
+            ,this.props['put']
+            ,config
+        )
+        this.submit(config)
+    }
+
     get from(){
         return this.props.value===undefined?'state':'props'
     }
@@ -77,10 +92,8 @@ export default class JRSubmit extends React.Component {
     }
     reset(){
         if(this.props.onChange){
-            // po('1 reseting..........')
             this.props.onChange(this.rawValue)
         }else{
-            // po('2 reseting..........',this.rawValue)
             this.setState({value:JSON.parse(JSON.stringify(this.rawValue))})
         }
         this.isDirty=false
@@ -130,6 +143,7 @@ export default class JRSubmit extends React.Component {
     }
 
     submit(config){
+        displaySpinner({mask:config.mask})
         let _payload
         ;(()=>{
             if (Array.isArray(config.url)) {
@@ -159,6 +173,7 @@ export default class JRSubmit extends React.Component {
             })
             // .finally(function (a,b,c) {
             //     console.log('finally',a,b,c);
+            //     displaySpinner({mask:false})
             // })
     }
 
@@ -196,19 +211,17 @@ export default class JRSubmit extends React.Component {
         const isSuccess = response.status >= 200 && response.status <= 299
         
         this.setRes(isSuccess,response,config)
-        // if (isSuccess) {
-        //     if(config.updateValue){
-        //         const rawValue=config.formatValue?.bind(this)(response.data)??response.data
-        //         this.setRawValue(rawValue)
-        //         this.setValue(rawValue)
-        //         this.isDirty=false
-        //     }
-        // } else {
-        //     if(config.updateValue){
-        //         this.setValue(null)
-        //         this.isDirty=false
-        //     }
-        // }    
+        if (isSuccess) {
+            if (config.successMessage) {
+                msg.success({ message:config.successMessage });
+            }
+        } else {
+            if (config.failedMessage) {
+                msg.error({ message:config.failedMessage });
+            }
+        }    
+        config.callback?.bind(this)(isSuccess,response,payload)
+        displaySpinner({mask:false})
     }
     
     render() {

@@ -203,7 +203,10 @@ function App() {
 
 				get={{
 					autoRun:false
-					,url:'api/JRFields.json'
+					,url:'api/JRFieldsx.json'
+					,mask:'Loading'
+					,successMessage:'Success'
+					,failedMessage:'Failed'
 				}}
 				post={{
 					url:'post'
