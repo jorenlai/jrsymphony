@@ -203,7 +203,7 @@ function App() {
 
 				get={{
 					autoRun:false
-					,url:'api/JRFieldsx.json'
+					,url:'api/JRFields.json'
 					,mask:'Loading'
 					,successMessage:'Success'
 					,failedMessage:'Failed'

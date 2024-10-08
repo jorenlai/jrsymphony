@@ -88,13 +88,13 @@ export default class JRSubmit extends React.Component {
         return this.state?.rawValue//{info:{1:1}}//
     }
     setRawValue(rawValue){
-        this.setState({rawValue:JSON.parse(JSON.stringify(rawValue))})
+        this.setState({rawValue:JSON.parse(JSON.stringify(rawValue??''))})
     }
     reset(){
         if(this.props.onChange){
             this.props.onChange(this.rawValue)
         }else{
-            this.setState({value:JSON.parse(JSON.stringify(this.rawValue))})
+            this.setState({value:this.rawValue?JSON.parse(JSON.stringify(this.rawValue)):null})
         }
         this.isDirty=false
     }
