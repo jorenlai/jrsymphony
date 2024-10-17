@@ -19,7 +19,7 @@ function checkMap(_name,inputValue,mapValue,nameList){
 
 
 const StyledGrid = styled.div`
-    border:2px solid red;
+    xborder:2px solid red;
     flex:1;
     display: grid;
     grid: ${({ grid, cols, children }) =>
@@ -37,22 +37,22 @@ const StyledColumn=styled.div`
     flex:1;
     display: grid;
 
-    ${({$layout,$labelwidth})=>{
+    ${({$layout,$labelwidth,$hasLabel})=>{
         if($layout=='v'){
             return `grid: auto 1fr / 1fr;`
         }else{
-            return `grid: 1fr / ${$labelwidth} 1fr;`
+            return `grid: 1fr / ${$hasLabel?$labelwidth:''} 1fr;`
         }
     }}
     
     > label,> main{
-        border:1px solid gray;
+        xborder:1px solid gray;
         xbackground:#3d3d3d;
     }
 `
 const StyledColumnLabel=styled.label`
     text-wrap: nowrap;
-    padding-right: 10px;
+    padding: 4px 10px 4px 0;
 
     ${({$layout})=>{
         if($layout=='v'){
@@ -94,7 +94,7 @@ const StyledColumnValue=styled.main`
         if($validateValue!=null){
             return `
                 > * {
-                    border:1px solid red;
+                    xborder:1px solid red;
                 }
             `
             }
@@ -135,7 +135,7 @@ const maxValidator=({name,value,max})=>{
 }
 
 const StyleJRFields=styled.div`
-    border:2px solid green;
+    xborder:2px solid green;
 `
 
 export default class JRFields extends JRSubmit {
@@ -292,8 +292,9 @@ export default class JRFields extends JRSubmit {
         ,{type,name,colSpan,rowSpan,style,required,validate,typeStyle,...column}
         ,index
         ,parentName
-        , validateValue
+        ,validateValue
     ){
+        const gap=column.gap??this.props.gap
         const value=name?propsValue?.[name]:propsValue
         const label=column.label
         const _style={}
@@ -347,7 +348,7 @@ export default class JRFields extends JRSubmit {
         }
 
         if(column.columns){
-            content=<StyledGrid cols={column.cols} className={'grid'}>
+            content=<StyledGrid cols={column.cols} className={'jr-grid'} $gap={gap}>
                 {
                     this.createColumns(
                         value1
@@ -359,20 +360,19 @@ export default class JRFields extends JRSubmit {
                 }
             </StyledGrid>
         }else if(type){
-            content=<StyledColumnValue className={'value'}
+            content=<StyledColumnValue className={'jr-column-value'}
                 $validateValue={validateValue?.[name]}
                 style={{
-                    gap:column.columns?'12px':null
-                    ,gridColumn:label==null?'span 2':null
+                    gridColumn:label==null?'span 2':null
                 }}
             >
                 {React.createElement(type,{value:value1,onChange,parentName:_parentName,style:typeStyle,...column})}
             </StyledColumnValue>
         }else if(name || column.render ){
-            content=<StyledColumnValue className={'value'}
+            content=<StyledColumnValue className={'jr-column-value'}
                 style={{
-                    gap:column.columns?'12px':null
-                    ,gridColumn:label==null?'span 2':null
+                    gridColumn:label==null?'span 2':null
+                    ,padding:column.render?'4px 0':null
                 }}
             >
                 {
@@ -385,6 +385,7 @@ export default class JRFields extends JRSubmit {
         const layout=column.labelProps?.layout===undefined ? this.props.labelProps?.layout: column.labelProps?.layout
         return <StyledColumn 
             $layout={layout}
+            $hasLabel={label!=null }
             key={`f${index}`} 
             style={_style} 
             className={'columns'}
@@ -420,30 +421,20 @@ export default class JRFields extends JRSubmit {
     }
 
     render(){
-        po('---------------')
         if(this.getValidateValue()==null){
             this.setValidateValue({})
         }
         return <StyleJRFields  style={this.props.style}>
-            <StyledGrid cols={this.props.cols} className={'grid'} $gap={this.props.gap}>
+            <StyledGrid cols={this.props.cols} className={'jr-grid'} $gap={this.props.gap}>
                 {
                     this.createColumns(
                         this.props.name?this.getValue()?.[this.props.name]:this.getValue()
                         ,this.props.name?this.getValue()?.[this.props.name]:this.getValue()
                         ,this.props.columns
                         ,this.props.name?[this.props.name]:[]
-
                         ,this.props.name?this.getValidateValue()?.[this.props.name]:this.getValidateValue()
                     )
                 }
-                <pre>
-                    ({this.isDirty?"Is dirty":null})
-                    {JSON.stringify(this.getValue(),null,4)}
-                </pre>
-
-                <pre>
-                    {JSON.stringify(this.getValidateValue(),null,4)}
-                </pre>
             </StyledGrid>
         </StyleJRFields>
     }

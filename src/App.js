@@ -150,16 +150,19 @@ function App() {
 				dataSourceName={'list'}
 			/> */}
 			<JRFields
-
+				style={{
+					padding:'22px'
+					,border:'1px solid gray'
+				}}
 				ref={ref1}
-				gap={'1px'}
+				gap={'22px'}
 				cols={1}
 				labelProps={{
 					horizontal:true
-					,layout:'v'
+					,layout:'h'
 					,colon:': '
 				}}
-				xinitValue={{
+				initValue={{
 					name:'Init name'
 					,address:{
 
@@ -167,14 +170,16 @@ function App() {
 				}}
 
 				columns={[
-					{label:'Name'
+					{
+						label:'Name'
 						,required:true
 						,max:2
 						,type:InputNumber
 						,name:'name'
 					}
 					,{label:'Age',name:'age',type:InputNumber,typeStyle:{width:'150px'}},
-					,{label:'Address'
+					,{
+						label:'Address'
 						,name:'address'
 						,required:true
 						,type:JRFields
