@@ -347,7 +347,16 @@ export default class JRFields extends JRSubmit {
             _parentName.push(name)
         }
 
-        if(column.columns){
+        if(type){
+            content=<StyledColumnValue className={'jr-column-value'}
+                $validateValue={validateValue?.[name]}
+                style={{
+                    gridColumn:label==null?'span 2':null
+                }}
+            >
+                {React.createElement(type,{value:value1,onChange,parentName:_parentName,style:{width:'100%',...typeStyle},...column})}
+            </StyledColumnValue>
+        }else if(column.columns){
             content=<StyledGrid cols={column.cols} className={'jr-grid'} $gap={gap}>
                 {
                     this.createColumns(
@@ -359,15 +368,6 @@ export default class JRFields extends JRSubmit {
                     )
                 }
             </StyledGrid>
-        }else if(type){
-            content=<StyledColumnValue className={'jr-column-value'}
-                $validateValue={validateValue?.[name]}
-                style={{
-                    gridColumn:label==null?'span 2':null
-                }}
-            >
-                {React.createElement(type,{value:value1,onChange,parentName:_parentName,style:typeStyle,...column})}
-            </StyledColumnValue>
         }else if(name || column.render ){
             content=<StyledColumnValue className={'jr-column-value'}
                 style={{
@@ -421,6 +421,7 @@ export default class JRFields extends JRSubmit {
     }
 
     render(){
+        po('---------------')
         if(this.getValidateValue()==null){
             this.setValidateValue({})
         }

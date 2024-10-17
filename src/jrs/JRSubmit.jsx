@@ -116,8 +116,14 @@ export default class JRSubmit extends React.Component {
 
     getAxiosParams({url,method,value,...params}){
         const payload=typeof value === 'function'
-            ?value.bind(this)(this.getValue())
-            :value
+            ?value.bind(this)({
+                ...this.getValue()
+                ,...extraValue
+            })
+            :{
+                ...value
+                ,...extraValue
+            }
 
         const headers={
            authorization: `Bearer ${localStorage.getItem("accessToken")}`
