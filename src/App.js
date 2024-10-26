@@ -173,7 +173,10 @@ function App() {
 				columns={[
 					{
 						label:'Name A'
-						,required:true
+						,required:{
+							value:true
+							,msg:'我是A{age}'
+						}
 						,max:2
 						,type:Input
 						,name:'name'
@@ -182,7 +185,6 @@ function App() {
 					,{
 						label:'Address'
 						,name:'address'
-						,required:true
 						,columns:[
 							{label:'Dist',name:'dist',type:JRInput
 								,required:{
@@ -218,7 +220,7 @@ function App() {
 					,{
 						label:'Address 2'
 						,columns:[
-							{label:'Dist',name:'dist',type:JRInput,required:true}
+							{label:'Dist',name:'dist',type:JRInput,xrequired:true}
 							,{label:'Load',name:'road',type:JRInput,required:true}
 						]
 					}

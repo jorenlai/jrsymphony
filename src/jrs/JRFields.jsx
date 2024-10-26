@@ -149,8 +149,12 @@ const StyledColumnFooter=styled.div`
     }
 `
 
-const requiredValidator=({value})=>{
-    return value==null || value==''
+ function requiredValidator({value}){
+    if( value==null || value==''){
+        return {
+            msg:this.msg ?? 'This is required'
+        }
+    }
 }
 const maxValidator=({value,max})=>{
     if(typeof value==='string' && value.length>max){
@@ -177,7 +181,10 @@ export default class JRFields extends JRSubmit {
         this.#initValidateValue()
 
     }
-
+    reset(){
+        super.reset()
+        this.clearValidateValue()
+    }
     //-----------------------------------------------------------------------------------
 
 
@@ -196,26 +203,39 @@ export default class JRFields extends JRSubmit {
     //     }
     // }
     //validateFields-----------------------------------------------------------------------------------
-
+    #findValidator(acc,fullname,{required,...column}){
+        const _required=required
+        if(required==true || required?.value ){
+            acc[fullname]={
+                isValid:null
+                ,validators:[requiredValidator.bind(_required)]
+            }
+        }
+    }
     #loopColumnsForValidateValue(_fullnameList,columns,tab,result){
         const validateValue= columns.reduce((acc,{name,type,columns,...column},index)=>{
             const fullnameList=name?[..._fullnameList,name]:_fullnameList
             const fullname=fullnameList.join('.')
             po(`${tab}fn= ${fullname}`)
+            this.#findValidator(acc,fullname,column)
             if(type==null&&columns){
                 this.#loopColumnsForValidateValue(fullnameList,columns,`${tab}\t`,result)
             }
-            acc[fullname]={
-                isValid:null
-                ,msg:'當Name為{name},這需為3.'
-                ,validators:[requiredValidator]
-            }
+            // acc[fullname]={
+            //     isValid:null
+            //     ,msg:'當Name為{name},這需為3.'
+            //     ,validators:[requiredValidator]
+            // }
             return acc
         },result)
         return validateValue
     }
+
+    clearValidateValue(){
+        Object.values(this.getValidateValue()).forEach((v)=>v.isValid=null)
+    }
     #initValidateValue(){
-        po('2----------#initValidateValue----------')
+        // po('2----------#initValidateValue----------')
         const columns=this.getColumns()
         const validateValue=this.#loopColumnsForValidateValue(this.props.name?[this.props.name]:[],columns,'',{})
         po('validateValue',validateValue)
@@ -225,9 +245,10 @@ export default class JRFields extends JRSubmit {
     #exeValidateConfig(validateConfig,value,record){
         validateConfig.isValid=true
         for(var i=0;i<validateConfig.validators.length;i++){
-            if(validateConfig.validators[i]({value,record})){
+            const result=validateConfig.validators[i]({value,record})
+            if(result){
                 validateConfig.isValid=false
-                validateConfig.msg=`aa`
+                validateConfig.msg=result.msg
                 break
             }
         }
@@ -318,7 +339,7 @@ export default class JRFields extends JRSubmit {
                 checkMap(name,targetValue,_value,[...parentName])
                 this.setValue(_value)
             }
-            this.#exeValidateConfig(this.getValidateValue()[fn],targetValue,this.getValue())
+            if(this.getValidateValue()[fn]) this.#exeValidateConfig(this.getValidateValue()[fn],targetValue,this.getValue())
         }
 
         const _parentName=[...parentName]
