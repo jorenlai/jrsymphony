@@ -10,6 +10,7 @@ import { useRef, useState } from 'react';
 import { po } from './jrs/JRUtils';
 import styled from 'styled-components';
 import { Input, InputNumber, Select } from 'antd';
+import JRCrud from './jrs/JRCrud';
 
 const StyledApp = styled.div`
     html,*,*:before,*:after {
@@ -26,6 +27,15 @@ export const JRInput=({value,onChange,name})=>{
 	/>
 }
 
+
+const StyledJRCrud=styled(JRCrud)`
+	background: blue;
+`
+function AppCrud(){
+	return <StyledJRCrud>
+
+	</StyledJRCrud>
+}
 
 function App() {
 	const [columns,setColumns]=useState([{"name":"name","label":"useState"}])
@@ -59,9 +69,6 @@ function App() {
 		// ,data:[{a:1}]
 	})
 
-
-
-	// po('AAAAAAA',typeof [1,2,3])
 	return (
 		<StyledApp >
 			<button
@@ -81,10 +88,30 @@ function App() {
 			</button>
 			<button
 				onClick={()=>{
-					ref1.current.get()
+					ref1.current.get({
+						sendValue:false
+					})
 				}}
 			>
 			get
+			</button>
+			<button
+				onClick={()=>{
+					ref1.current.post({
+						sendValue:true
+						,formatValue(data){
+							po('data',data)
+							return {
+								name:'formatValue'
+							}
+						}
+						,callback(a,b,c,d){
+							po('aaaaaa,b,c,d',a,b,c,d)
+						}
+					})
+				}}
+			>
+			post
 			</button>
 			<button
 				onClick={()=>{
@@ -122,33 +149,7 @@ function App() {
 			>
 			XXX
 			</button>
-			{/* <JRTable
-				ref={ref1}
-				get={{
-					url:'api/JRFields.json'
-					// ,autoRun:true
-					,response(res){
-						// setColumns([{"name":"age","label":"setColumns"}])
-						res.data={
-							columns:[{aaa:111}]
-							,...res.data
-						}
-						return res
-					}
-				}}
-				columns={columns}
-				setColumns={setColumns}
-				xinitColumns={[{"name":"age","label":"initColumns"}]}
-				initValue={{
-					list:[
-						{data:1},{data:2}
-					]
-					,info:{
-						name:'Data'
-					}
-				}}
-				dataSourceName={'list'}
-			/> */}
+			
 			<JRFields
 				style={{
 					padding:'22px'
@@ -162,7 +163,7 @@ function App() {
 					,layout:'h'
 					,colon:': '
 				}}
-				initValue={{
+				xinitValue={{
 					name:'Init name'
 					,address:{
 
@@ -171,50 +172,84 @@ function App() {
 
 				columns={[
 					{
-						label:'Name'
+						label:'Name A'
 						,required:true
 						,max:2
-						,type:InputNumber
+						,type:Input
 						,name:'name'
 					}
-					,{label:'Age',name:'age',type:InputNumber,typeStyle:{width:'150px'}},
+					,{label:'Age',name:'age',type:InputNumber,typeStyle:{width:'150px'}}
 					,{
 						label:'Address'
 						,name:'address'
 						,required:true
-						,type:JRFields
 						,columns:[
-							// {label:'City',name:'city',xrequired:true
+							{label:'Dist',name:'dist',type:JRInput
+								,required:{
+									value:true
+									,msg:'當Name為{name},這需為3.'
+								}
+							}
+							// ,{label:'Load',name:'road',type:JRInput,required:true}
+							// ,{label:'City',name:'city'
 							// 	,columns:[
-							// 		{label:'中',name:'zh',type:JRInput,required:true}
-							// 		// ,{label:'Eng',name:'en',type:JRInput,required:false}
+							// 		{label:'中',name:'ch'}
+							// 		,{label:'Englist',name:'en'}
 							// 	]
 							// }
-							// ,
+						]
+					}
+					// ,{
+					// 	label:'Address 1'
+					// 	,name:'address'
+					// 	,required:true
+					// 	,type:JRFields
+					// 	,columns:[
+					// 		{label:'Dist',name:'dist',type:JRInput
+					// 			,required:{
+					// 				value:true
+					// 				,msg:'當Name為{name},這需為3.'
+					// 			}
+					// 		}
+					// 		,{label:'Load',name:'road',type:JRInput,required:true}
+					// 		,{label:'City',name:'city'}
+					// 	]
+					// }
+					,{
+						label:'Address 2'
+						,columns:[
 							{label:'Dist',name:'dist',type:JRInput,required:true}
 							,{label:'Load',name:'road',type:JRInput,required:true}
 						]
 					}
-					,{
-						label:'Render'
-						,render({record,props}){
-							po('props',props)
-							return `${record?.name*5}`
-						}
-						,required:true
-					}
+					// ,{
+					// 	label:'Render'
+					// 	,render({record,props}){
+					// 		return `${record?.name*5}`
+					// 	}
+					// 	,required:true
+					// }
 
 				]}
+				footer={(value)=>{
+					return <pre>{JSON.stringify(value,null,4)}</pre>
+				}}
 
 				get={{
-					autoRun:false
-					,url:'api/JRFields.json'
+					autoRun:0
+					,url:'api/:data JRFields.json'
 					,mask:'Loading'
 					,successMessage:'Success'
 					,failedMessage:'Failed'
+					,xvalue(){
+						return {
+						data:'function-value'
+					}}
 				}}
 				post={{
-					url:'post'
+					url:'api/JRFields.json'
+					,updateValue:true
+					,method:'get'
 
 				}}
 				// name={'info'}
@@ -230,4 +265,4 @@ function App() {
 	);
 }
 
-export default App;
+export default App

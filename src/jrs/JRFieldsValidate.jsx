@@ -105,23 +105,8 @@ const StyledColumnValue=styled.main`
             }
         }}
         `
-
-// String.prototype.valueString = function (value = {}) {
-//     return Array.from(new Set(this.match(/[^{}]+(?=})/g))).reduce((aco, name) => {
-//         return aco.replace(new RegExp(`\\{${name}\\}`, "g"), value[name] ?? `{${name}}`);
-//     }, String(this));
-// };
-
-const valueString=(str='',value = {})=>{
-    return Array.from(new Set(str.match(/[^{}]+(?=})/g))).reduce((aco, name) => {
-        return aco.replace(new RegExp(`\\{${name}\\}`, "g"), value[name] ?? `{${name}}`);
-    }, String(str));
-}
-
-const ColumnMessage=({value={},record})=>{
-    if(value.isValid===false){
-        return valueString(value.msg,record)
-    }    
+const ColumnMessage=({value})=>{
+    return value?.$message?.msg ?? value?.$message
 }
 const StyledColumnFooter=styled.div`
     &:empty{
@@ -136,23 +121,17 @@ const StyledColumnFooter=styled.div`
     }}
     height:25px;
     color:#ff6060;
-
-    display: flex;
-    justify-content: space-between;
-
-    .left:{
-        xflex:1;
-    }
-    .right{
-        color:gray;
-        xflex:1;
-    }
 `
 
-const requiredValidator=({value})=>{
-    return value==null || value==''
+const requiredValidator=({name,value})=>{
+    if(value==null || value==''){
+        return {
+            msg:'This field is required'
+            ,color:'red'
+        }
+    } 
 }
-const maxValidator=({value,max})=>{
+const maxValidator=({name,value,max})=>{
     if(typeof value==='string' && value.length>max){
         return `Max is ${max}`
     }else if(value>max){
@@ -170,88 +149,34 @@ export default class JRFields extends JRSubmit {
     //     super(props)
     //     po('JRFields----------------------',props)
     // }
-
-    UNSAFE_componentWillMount(){
-        console.clear()
-        po('1---------------1 UNSAFE_componentWillMount')
-        this.#initValidateValue()
-
-    }
-
     //-----------------------------------------------------------------------------------
-
-
-    // setInMap(_name,inputValue,result,mapValue,nameList){
-    //     if(nameList?.length) {
-    //         const name=nameList.shift()
-    //         if(mapValue[name]===undefined) mapValue[name]={}
-    //         return this.setInMap(_name,inputValue,result,mapValue[name],nameList)
-    //     }else if(_name){
-    //         mapValue[_name]={
-    //             $message:result
-    //         }
-    //         return  mapValue[_name]
-    //     }else{
-    //         return mapValue
-    //     }
-    // }
-    //validateFields-----------------------------------------------------------------------------------
-
-    #loopColumnsForValidateValue(_fullnameList,columns,tab,result){
-        const validateValue= columns.reduce((acc,{name,type,columns,...column},index)=>{
-            const fullnameList=name?[..._fullnameList,name]:_fullnameList
-            const fullname=fullnameList.join('.')
-            po(`${tab}fn= ${fullname}`)
-            if(type==null&&columns){
-                this.#loopColumnsForValidateValue(fullnameList,columns,`${tab}\t`,result)
+    setInMap(_name,inputValue,result,mapValue,nameList){
+        if(nameList?.length) {
+            const name=nameList.shift()
+            if(mapValue[name]===undefined) mapValue[name]={}
+            return this.setInMap(_name,inputValue,result,mapValue[name],nameList)
+        }else if(_name){
+            mapValue[_name]={
+                $message:result
             }
-            acc[fullname]={
-                isValid:null
-                ,msg:'當Name為{name},這需為3.'
-                ,validators:[requiredValidator]
-            }
-            return acc
-        },result)
-        return validateValue
-    }
-    #initValidateValue(){
-        po('2----------#initValidateValue----------')
-        const columns=this.getColumns()
-        const validateValue=this.#loopColumnsForValidateValue(this.props.name?[this.props.name]:[],columns,'',{})
-        po('validateValue',validateValue)
-        this.setState({validateValue})
-      
-    }
-    #exeValidateConfig(validateConfig,value,record){
-        validateConfig.isValid=true
-        for(var i=0;i<validateConfig.validators.length;i++){
-            if(validateConfig.validators[i]({value,record})){
-                validateConfig.isValid=false
-                validateConfig.msg=`aa`
-                break
-            }
+            return  mapValue[_name]
+        }else{
+            return mapValue
         }
     }
-    validateFields(){
-        console.clear()
-        po('3-----------------validateFields ')
-        Object.entries(this.getValidateValue())
-        .filter(([fullname,validateConfig])=>validateConfig.isValid!=true)
-        .forEach(([fullname,validateConfig])=>{
-            po('forEach',fullname,validateConfig)
-            this.#exeValidateConfig(validateConfig,this.getValue(fullname),this.getValue())
-        })
-        this.setState({validateValue:this.getValidateValue()})
-    }
-    get validateValueFrom(){
+    //-----------------------------------------------------------------------------------
+    get fromValidateValue(){
         return this.props.validateValue===undefined?'state':'props'
     }
-    getValidateValue(fullname){
-        if(fullname===undefined){
-            return this[this.validateValueFrom]?.validateValue
-        }else{
-            return this[this.validateValueFrom]?.validateValue?.[fullname]
-        }
+    getValidateValue(createIfNull){
+        
+        // if(this[this.fromValidateValue]?.validateValue!=null){
+            return this[this.fromValidateValue]?.validateValue  
+        // }else if(createIfNull ){
+        //     po('create validateValue')
+        //     this.setValidateValue({})
+        //     return this[this.fromValidateValue]?.validateValue 
+        // }
     }
     setValidateValue(validateValue){
         if(this.props.setValidateValue){
@@ -260,12 +185,95 @@ export default class JRFields extends JRSubmit {
             this.setState({validateValue})
         }
     }
-    createValidator({required}){
+    validateResult(value,validators){
+        for(var x=0;x<validators.length;x++){
+            const result=validators[x]({value,record:this.getValue()})
+            if(result){
+                return result
+            }
+        }
+    }
+    _validate(name,value,validators,parentName,validateValue){
+        let _validateValue={...validateValue}
+        const result=this.validateResult(value,validators)
+        try{
+            if(result){
+                validateValue[name]={
+                    $message:result
+                }
+            }else{
+                delete validateValue[name]
+            }
+             
+        }catch(e){
+            const v=this.setInMap(name,value,result,this.getValidateValue(),parentName)
+        }
+    }
+    get isValid(){
+        return 
+    }
+
+
+    findValidator({name,required,max,validate,...column},value,_validateValue,tab){
+        po(`${tab}name,value`,name,'=',value)
         const validators=[]
-        if(required===true && required.value){
+        if(required===true){
             validators.push(requiredValidator)
         }
+        if(max!=null){
+            validators.push(({name,value})=>{
+                return maxValidator({name,value,max})
+            })
+        }
+        if(validate){
+            validators.push(validate)
+        }
         return validators
+        // po('findValidator',column)
+    }
+
+
+    _validateFields(_columns,_value,_validateValue,parentName,tab){
+        _columns?.forEach((column,index)=>{
+            const validateValue=column?.name? _validateValue?.[column.name]:_validateValue
+            const value=column?.name? _value?.[column.name]:_value
+            const validators=this.findValidator(column,value,validateValue,tab)
+
+            const validateResult=this.validateResult(value,validators)
+            // try{
+                
+            if(validateResult){
+                po(`set ${column.name}`)
+                try{
+                        _validateValue[column.name]={
+                        }
+                        _validateValue[column.name].$message='validateResult'
+                        
+                        po(`${tab}set ${column.name} validateValue`,validateValue)
+                    }catch(e){
+
+                    }
+                    // validateValue[column.name]={
+                    //     $message:validateResult
+                    // }
+                    
+                }else{
+                    // delete validateValue[column.name]
+                }
+                 
+            // }catch(e){
+            //     const v=this.setInMap(column.name,value,validateResult,this.getValidateValue(),parentName)
+            // }
+
+            this._validateFields(column.columns,value,validateValue,parentName,`\t${tab}`)
+        })
+    }
+    validateFields(){
+        const value=this.getValue()
+        const columns=this.getColumns()
+        const validateValue=this.getValidateValue()
+        this._validateFields(columns,value,validateValue,[],'\t')
+        this.setValidateValue({...this.getValidateValue()})
     }
     //--------------------------------------------------------------------------------------
     get columnsFrom(){
@@ -279,17 +287,18 @@ export default class JRFields extends JRSubmit {
     get colon(){
         return this.props.labelProps?.colon===undefined ?':':this.props.labelProps?.colon
     }
-
+    // componentDidUpdate(){
+    //     clearTimeout(this.validateTimeout)
+    //     this.validateTimeout=setTimeout(()=>{
+    //         po('validate')
+    //     },500)
+    // }
     createColumn(value1
         ,propsValue
-        ,{
-            type,name,colSpan,rowSpan,style,typeStyle
-            ,required//validate params
-            ,...column
-        }
+        ,{type,name,colSpan,rowSpan,style,required,validate,typeStyle,...column}
         ,index
         ,parentName
-        ,fullname
+        ,validateValue
     ){
         const gap=column.gap??this.props.gap
         const value=name?propsValue?.[name]:propsValue
@@ -302,14 +311,26 @@ export default class JRFields extends JRSubmit {
 
         let content
 
+        const validators=[]
+        if(required===true){
+            validators.push(requiredValidator)
+        }
+        if(column.max!=null){
+            validators.push(({name,value})=>{
+                return maxValidator({name,value,max:column.max})
+            })
+        }
+        if(validate){
+            validators.push(validate)
+        }
 
-        const validators=this.createValidator({required,column})
         
-        const fn=fullname.join('.')
+
         const onChange=(inputValue)=>{
-
             const targetValue=inputValue?.target?.value ?? inputValue
-
+            if(validators.length){
+                this._validate(name,targetValue,validators,[...parentName], validateValue)
+            }
             try{
                 propsValue[name]=targetValue
                 this.setValue({...this.getValue()})
@@ -318,7 +339,6 @@ export default class JRFields extends JRSubmit {
                 checkMap(name,targetValue,_value,[...parentName])
                 this.setValue(_value)
             }
-            this.#exeValidateConfig(this.getValidateValue()[fn],targetValue,this.getValue())
         }
 
         const _parentName=[...parentName]
@@ -328,20 +348,12 @@ export default class JRFields extends JRSubmit {
 
         if(type){
             content=<StyledColumnValue className={'jr-column-value'}
+                $validateValue={validateValue?.[name]}
                 style={{
                     gridColumn:label==null?'span 2':null
                 }}
             >
-                {
-                    React.createElement(
-                        type
-                        ,{
-                            value:value1,onChange,record:propsValue,style:{width:'100%',...typeStyle}
-                            //,parentName:_parentName 移除了這個, 不知道會不會有問題
-                            ,...column
-                        }
-                    )
-                }
+                {React.createElement(type,{value:value1,onChange,record:propsValue,parentName:_parentName,style:{width:'100%',...typeStyle},...column})}
             </StyledColumnValue>
         }else if(column.columns){
             content=<StyledGrid cols={column.cols} className={'jr-grid'} $gap={gap}>
@@ -351,7 +363,7 @@ export default class JRFields extends JRSubmit {
                         ,value
                         ,column.columns
                         ,_parentName
-                        ,fullname
+                        ,name?validateValue?.[name]:validateValue
                     )
                 }
             </StyledGrid>
@@ -390,34 +402,28 @@ export default class JRFields extends JRSubmit {
             }
             {content}
             {
-                <StyledColumnFooter>
-                    <div className="left">
-                        <ColumnMessage value={this.getValidateValue(_parentName.join('.'))} record={this.getValue()}/>
-                    </div>
-                    <div className="right">
-                        {_parentName.join('.')}
-                    </div>
+                validateValue?.[name]!==undefined && <StyledColumnFooter $layout={layout}>
+                    {/* {validateValue?.[name]?.$message} */}
+                    <ColumnMessage value={validateValue?.[name]}/>
                 </StyledColumnFooter>
-                // validateValue?.[name]!==undefined && <StyledColumnFooter $layout={layout}>
-                //     {/* {validateValue?.[name]?.$message} */}
-                //     <ColumnMessage value={validateValue?.[name]}/>
-                // </StyledColumnFooter>
             }
             
         </StyledColumn>
     }
 
-    createColumns(value1,value2,columns,parentName,fullname){
+    createColumns(value1,value2,columns,parentName, validateValue){
         return columns?.map((column,index)=>{
             return this.createColumn(
                 column.name?value1?.[column.name]:value1?.[column.name]
-                ,value2,column,index,parentName
-                ,column.name?[...fullname,column.name]:fullname
+                ,value2,column,index,parentName, validateValue
             )
         })
     }
 
     render(){
+        if(this.getValidateValue()==null){
+            this.setValidateValue({})
+        }
         return <StyleJRFields style={this.props.style}>
             <StyledGridFrame>
                 <StyledGrid cols={this.props.cols} style={this.props.gridStyle} className={'jr-grid'} $gap={this.props.gap}>
@@ -427,22 +433,19 @@ export default class JRFields extends JRSubmit {
                             ,this.props.name?this.getValue()?.[this.props.name]:this.getValue()
                             ,this.props.columns
                             ,this.props.name?[this.props.name]:[]
-                            ,this.props.name?[this.props.name]:[]
+                            ,this.props.name?this.getValidateValue()?.[this.props.name]:this.getValidateValue()
                         )
                     }
                 </StyledGrid>
             </StyledGridFrame>
 
-            {this.props.footer!==undefined 
-                && <StyledFooter>
-                    {this.state.test1}
+            {this.props.footer!==undefined && <StyledFooter>
                 {
                     typeof this.props.footer === 'function'
                         ? this.props.footer.bind(this)({value:this.getValue()})
                         : this.props.footer
                 }
-                </StyledFooter>
-            }
+            </StyledFooter>}
         </StyleJRFields>
     }
 }

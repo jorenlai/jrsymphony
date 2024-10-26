@@ -37,7 +37,6 @@ export default class JRSubmit extends React.Component {
         const config = Object.assign(
             {
                 method:'get'
-                ,value:this.getSubmitValue()
                 ,updateValue:true
                 // ,updateRawValue:true
             }
@@ -51,7 +50,6 @@ export default class JRSubmit extends React.Component {
         config = Object.assign(
             {
                 method:'post'
-                ,value:this.getSubmitValue()
                 ,updateValue:false
                 // ,updateRawValue:true
             }
@@ -65,7 +63,6 @@ export default class JRSubmit extends React.Component {
         config = Object.assign(
             {
                 method:'put'
-                ,value:this.getSubmitValue()
                 ,updateValue:false
             }
             ,this.props['put']
@@ -90,57 +87,99 @@ export default class JRSubmit extends React.Component {
     setRawValue(rawValue){
         this.setState({rawValue:JSON.parse(JSON.stringify(rawValue??''))})
     }
-    reset(){
+    reset(_value){
+        const value=_value ===undefined 
+            ? this.rawValue
+            : _value
+        if(_value !==undefined){
+            this.setRawValue(_value)
+        }
         if(this.props.onChange){
-            this.props.onChange(this.rawValue)
+            this.props.onChange(value)
         }else{
-            this.setState({value:this.rawValue?JSON.parse(JSON.stringify(this.rawValue)):null})
+            this.setState({value:value?JSON.parse(JSON.stringify(value)):null})
         }
         this.isDirty=false
     }
-    setValue(value){
-        this.isDirty=true
+    setValue(value,isDirty=true){
+        this.isDirty=isDirty
         if(this.props.onChange){
             this.props.onChange(value)
         }else{
             this.setState({value})
         }
     }
-    getValue(){
-        return this[this.from]?.value 
+    #getValueByName(fullnamList,record){
+        const name=fullnamList.shift()
+        if(fullnamList.length==0){
+            return record?.[name]
+        }else if(record?.[name]!=null){
+            return this.#getValueByName(fullnamList,record[name])
+        }
+    }
+    getValue(fullname){
+        if(fullname){
+            const fullnamList=fullname.split('.')
+            return this.#getValueByName(fullnamList,this[this.from]?.value)
+        }else{
+            return this[this.from]?.value 
+        }
     }
 
     getSubmitValue(){
         return this.getValue()
     }
 
-    getAxiosParams({url,method,value,...params}){
+    getAxiosParams({url,method,value,extraValue,sendValue,...params}){
+        const _extraValue=typeof extraValue === 'function'
+            ?extraValue.bind(this)()
+            :extraValue
         const payload=typeof value === 'function'
             ?value.bind(this)({
-                ...this.getValue()
-                ,...extraValue
+                ...this.getSubmitValue()
+                ,..._extraValue
             })
-            :{
-                ...value
-                ,...extraValue
-            }
+            :value==null
+                ?{
+                    ...this.getSubmitValue()
+                    ,...extraValue
+                }
+                :{
+                    ...value
+                    ,...extraValue
+                }
 
         const headers={
            authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }    
-        const params1=method=='get'
-            ?{
-                params:payload
-                ,headers
+        let params1={}
+        const params2={}
+        if(method=='get'){
+            if(sendValue==null || sendValue)params1.params=payload
+            params1.headers=headers
+        }else{
+            if(sendValue==null || sendValue){
+                params1=payload
+            }else{
+                params1=null
             }
-            :payload
+            params2.headers=headers
+        }
+        // const params1=method=='get'
+        //     ?{
+        //         params:payload
+        //         ,headers
+        //     }
+        //     :payload
 
-        const params2=method=='get'
-            ?{}
-            :{headers}
+        // const params2=method=='get'
+        //     ?{}
+        //     :{headers}
 
+            po('payload',payload)
+            po('colonValueString',colonValueString(url,payload))
         return {
-            url//:colonValueString(url,payload)
+            url:colonValueString(url,payload)
             ,method
             ,params1
             ,params2
@@ -187,6 +226,7 @@ export default class JRSubmit extends React.Component {
         if (isSuccess) {
             if(config.updateValue){
                 const rawValue=config.formatValue?.bind(this)(response.data)??response.data
+                response.data=rawValue
                 this.setRawValue(rawValue)
                 this.setValue(rawValue)
                 this.isDirty=false
