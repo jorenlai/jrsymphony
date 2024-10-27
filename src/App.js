@@ -176,8 +176,10 @@ function App() {
 						}
 				}}
 				// name={'data'}
+				// value={value}
+				// onChange={setValue}
 				columns={[
-					{label:'Dist',name:'dist',type:JRInput,xrequired:true},
+					{label:'Dist',name:'dist',type:JRInput,required:true},
 					{
 						label:'Name A'
 						,required:{

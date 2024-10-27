@@ -181,10 +181,10 @@ export default class JRFields extends JRSubmit {
         this.#initValidateValue()
 
     }
-    // reset(){
-    //     super.reset()
-    //     this.clearValidateValue()
-    // }
+    reset(){
+        this.clearValidateValue()
+        super.reset()
+    }
     //-----------------------------------------------------------------------------------
 
 
@@ -295,19 +295,18 @@ export default class JRFields extends JRSubmit {
 
     createColumn(
         parentValue
-        // ,value1
         ,{
             type,name,colSpan,rowSpan,style,typeStyle
-            ,required//validate params
+            ,required
             ,...column
         }
         ,index
         ,parentName
         ,fullname
     ){
-        const useValue=name?parentValue?.[name]:parentValue
+        const value=name?parentValue?.[name]:parentValue
+
         const gap=column.gap??this.props.gap
-        // const valueAAAAAAAAAAAAA=name?propsValue?.[name]:propsValue
         const label=column.label
         const _style={}
         if (colSpan) _style.gridColumn = `span ${colSpan}`
@@ -317,14 +316,11 @@ export default class JRFields extends JRSubmit {
 
         let content
 
-
         const validators=this.createValidator({required,column})
         
         const fn=fullname.join('.')
         const onChange=(inputValue)=>{
-
             const targetValue=inputValue?.target?.value ?? inputValue
-
             try{
                 parentValue[name]=targetValue
                 this.setValue({...this.getValue()})
@@ -351,7 +347,7 @@ export default class JRFields extends JRSubmit {
                     React.createElement(
                         type
                         ,{
-                            value:useValue,onChange,record:parentValue,style:{width:'100%',...typeStyle}
+                            value:value,onChange,record:parentValue,style:{width:'100%',...typeStyle}
                             //,parentName:_parentName 移除了這個, 不知道會不會有問題
                             ,...column
                         }
@@ -362,7 +358,7 @@ export default class JRFields extends JRSubmit {
             content=<StyledGrid cols={column.cols} className={'jr-grid'} $gap={gap}>
                 {
                     this.createColumns(
-                        useValue
+                        value
                         ,column.columns
                         ,_parentName
                         ,fullname
@@ -378,8 +374,8 @@ export default class JRFields extends JRSubmit {
             >
                 {
                     column.render
-                    ?column.render.bind(this)({onChange,value: useValue,record:this.getValue()})
-                    :typeof useValue ==='object'?JSON.stringify(useValue):useValue
+                    ?column.render.bind(this)({onChange,value: value,record:this.getValue()})
+                    :typeof value ==='object'?JSON.stringify(value):value
                 }
             </StyledColumnValue>
         }
@@ -406,7 +402,7 @@ export default class JRFields extends JRSubmit {
             {
                 <StyledColumnFooter>
                     <div className="left">
-                        {JSON.stringify(parentValue)}
+                        {this.isDirty+''}
                         <ColumnMessage value={this.getValidateValue(_parentName.join('.'))} record={this.getValue()}/>
                     </div>
                     <div className="right">

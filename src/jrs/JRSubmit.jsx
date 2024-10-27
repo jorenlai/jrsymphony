@@ -101,13 +101,26 @@ export default class JRSubmit extends React.Component {
         }
         this.isDirty=false
     }
-    setValue(value,isDirty=true){
-        this.isDirty=isDirty
+    setValue(value,reset=false){
         if(this.props.onChange){
             this.props.onChange(value)
         }else{
             this.setState({value})
         }
+
+        if(reset){
+            this.setRawValue(value)
+        }
+        this.isDirty=!reset
+    }
+    setRes(isSuccess,response,config){
+        if (isSuccess && config.updateValue) {
+            const value=config.formatValue?.bind(this)(response.data)??response.data
+            response.data=value
+            this.setValue(value,true)
+        } else if(config.updateValue){
+            this.setValue(null,true)
+        }  
     }
     #getValueByName(fullnamList,record){
         const name=fullnamList.shift()
@@ -165,19 +178,6 @@ export default class JRSubmit extends React.Component {
             }
             params2.headers=headers
         }
-        // const params1=method=='get'
-        //     ?{
-        //         params:payload
-        //         ,headers
-        //     }
-        //     :payload
-
-        // const params2=method=='get'
-        //     ?{}
-        //     :{headers}
-
-            po('payload',payload)
-            po('colonValueString',colonValueString(url,payload))
         return {
             url:colonValueString(url,payload)
             ,method
@@ -222,22 +222,7 @@ export default class JRSubmit extends React.Component {
             // })
     }
 
-    setRes(isSuccess,response,config){
-        if (isSuccess) {
-            if(config.updateValue){
-                const rawValue=config.formatValue?.bind(this)(response.data)??response.data
-                response.data=rawValue
-                this.setRawValue(rawValue)
-                this.setValue(rawValue)
-                this.isDirty=false
-            }
-        } else {
-            if(config.updateValue){
-                this.setValue(null)
-                this.isDirty=false
-            }
-        }  
-    }
+
 
     handleResponse=(response,payload,config)=>{
         if(Array.isArray(response)){
