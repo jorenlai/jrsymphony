@@ -181,10 +181,10 @@ export default class JRFields extends JRSubmit {
         this.#initValidateValue()
 
     }
-    reset(){
-        super.reset()
-        this.clearValidateValue()
-    }
+    // reset(){
+    //     super.reset()
+    //     this.clearValidateValue()
+    // }
     //-----------------------------------------------------------------------------------
 
 
@@ -221,11 +221,6 @@ export default class JRFields extends JRSubmit {
             if(type==null&&columns){
                 this.#loopColumnsForValidateValue(fullnameList,columns,`${tab}\t`,result)
             }
-            // acc[fullname]={
-            //     isValid:null
-            //     ,msg:'當Name為{name},這需為3.'
-            //     ,validators:[requiredValidator]
-            // }
             return acc
         },result)
         return validateValue
@@ -235,12 +230,9 @@ export default class JRFields extends JRSubmit {
         Object.values(this.getValidateValue()).forEach((v)=>v.isValid=null)
     }
     #initValidateValue(){
-        // po('2----------#initValidateValue----------')
         const columns=this.getColumns()
         const validateValue=this.#loopColumnsForValidateValue(this.props.name?[this.props.name]:[],columns,'',{})
-        po('validateValue',validateValue)
         this.setState({validateValue})
-      
     }
     #exeValidateConfig(validateConfig,value,record){
         validateConfig.isValid=true
@@ -301,8 +293,9 @@ export default class JRFields extends JRSubmit {
         return this.props.labelProps?.colon===undefined ?':':this.props.labelProps?.colon
     }
 
-    createColumn(value1
-        ,propsValue
+    createColumn(
+        parentValue
+        // ,value1
         ,{
             type,name,colSpan,rowSpan,style,typeStyle
             ,required//validate params
@@ -312,8 +305,9 @@ export default class JRFields extends JRSubmit {
         ,parentName
         ,fullname
     ){
+        const useValue=name?parentValue?.[name]:parentValue
         const gap=column.gap??this.props.gap
-        const value=name?propsValue?.[name]:propsValue
+        // const valueAAAAAAAAAAAAA=name?propsValue?.[name]:propsValue
         const label=column.label
         const _style={}
         if (colSpan) _style.gridColumn = `span ${colSpan}`
@@ -332,7 +326,7 @@ export default class JRFields extends JRSubmit {
             const targetValue=inputValue?.target?.value ?? inputValue
 
             try{
-                propsValue[name]=targetValue
+                parentValue[name]=targetValue
                 this.setValue({...this.getValue()})
             }catch(e){
                 const _value=this.getValue()??{}
@@ -357,7 +351,7 @@ export default class JRFields extends JRSubmit {
                     React.createElement(
                         type
                         ,{
-                            value:value1,onChange,record:propsValue,style:{width:'100%',...typeStyle}
+                            value:useValue,onChange,record:parentValue,style:{width:'100%',...typeStyle}
                             //,parentName:_parentName 移除了這個, 不知道會不會有問題
                             ,...column
                         }
@@ -368,8 +362,7 @@ export default class JRFields extends JRSubmit {
             content=<StyledGrid cols={column.cols} className={'jr-grid'} $gap={gap}>
                 {
                     this.createColumns(
-                        value1
-                        ,value
+                        useValue
                         ,column.columns
                         ,_parentName
                         ,fullname
@@ -385,8 +378,8 @@ export default class JRFields extends JRSubmit {
             >
                 {
                     column.render
-                    ?column.render.bind(this)({onChange,value,record:this.getValue()})
-                    :typeof value ==='object'?JSON.stringify(value):value
+                    ?column.render.bind(this)({onChange,value: useValue,record:this.getValue()})
+                    :typeof useValue ==='object'?JSON.stringify(useValue):useValue
                 }
             </StyledColumnValue>
         }
@@ -413,6 +406,7 @@ export default class JRFields extends JRSubmit {
             {
                 <StyledColumnFooter>
                     <div className="left">
+                        {JSON.stringify(parentValue)}
                         <ColumnMessage value={this.getValidateValue(_parentName.join('.'))} record={this.getValue()}/>
                     </div>
                     <div className="right">
@@ -428,11 +422,11 @@ export default class JRFields extends JRSubmit {
         </StyledColumn>
     }
 
-    createColumns(value1,value2,columns,parentName,fullname){
+    createColumns(parentValue,columns,parentName,fullname){
         return columns?.map((column,index)=>{
             return this.createColumn(
-                column.name?value1?.[column.name]:value1?.[column.name]
-                ,value2,column,index,parentName
+                parentValue
+                ,column,index,parentName
                 ,column.name?[...fullname,column.name]:fullname
             )
         })
@@ -445,7 +439,6 @@ export default class JRFields extends JRSubmit {
                     {
                         this.createColumns(
                             this.props.name?this.getValue()?.[this.props.name]:this.getValue()
-                            ,this.props.name?this.getValue()?.[this.props.name]:this.getValue()
                             ,this.props.columns
                             ,this.props.name?[this.props.name]:[]
                             ,this.props.name?[this.props.name]:[]

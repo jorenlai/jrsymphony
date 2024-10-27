@@ -163,14 +163,21 @@ function App() {
 					,layout:'h'
 					,colon:': '
 				}}
-				xinitValue={{
-					name:'Init name'
-					,address:{
+				initValue={{
+					
+						name:'Init name'
+						,address:{
+							
+						}
+						,dist:'aa'
 
-					}
+						,data:{
+							dist:'bb'
+						}
 				}}
-
+				// name={'data'}
 				columns={[
+					{label:'Dist',name:'dist',type:JRInput,xrequired:true},
 					{
 						label:'Name A'
 						,required:{
@@ -185,6 +192,7 @@ function App() {
 					,{
 						label:'Address'
 						,name:'address'
+						// ,type:JRFields
 						,columns:[
 							{label:'Dist',name:'dist',type:JRInput
 								,required:{
@@ -233,7 +241,7 @@ function App() {
 					// }
 
 				]}
-				footer={(value)=>{
+				footer={({value})=>{
 					return <pre>{JSON.stringify(value,null,4)}</pre>
 				}}
 
