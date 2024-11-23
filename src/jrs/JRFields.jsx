@@ -114,12 +114,13 @@ const StyledColumnValue=styled.main`
 
 const valueString=(str='',value = {})=>{
     return Array.from(new Set(str.match(/[^{}]+(?=})/g))).reduce((aco, name) => {
-        return aco.replace(new RegExp(`\\{${name}\\}`, "g"), value[name] ?? `{${name}}`);
+        return aco.replace(new RegExp(`\\{${name}\\}`, "g"), value?.[name] ?? `{${name}}`);
     }, String(str));
 }
 
 const ColumnMessage=({value={},record})=>{
     if(value.isValid===false){
+        po('value.msg,record',value.msg,record)
         return valueString(value.msg,record)
     }    
 }
@@ -185,24 +186,13 @@ export default class JRFields extends JRSubmit {
         this.clearValidateValue()
         super.reset()
     }
+    setValue(value,reset){
+        super.setValue(value,reset)
+        if(reset){
+            this.clearValidateValue()
+        }
+    }
     //-----------------------------------------------------------------------------------
-
-
-    // setInMap(_name,inputValue,result,mapValue,nameList){
-    //     if(nameList?.length) {
-    //         const name=nameList.shift()
-    //         if(mapValue[name]===undefined) mapValue[name]={}
-    //         return this.setInMap(_name,inputValue,result,mapValue[name],nameList)
-    //     }else if(_name){
-    //         mapValue[_name]={
-    //             $message:result
-    //         }
-    //         return  mapValue[_name]
-    //     }else{
-    //         return mapValue
-    //     }
-    // }
-    //validateFields-----------------------------------------------------------------------------------
     #findValidator(acc,fullname,{required,...column}){
         const _required=required
         if(required==true || required?.value ){
@@ -212,14 +202,15 @@ export default class JRFields extends JRSubmit {
             }
         }
     }
-    #loopColumnsForValidateValue(_fullnameList,columns,tab,result){
-        const validateValue= columns.reduce((acc,{name,type,columns,...column},index)=>{
+    #loopColumnsForValidateValue(no,_fullnameList,columns,tab,result){
+        const validateValue= columns?.reduce((acc,{name,type,columns,...column},index)=>{
+            no+=1
             const fullnameList=name?[..._fullnameList,name]:_fullnameList
             const fullname=fullnameList.join('.')
-            po(`${tab}fn= ${fullname}`)
+            // po(`${no} - ${tab}fn= ${fullname}`)
             this.#findValidator(acc,fullname,column)
             if(type==null&&columns){
-                this.#loopColumnsForValidateValue(fullnameList,columns,`${tab}\t`,result)
+                this.#loopColumnsForValidateValue(no,fullnameList,columns,`${tab}\t`,result)
             }
             return acc
         },result)
@@ -231,7 +222,7 @@ export default class JRFields extends JRSubmit {
     }
     #initValidateValue(){
         const columns=this.getColumns()
-        const validateValue=this.#loopColumnsForValidateValue(this.props.name?[this.props.name]:[],columns,'',{})
+        const validateValue=this.#loopColumnsForValidateValue(0,this.props.dataSourceName?[this.props.dataSourceName]:[],columns,'',{})
         this.setState({validateValue})
     }
     #exeValidateConfig(validateConfig,value,record){
@@ -247,7 +238,6 @@ export default class JRFields extends JRSubmit {
     }
     validateFields(){
         console.clear()
-        po('3-----------------validateFields ')
         Object.entries(this.getValidateValue())
         .filter(([fullname,validateConfig])=>validateConfig.isValid!=true)
         .forEach(([fullname,validateConfig])=>{
@@ -399,10 +389,9 @@ export default class JRFields extends JRSubmit {
                 </StyledColumnLabel>
             }
             {content}
-            {
+            {   this.props.debugMode && 
                 <StyledColumnFooter>
                     <div className="left">
-                        {this.isDirty+''}
                         <ColumnMessage value={this.getValidateValue(_parentName.join('.'))} record={this.getValue()}/>
                     </div>
                     <div className="right">
@@ -434,10 +423,10 @@ export default class JRFields extends JRSubmit {
                 <StyledGrid cols={this.props.cols} style={this.props.gridStyle} className={'jr-grid'} $gap={this.props.gap}>
                     {
                         this.createColumns(
-                            this.props.name?this.getValue()?.[this.props.name]:this.getValue()
+                            this.props.dataSourceName?this.getValue()?.[this.props.dataSourceName]:this.getValue()
                             ,this.props.columns
-                            ,this.props.name?[this.props.name]:[]
-                            ,this.props.name?[this.props.name]:[]
+                            ,this.props.dataSourceName?[this.props.dataSourceName]:[]
+                            ,this.props.dataSourceName?[this.props.dataSourceName]:[]
                         )
                     }
                 </StyledGrid>

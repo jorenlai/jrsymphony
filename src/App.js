@@ -5,12 +5,14 @@ import Test1 from './jrs/test1';
 import JRSubmit from './jrs/JRSubmit';
 import JRFields from './jrs/JRFields';
 import JRSelect from './jrs/JRSelect';
-import JRTable from './jrs/JRTable';
+// import JRTable from './jrs/JRTableOld';
 import { useRef, useState } from 'react';
 import { po } from './jrs/JRUtils';
 import styled from 'styled-components';
 import { Input, InputNumber, Select } from 'antd';
 import JRCrud from './jrs/JRCrud';
+import JRTable2 from './jrs/JRTable2';
+import JRTable from './jrs/JRTable';
 
 const StyledApp = styled.div`
     html,*,*:before,*:after {
@@ -37,7 +39,7 @@ function AppCrud(){
 	</StyledJRCrud>
 }
 
-function App() {
+function AppForm() {
 	const [columns,setColumns]=useState([{"name":"name","label":"useState"}])
 	const mapp=Object.assign({a:1},{b:2})
 	const ref1=useRef()
@@ -151,6 +153,7 @@ function App() {
 			</button>
 			
 			<JRFields
+				debugMode={true}
 				style={{
 					padding:'22px'
 					,border:'1px solid gray'
@@ -163,7 +166,7 @@ function App() {
 					,layout:'h'
 					,colon:': '
 				}}
-				initValue={{
+				XXXinitValue={{
 					
 						name:'Init name'
 						,address:{
@@ -175,7 +178,7 @@ function App() {
 							dist:'bb'
 						}
 				}}
-				// name={'data'}
+				// dataSourceName={'data'}
 				// value={value}
 				// onChange={setValue}
 				columns={[
@@ -202,7 +205,7 @@ function App() {
 									,msg:'當Name為{name},這需為3.'
 								}
 							}
-							// ,{label:'Load',name:'road',type:JRInput,required:true}
+							,{label:'Load',name:'road',type:JRInput,xrequired:true}
 							// ,{label:'City',name:'city'
 							// 	,columns:[
 							// 		{label:'中',name:'ch'}
@@ -277,4 +280,37 @@ function App() {
 	);
 }
 
-export default App
+function AppTable() {
+	return <JRTable
+		initValue={{
+			data:[
+				{name:'Joren'}
+			]
+		}}
+		columns={[
+			{name:'label',label:'Label'}
+			,{name:'name',label:'Name'
+				,columns:[
+					{name:'firstName',label:'First Name'}
+					,{name:'lastName',label:'Last Name'}
+				]
+			}
+			,{
+				name:'address',label:'Address'
+				,columns:[
+					{name:'a',label:'Address'
+						,columns:[
+							{name:'no',label:'No'
+								
+							}
+							,{name:'street',label:'Street'}
+						]
+					}
+					,{name:'city',label:'City'}
+					,{name:'country',label:'Country'}
+				]
+			}
+		]}
+	/>
+}
+export default AppTable

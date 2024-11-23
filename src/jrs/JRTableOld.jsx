@@ -45,7 +45,7 @@ const JRTableData=({dataSourceName,value,test})=>{
 const StyledJRTable = styled.div`
     border:2px solid red;
 `
-export default class JRTable extends JRSubmit {
+export default class JRTableOld extends JRSubmit {
     constructor(props) {
         super(props)
         if(this.props.initColumns!==undefined){
@@ -97,7 +97,7 @@ export default class JRTable extends JRSubmit {
     render(){
         po('--------------render',this.isSame)
         return <StyledJRTable>
-            (isDirty:{this.state.isDirty})
+            {/* (isDirty:{this.state.isDirty}) */}
             <div>
                 {this._columns}
             <JRColumns columns={this.getColumns()}/>
