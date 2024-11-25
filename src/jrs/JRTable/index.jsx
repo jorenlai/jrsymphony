@@ -13,6 +13,17 @@ const getMapObject=(map,names)=>{
         return map
     }
 }
+const setMapObject=(map,names,value)=>{
+    const name=names.shift(names)
+    if(typeof map[name] != 'object'){
+        map[name]={}
+    }
+    if(names?.length){
+        setMapObject(map[name],names)
+    }else{
+        map[name]=value
+    }
+}
 
 const StyledJRTable=styled.div`
     table{
@@ -94,7 +105,14 @@ export default class JRTable extends JRSubmit {
 
             if(_names?.length>1){
                 column.setValue=function(record,value){
-                    getMapObject(record,[..._names])[column.name]=value
+                    try{
+                        getMapObject(record,[..._names])[column.name]=value
+                    }catch{
+                        po('catch------------------------------------------------------')
+                        po('record',record)
+                        po('_names',_names)
+                        setMapObject(record,[..._names],value)
+                    }
                 }
                 column.getValue=function(record){
                     return _names.reduce((acc,name)=>{

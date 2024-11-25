@@ -19,7 +19,7 @@ const Td=({column:_column,record,tdIndex,table})=>{
             ,...column
         })
     }else{
-        content=JSON.stringify(column.getValue(record))
+        content=column.getValue(record)
     }
     return <td key={tdIndex}>
         {content}
@@ -27,7 +27,7 @@ const Td=({column:_column,record,tdIndex,table})=>{
 }
 const Tds=({leafColumns,record,table})=>{
     return leafColumns?.map((column,tdIndex)=>{
-        return <Td column={column} record={record} tdIndex={tdIndex} table={table}/>
+        return <Td column={column} record={record} tdIndex={tdIndex} table={table} key={tdIndex}/>
     })
 }
 
@@ -49,8 +49,6 @@ export const TBodies=({leafColumns,dataSource:_dataSource,isGroup=false,table})=
         :[_dataSource]
 
     return dataSource?.map((dataSet,bodyIndex,c)=>{
-        // po('a,b,c',a,b,c)
-        po('dataSet',dataSet,bodyIndex,c)
-        return <TBody dataSet={dataSet} key={bodyIndex} leafColumns={leafColumns} table={table}/>
+        return <TBody dataSet={dataSet} key={`tbody${bodyIndex}`} leafColumns={leafColumns} table={table}/>
     })
 }

@@ -311,17 +311,17 @@ function AppTable() {
 				// ,{name:'age',label:'Age'}
 				// ,
 				,{
-					xname:'address',label:'Address'
+					name:'address',label:'Address'
 					,columns:[
 						{name:'address',label:'Address'
-							// ,columns:[
-							// 	{name:'no',label:'No'
-									
-							// 	}
-							// 	,{name:'street',label:'Street'}
-							// ]
+							,columns:[
+								{name:'no',label:'No'
+									,type:JRInput
+								}
+								,{name:'street',label:'Street',type:JRInput}
+							]
 						}
-						,{name:'city',label:'City'}
+						,{name:'city',label:'City',type:JRInput}
 						,{name:'country',label:'Country'
 							,type:JRInput
 						}
