@@ -12,13 +12,13 @@ const Ths=({deep,rowColumn,rowIndex})=>{
     
 }
 
-export const Header=({columns})=>{
-    const headers=columns?.map((rowColumn,rowIndex)=>{
+export const THead=({columns})=>{
+    const trs=columns?.map((rowColumn,rowIndex)=>{
         return <tr key={rowIndex}>
             <Ths deep={columns.length-1} rowColumn={rowColumn} rowIndex={rowIndex}/>
         </tr>
     })
     return <thead>
-        {headers}
+        {trs}
     </thead>
 }

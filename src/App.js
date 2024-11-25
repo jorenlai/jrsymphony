@@ -281,36 +281,109 @@ function AppForm() {
 }
 
 function AppTable() {
-	return <JRTable
-		initValue={{
-			data:[
-				{name:'Joren'}
-			]
-		}}
-		columns={[
-			{name:'label',label:'Label'}
-			,{name:'name',label:'Name'
-				,columns:[
-					{name:'firstName',label:'First Name'}
-					,{name:'lastName',label:'Last Name'}
+	const ref1=useRef()
+	return <div>
+		<button
+			onClick={()=>{
+				ref1.current.reset()
+			}}
+		>Reset</button>
+		<JRTable
+			ref={ref1}
+			get={{
+				url:'api/mapList.json'
+				,autoRun:true
+			}}
+			xinitValue={{
+				data:[
+					{name:'Joren'}
 				]
-			}
-			,{
-				name:'address',label:'Address'
-				,columns:[
-					{name:'a',label:'Address'
-						,columns:[
-							{name:'no',label:'No'
-								
-							}
-							,{name:'street',label:'Street'}
-						]
-					}
-					,{name:'city',label:'City'}
-					,{name:'country',label:'Country'}
-				]
-			}
-		]}
-	/>
+			}}
+			dataSourceName={'items'}
+			columns={[
+				{name:'name',label:'Name',type:JRInput
+				// 	,columns:[
+				// 		{name:'firstName',label:'First Name'}
+				// 		,{name:'lastName',label:'Last Name'}
+				// 	]	
+				}
+				// ,{name:'gender',label:'Gender'}
+				// ,{name:'age',label:'Age'}
+				// ,
+				,{
+					xname:'address',label:'Address'
+					,columns:[
+						{name:'address',label:'Address'
+							// ,columns:[
+							// 	{name:'no',label:'No'
+									
+							// 	}
+							// 	,{name:'street',label:'Street'}
+							// ]
+						}
+						,{name:'city',label:'City'}
+						,{name:'country',label:'Country'
+							,type:JRInput
+						}
+					]
+				}
+				// ,{name:'1',label:'1'
+				// 	,columns:[
+				// 		{name:'11',label:'1 1'}
+				// 		,{name:'12',label:'1 2'}
+				// 	]
+				// }
+				// ,{name:'2',label:'2'
+				// 	,columns:[
+				// 		{name:'21',label:'2 1'}
+				// 		,{name:'22',label:'2 2'}
+				// 	]
+				// }
+				// ,{name:'3',label:'3'
+				// 	,columns:[
+				// 		{name:'31',label:'3 1'}
+				// 		,{name:'32',label:'3 2'
+				// 			,columns:[
+				// 				{name:'321',label:'3 2 1'}
+				// 				,{name:'322',label:'3 2 2'
+				// 					,columns:[
+				// 						{name:'3221',label:'3 2 2 1'}
+				// 						,{name:'3222',label:'3 2 2 2'
+				// 							,columns:[
+				// 								{name:'32221',label:'3 2 2 2 1'}
+				// 								,{name:'32222',label:'3 2 2 2 2'}
+				// 							]
+				// 						}
+				// 					]
+				// 				}
+				// 			]
+				// 		}
+				// 		,{name:'33',label:'3 3'
+				// 			,columns:[
+				// 				{name:'331',label:'3 3 1'}
+				// 				,{name:'332',label:'3 3 2'
+				// 					// ,columns:[
+				// 					// 	{name:'3221',label:'3 2 2 1'}
+				// 					// 	,{name:'3222',label:'3 2 2 2'}
+				// 					// 	// ,{name:'3223',label:'3 2 2 3'}
+				// 					// ]
+				// 				}
+				// 			]
+				// 		}
+				// 		,{name:'34',label:'3 4'}
+				// 	]
+				// }
+
+				// ,{name:'label',label:'Label'}
+				// ,{name:'name',label:'Name'
+				// 	,columns:[
+				// 		{name:'firstName',label:'First Name'}
+				// 		,{name:'lastName',label:'Last Name'}
+				// 	]
+				// }
+
+			]}
+		/>
+	</div>
 }
 export default AppTable
