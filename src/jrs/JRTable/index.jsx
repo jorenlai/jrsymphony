@@ -26,18 +26,55 @@ const setMapObject=(map,names,value)=>{
 }
 
 const StyledJRTable=styled.div`
+    color:#666666;
+    display:flex;
+    flex-direction: column;
+    border:1px solid red;
+
+    header,footer{
+        border:1px solid yellow;
+    }
+    >div{
+        border:1px solid gray;
+        flex:1;
+    }
+    >main{
+        overflow: overlay;
+        Xborder:5px solid white;
+    }
     table{
+        border-spacing: 0;
+        XXwidth:100%;
+        width: max-content;
         border:1px solid gray;
 
         thead{
+            position: sticky;
+            top: 0;
+
+            XXborder-right:1px solid red;
             th{
-                border:1px solid blue;
+                color: #666666;
+                background: linear-gradient(180deg, rgb(46 46 45) 0%, rgb(45 44 44) 25%, rgb(85 82 82) 100%);
+                box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #b28d60bf inset;
+                
             }
+        }
+
+        tfoot{
+            position: sticky;
+            bottom: 0;
+
+            background: linear-gradient(180deg, rgb(46 46 45) 0%, rgb(45 44 44) 25%, rgb(85 82 82) 100%);
+            box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #b28d60bf inset;
+            color: #666666;
+            
         }
 
         tbody{
             td{
-                border:1px solid green;
+                border:1px solid #222222;
+                color:#666666;
             }
         }
     }
@@ -70,14 +107,13 @@ export default class JRTable extends JRSubmit {
         // this.setColumns(this.props.columns)
         this.setColumns(this.props.columns)
     }
- 
+
     //------------------------------------------------------------------------------------
     setColumns(_columns){
         // po('setColumns',_columns)
         const columns=[]
         const leafColumns=[]
         const initColumns=this.initColumns(_columns,0,columns,leafColumns,[])
-        po('result',columns)
         this.setState({columns,leafColumns})
     }
 
@@ -108,9 +144,6 @@ export default class JRTable extends JRSubmit {
                     try{
                         getMapObject(record,[..._names])[column.name]=value
                     }catch{
-                        po('catch------------------------------------------------------')
-                        po('record',record)
-                        po('_names',_names)
                         setMapObject(record,[..._names],value)
                     }
                 }
@@ -160,17 +193,62 @@ export default class JRTable extends JRSubmit {
         return this.props.dataSourceName
             ? this.getValue()?.[this.props.dataSourceName]
             : this.getValue()
-
     }
+    
+    add(record,index=this.getDataSource()?.length??0,group){
+        //group 還沒有考慮到
+
+        if(this.getDataSource()){
+            po('------有資料時')
+            po('index',index)
+            if(group===undefined){
+                po('is not group')
+                this.getDataSource().splice(index,0,record)//.push(record)
+            }else{
+                po('is group',group)
+                po('value',this.getDataSource()[group])
+                this.getDataSource()[group].splice(index,0,record)//.push(record)
+            }
+            this.setValue(this.getValue())
+        }else{
+            po('------沒有資料時')
+            //未完成. 沒有資料的時候, 要考慮有或沒有dataSourceName的不同處理
+            this.setValue({[this.props.dataSourceName]:[record]})
+        }
+    }
+
     //------------------------------------------------------------------------------------
     render(){
-        return<StyledJRTable>
-            <table>
-                <THead columns={this.state.columns} table={this}/>
-                <TBodies leafColumns={this.state.leafColumns} dataSource={this.getDataSource()} table={this}/>
-            </table>
-            {/* <pre>{JSON.stringify(this.state.leafColumns,null,4)}</pre> */}
-            <pre>{JSON.stringify(this.getValue(),4,4)}</pre>
+        return<StyledJRTable 
+            className={`${this.props.className??''} jr-table`}
+            style={this.props.style}
+        >
+            <header>header</header>
+            <main>
+                <table className={'jr-table-table'}>
+                    <TBodies 
+                        leafColumns={this.state.leafColumns} 
+                        dataSource={this.getDataSource()} 
+                        table={this}
+                        isGroup={true}
+                    />
+                    <tfoot>
+                        <tr>
+                            <td>TFooter</td>
+                            <td>TFooter</td>
+                            <td>TFooter</td>
+                            <td>TFooter</td>
+                            <td>TFooter</td>
+                        </tr>
+                    </tfoot>
+                    <THead columns={this.state.columns} table={this}/>
+                </table>
+            </main>
+            <div></div>
+            <footer>footer
+                {/* <pre>{JSON.stringify(this.state.leafColumns,null,4)}</pre> */}
+                {/* <pre>{JSON.stringify(this.getValue(),4,4)}</pre> */}
+            </footer>
         </StyledJRTable>
     }
 }

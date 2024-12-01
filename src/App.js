@@ -280,6 +280,7 @@ function AppForm() {
 	);
 }
 
+let count=0
 function AppTable() {
 	const ref1=useRef()
 	return <div>
@@ -288,10 +289,22 @@ function AppTable() {
 				ref1.current.reset()
 			}}
 		>Reset</button>
+		<button
+			onClick={()=>{
+				++count
+				ref1.current.add({
+					name:`Add ${count}`
+				},null,1)
+			}}
+		>Add</button>
 		<JRTable
+			style={{
+				width:'800px',height:'500px'
+			}}
 			ref={ref1}
 			get={{
-				url:'api/mapList.json'
+				url:'api/groupList.json'
+				// url:'api/list.json'
 				,autoRun:true
 			}}
 			xinitValue={{
@@ -299,9 +312,10 @@ function AppTable() {
 					{name:'Joren'}
 				]
 			}}
-			dataSourceName={'items'}
+			// dataSourceName={'items'}
+			dataGroupName={'dataGroup'}
 			columns={[
-				{name:'name',label:'Name',type:JRInput
+				{name:'name',label:'Name',XXtype:JRInput
 				// 	,columns:[
 				// 		{name:'firstName',label:'First Name'}
 				// 		,{name:'lastName',label:'Last Name'}
@@ -313,20 +327,22 @@ function AppTable() {
 				,{
 					name:'address',label:'Address'
 					,columns:[
-						{name:'address',label:'Address'
+						{name:'address'//,label:'Address'
 							,columns:[
 								{name:'no',label:'No'
-									,type:JRInput
+									,Xtype:JRInput
 								}
-								,{name:'street',label:'Street',type:JRInput}
+								,{name:'street',label:'Street',Xtype:JRInput}
 							]
 						}
-						,{name:'city',label:'City',type:JRInput}
+						,{name:'city',label:'City',Xtype:JRInput}
 						,{name:'country',label:'Country'
-							,type:JRInput
+							,Xtype:JRInput
 						}
 					]
 				}
+				,{}
+				,{}
 				// ,{name:'1',label:'1'
 				// 	,columns:[
 				// 		{name:'11',label:'1 1'}

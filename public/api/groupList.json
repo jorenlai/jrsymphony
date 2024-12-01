@@ -1,0 +1,26 @@
+[
+    [
+        {"type":1,"no":1,"name":"Group A"}
+        ,{"type":1,"no":1,"name":"Group A1"}
+    ]
+    ,[
+        {"type":1,"no":1,"name":"Group C"}
+        ,{"type":1,"no":1,"name":"Group C1"}
+    ]
+    ,[
+        {"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"}
+        ,{"type":2,"no":1,"name":"Group B"} 
+    ]
+]
