@@ -15,12 +15,15 @@ const getMapObject=(map,names)=>{
 }
 const setMapObject=(map,names,value)=>{
     const name=names.shift(names)
-    if(typeof map[name] != 'object'){
-        map[name]={}
-    }
     if(names?.length){
-        setMapObject(map[name],names)
+        if(typeof map[name] != 'object'){
+            po('create blank',name)
+            map[name]={}
+        }
+        po('loop')
+        setMapObject(map[name],names,value)
     }else{
+        po('set value',name,value,map)
         map[name]=value
     }
 }
@@ -34,6 +37,10 @@ const StyledJRTable=styled.div`
     header,footer{
         border:1px solid yellow;
     }
+    footer{
+        height:200px;
+        overflow: overlay;
+    }
     >div{
         border:1px solid gray;
         flex:1;
@@ -44,7 +51,7 @@ const StyledJRTable=styled.div`
     }
     table{
         border-spacing: 0;
-        XXwidth:100%;
+        min-width:100%;
         width: max-content;
         border:1px solid gray;
 
@@ -68,7 +75,6 @@ const StyledJRTable=styled.div`
             background: linear-gradient(180deg, rgb(46 46 45) 0%, rgb(45 44 44) 25%, rgb(85 82 82) 100%);
             box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #b28d60bf inset;
             color: #666666;
-            
         }
 
         tbody{
@@ -141,9 +147,12 @@ export default class JRTable extends JRSubmit {
 
             if(_names?.length>1){
                 column.setValue=function(record,value){
+                    po('setValue 1111111111111111111111111111')
                     try{
+                        po('try')
                         getMapObject(record,[..._names])[column.name]=value
                     }catch{
+                        po('catch')
                         setMapObject(record,[..._names],value)
                     }
                 }
@@ -154,6 +163,7 @@ export default class JRTable extends JRSubmit {
                 }
             }else{
                 column.setValue=function(record,value){
+                    po('setValue 2222222222222222222222222')
                     record[this.name]=value
                 }
                 column.getValue=function(record){
@@ -241,13 +251,17 @@ export default class JRTable extends JRSubmit {
                             <td>TFooter</td>
                         </tr>
                     </tfoot>
-                    <THead columns={this.state.columns} table={this}/>
+                    <THead 
+                        columns={this.state.columns} 
+                        leafColumns={this.state.leafColumns}
+                        table={this}
+                    />
                 </table>
             </main>
             <div></div>
             <footer>footer
+                <pre>{JSON.stringify(this.getValue(),4,4)}</pre>
                 {/* <pre>{JSON.stringify(this.state.leafColumns,null,4)}</pre> */}
-                {/* <pre>{JSON.stringify(this.getValue(),4,4)}</pre> */}
             </footer>
         </StyledJRTable>
     }

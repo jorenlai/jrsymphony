@@ -283,25 +283,35 @@ function AppForm() {
 let count=0
 function AppTable() {
 	const ref1=useRef()
-	return <div>
-		<button
-			onClick={()=>{
-				ref1.current.reset()
-			}}
-		>Reset</button>
-		<button
-			onClick={()=>{
-				++count
-				ref1.current.add({
-					name:`Add ${count}`
-				},null,1)
-			}}
-		>Add</button>
+	return <div 
+		style={{
+			flex:1
+			,border:'10px solid blue'
+			,display:'flex'
+			,flexDirection:'column'
+		}}
+	>
+		<div>
+			<button
+				onClick={()=>{
+					ref1.current.reset()
+				}}
+			>Reset</button>
+			<button
+				onClick={()=>{
+					++count
+					ref1.current.add({
+						name:`Add ${count}`
+					},null,1)
+				}}
+			>Add</button>
+		</div>
 		<JRTable
 			style={{
-				width:'800px',height:'500px'
+				width:'800px',height:'500px',flex:1
 			}}
 			ref={ref1}
+			
 			get={{
 				url:'api/groupList.json'
 				// url:'api/list.json'
@@ -315,7 +325,7 @@ function AppTable() {
 			// dataSourceName={'items'}
 			dataGroupName={'dataGroup'}
 			columns={[
-				{name:'name',label:'Name',XXtype:JRInput
+				{name:'name',label:'Name',type:JRInput
 				// 	,columns:[
 				// 		{name:'firstName',label:'First Name'}
 				// 		,{name:'lastName',label:'Last Name'}
@@ -327,10 +337,10 @@ function AppTable() {
 				,{
 					name:'address',label:'Address'
 					,columns:[
-						{name:'address'//,label:'Address'
+						{name:'addresses'//,label:'Address'
 							,columns:[
 								{name:'no',label:'No'
-									,Xtype:JRInput
+									,type:JRInput
 								}
 								,{name:'street',label:'Street',Xtype:JRInput}
 							]
@@ -341,8 +351,9 @@ function AppTable() {
 						}
 					]
 				}
-				,{}
-				,{}
+				,{
+						width:'180px'
+				}
 				// ,{name:'1',label:'1'
 				// 	,columns:[
 				// 		{name:'11',label:'1 1'}

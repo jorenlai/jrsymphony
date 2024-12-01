@@ -15,7 +15,7 @@ const Separator=({length,children})=>{
 }
 
 const GroupFooterTr=styled.tr`
-    background: black;
+    background: #111111;
     th{
         border:1px solid #222222;
         text-align: left;
@@ -28,8 +28,9 @@ const GroupFooter=({leafColumns,dataGroup:_dataGroup,bodyIndex})=>{
 }
 
 const GroupHeaderTr=styled.tr`
-    position: sticky;
-    top: 50px;
+    z-index: 1;
+    XXposition: sticky;
+    XXtop: 50px;
     background: #111111;
     th{
         text-align: left;
@@ -74,7 +75,7 @@ const Tds=({leafColumns,record,table})=>{
 const TBody=({dataSource,leafColumns,table,bodyIndex})=>{
     const dataGroup=dataSource[bodyIndex]
     return <tbody>
-        <GroupHeader leafColumns={leafColumns} dataGroup={dataGroup} bodyIndex={bodyIndex}/>
+        {/* <GroupHeader leafColumns={leafColumns} dataGroup={dataGroup} bodyIndex={bodyIndex}/> */}
         {
             dataGroup?.map((record,trIndex)=>{
                 return <tr key={trIndex}>
@@ -82,8 +83,8 @@ const TBody=({dataSource,leafColumns,table,bodyIndex})=>{
                 </tr>
             })
         }
-        <GroupFooter leafColumns={leafColumns} dataGroup={dataGroup} bodyIndex={bodyIndex}/>
-        {dataSource.length> (bodyIndex+1) && <Separator length={leafColumns.length}>{dataSource.length}-{bodyIndex}</Separator>}
+        {/* <GroupFooter leafColumns={leafColumns} dataGroup={dataGroup} bodyIndex={bodyIndex}/> */}
+        {/* {dataSource.length > (bodyIndex+1) && <Separator length={leafColumns.length}></Separator>} */}
     </tbody>
 }
 
