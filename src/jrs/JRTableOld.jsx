@@ -95,9 +95,7 @@ export default class JRTableOld extends JRSubmit {
     }
     //--------------------------------------------------------------------------------------
     render(){
-        po('--------------render',this.isSame)
         return <StyledJRTable>
-            {/* (isDirty:{this.state.isDirty}) */}
             <div>
                 {this._columns}
             <JRColumns columns={this.getColumns()}/>

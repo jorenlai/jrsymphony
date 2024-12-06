@@ -103,7 +103,6 @@ function AppForm() {
 					ref1.current.post({
 						sendValue:true
 						,formatValue(data){
-							po('data',data)
 							return {
 								name:'formatValue'
 							}
@@ -324,11 +323,7 @@ function AppTable() {
 				]
 			}}
 			dataSourceName={'dataList'}
-			// dataGroupName={'dataGroup'}
-			XXXonClick={function(props){
-				po('this',this)
-				po('value',this.getValue())
-				po('dataSource',this.getDataSource())
+			XXonClick={function(props){
 				alert(JSON.stringify(props))
 			}}
 			groupHeader={[
@@ -338,8 +333,6 @@ function AppTable() {
 						const totalAge=groupData?.reduce((acc,record)=>{
 							return acc+=record.age ?? 0
 						},0)
-						po('thisooooo',this,groupData)
-						po('groupData',groupData)
 						return `Total age: ${totalAge}`
 					}
 				}
@@ -365,7 +358,7 @@ function AppTable() {
 					// }
 					// ,width:'100px'
 					,columns:[
-						{name:'firstName',label:'First Name',type:JRInput}
+						{name:'firstName',label:'First Name',type:Input}
 						,{name:'lastName',label:'Last Name',type:JRInput}
 					]	
 				}

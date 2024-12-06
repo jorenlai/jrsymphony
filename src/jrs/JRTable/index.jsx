@@ -18,42 +18,17 @@ const setMapObject=(map,names,value)=>{
     const name=names.shift(names)
     if(names?.length){
         if(typeof map[name] != 'object'){
-            po('create blank',name)
             map[name]={}
         }
-        po('loop')
         setMapObject(map[name],names,value)
     }else{
-        po('set value',name,value,map)
         map[name]=value
     }
 }
 
-const columnsConfig={
-    columns:[
-        [
-            {name:'name',label:'Name',colSpan:2}
-            ,{name:'gender',label:'Gender',isLeaf:true}
-            ,{name:'address',label:'Address',colSpan:4}
-        ]
-        ,[
-            {name:'firstName',label:'First Name',isLeaf:true}
-            ,{name:'lastName',label:'Last Name',isLeaf:true}
-            
-            ,{name:'a',label:'Address',colSpan:2}
-            ,{name:'city',label:'State',isLeaf:true}
-            ,{name:'country',label:'Country',isLeaf:true}
-
-        ]
-        ,[
-            {name:'a1',label:'Address 1',isLeaf:true}
-            ,{name:'a2',label:'Address 2',isLeaf:true}
-        ]
-    ]
-}
 export default class JRTable extends JRSubmit {
     UNSAFE_componentWillMount(){
-        po('1 UNSAFE_componentWillMount',this.getValue())
+        // po('1 UNSAFE_componentWillMount',this.getValue())
         // this.setColumns(this.props.columns)
         this.setColumns(this.props.columns)
     }
@@ -82,20 +57,19 @@ export default class JRTable extends JRSubmit {
                 colSpan:column.colSpan
             }
         }else{
-            result[level].push(column)
+            result[level].push({
+                ...column
+                ,isLeaf:true
+            })
             leafColumns.push(column)
-            column.isLeaf=true
+            // column.isLeaf=true
             column.names=_names
-
-
 
             if(_names?.length>1){
                 column.setValue=function(record,value){
                     try{
-                        po('try')
                         getMapObject(record,[..._names])[column.name]=value
                     }catch{
-                        po('catch')
                         setMapObject(record,[..._names],value)
                     }
                 }
@@ -106,14 +80,13 @@ export default class JRTable extends JRSubmit {
                 }
             }else{
                 column.setValue=function(record,value){
-                    po('setValue 2222222222222222222222222')
-                    record[this.name]=value
+                    record[column.name]=value
                 }
                 column.getValue=function(record){
-                    if(typeof record[this.name] =='string'){
-                        return record[this.name]
+                    if(typeof record[column.name] =='string'){
+                        return record[column.name]
                     }else{
-                        return JSON.stringify(record[this.name])
+                        return JSON.stringify(record[column.name])//if it is map than need to be show in string format
                     }
                 }
             }
@@ -134,9 +107,6 @@ export default class JRTable extends JRSubmit {
             colSpan:0
         })
         return childrenLength
-    }
-    columnsConfig(){    
-        return columnsConfig
     }
     //------------------------------------------------------------------------------------
     setDataSource(dataSource){

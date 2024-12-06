@@ -92,26 +92,24 @@ const GroupFooter=(props)=>{
 ////////////////////////////////////////////////////////////////////////////
 const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     let content 
-    const {type,render,...column}=_column
+    const {type,render,setValue,getValue,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
-        column.setValue(record,targetValue)
+        setValue(record,targetValue)
         table.setValue(table.getValue())
-        
     }
     render?.bind(table)
     if(type){
         content=React.createElement(type,{
             onChange
-            ,value:column.getValue(record)
+            ,value:getValue(record)
             ,render
-
             ,...column
         })
     }else if(render){
         content=render({index:trIndex,groupIndex:tbodyIndex})
     }else{
-        content=column.getValue(record)
+        content=getValue(record)
     }
     return <td key={tdIndex}>
         {content}
@@ -119,7 +117,9 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
 }
 const Tds=({leafColumns,record,table,tbodyIndex,trIndex})=>{
     return leafColumns?.map((column,tdIndex)=>{
-        return <Td column={column} key={tdIndex} 
+        return <Td 
+            column={column} 
+            key={tdIndex} 
             record={record} 
             table={table} 
             tbodyIndex={tbodyIndex}
@@ -135,13 +135,11 @@ const TBody=({groupData,dataSource,groupHeader,leafColumns,groupFooter,table,tbo
     // const dataGroup=dataSource[tbodyIndex]
 
     const neededProps={table,tbodyIndex}
-    return <tbody>
+    return <tbody key={tbodyIndex}>
         <GroupHeader 
             groupData={groupData}
             columns={groupHeader}
             {...neededProps}
-            // leafColumns={leafColumns} 
-            // dataGroup={dataGroup} 
         />
         {
             groupData?.map((record,trIndex)=>{
@@ -181,8 +179,7 @@ export const TBodies=({groupHeader,leafColumns,groupFooter,dataSource:_dataSourc
         :[_dataSource]
 
     return dataSource?.map((groupData,tbodyIndex,c)=>{
-        return <>
-            <TBody 
+        return  <TBody 
                 key={`tbody${tbodyIndex}`} 
                 table={table}
                 dataSource={dataSource}
@@ -193,8 +190,8 @@ export const TBodies=({groupHeader,leafColumns,groupFooter,dataSource:_dataSourc
                 groupHeader={groupHeader}
                 leafColumns={leafColumns} 
                 groupFooter={groupFooter}
-            />
-            {dataSource.length > (tbodyIndex+1) && <Separator length={leafColumns.length}></Separator>}
-        </>
+            /> 
+            // {dataSource.length > (tbodyIndex+1) && <Separator length={leafColumns.length} key={`sp-${tbodyIndex}`}></Separator>}
+        
     })
 }
