@@ -13,6 +13,7 @@ import { Input, InputNumber, Select } from 'antd';
 import JRCrud from './jrs/JRCrud';
 import JRTable2 from './jrs/JRTable2';
 import JRTable from './jrs/JRTable';
+import JValue from './jrs/JValue';
 
 const StyledApp = styled.div`
     html,*,*:before,*:after {
@@ -313,7 +314,7 @@ function AppTable() {
 			ref={ref1}
 			
 			get={{
-				url:'api/groupList.json'
+				url:'api/mapGroupList.json'
 				// url:'api/list.json'
 				,autoRun:true
 			}}
@@ -322,38 +323,91 @@ function AppTable() {
 					{name:'Joren'}
 				]
 			}}
-			// dataSourceName={'items'}
-			dataGroupName={'dataGroup'}
+			dataSourceName={'dataList'}
+			// dataGroupName={'dataGroup'}
+			XXXonClick={function(props){
+				po('this',this)
+				po('value',this.getValue())
+				po('dataSource',this.getDataSource())
+				alert(JSON.stringify(props))
+			}}
+			groupHeader={[
+				{
+					label:'Group Header',colSpan:7
+					,render({groupData,groupIndex}){
+						const totalAge=groupData?.reduce((acc,record)=>{
+							return acc+=record.age ?? 0
+						},0)
+						po('thisooooo',this,groupData)
+						po('groupData',groupData)
+						return `Total age: ${totalAge}`
+					}
+				}
+			]}
+			groupFooter={[
+				[
+					{label:'Name',colSpan:2
+						,render({groupData}){
+							return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+						}
+					}
+					,{}
+					,{label:'Address',colSpan:4}
+				]
+				,[
+					{label:'Group Footer 3',colSpan:7}
+				]
+			]}
 			columns={[
-				{name:'name',label:'Name',type:JRInput
-				// 	,columns:[
-				// 		{name:'firstName',label:'First Name'}
-				// 		,{name:'lastName',label:'Last Name'}
-				// 	]	
+				{name:'fullName',label:'Name'//,type:JValue
+					// ,render({index,groupIndex},b,c){
+					// 	return `'Render' ${groupIndex} ${index}`
+					// }
+					// ,width:'100px'
+					,columns:[
+						{name:'firstName',label:'First Name',type:JRInput}
+						,{name:'lastName',label:'Last Name',type:JRInput}
+					]	
 				}
 				// ,{name:'gender',label:'Gender'}
 				// ,{name:'age',label:'Age'}
 				// ,
+				,{name:'age',label:'Age',type:InputNumber
+					,onClick(e){
+						// alert('ccc')
+						e.preventDefault()
+						e.stopPropagation()
+					}
+				}
 				,{
 					name:'address',label:'Address'
 					,columns:[
 						{name:'addresses'//,label:'Address'
 							,columns:[
 								{name:'no',label:'No'
-									,type:JRInput
+									,width:'120px'
+									,Xtype:JRInput
 								}
-								,{name:'street',label:'Street',Xtype:JRInput}
+								,{name:'street',label:'Street'
+									,width:'180px'
+									,Xtype:JRInput
+								}
 							]
 						}
-						,{name:'city',label:'City',Xtype:JRInput}
-						,{name:'country',label:'Country'
+						,{name:'city',label:'City'
+							,width:'180px'
 							,Xtype:JRInput
+						}
+						,{name:'country',label:'Country'
+							,width:'140px'
+							,Xtype:JRInput
+							
 						}
 					]
 				}
-				,{
-						width:'180px'
-				}
+				// ,{
+				// 		// width:'100%'
+				// }
 				// ,{name:'1',label:'1'
 				// 	,columns:[
 				// 		{name:'11',label:'1 1'}

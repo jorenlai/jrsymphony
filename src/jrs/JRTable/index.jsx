@@ -4,6 +4,7 @@ import JRSubmit from "../JRSubmit";
 import { po } from "../JRUtils";
 import { THead } from "./THead";
 import { TBodies } from "./TBodies";
+import { StyledJRTable } from "./StyledJRTable";
 
 const getMapObject=(map,names)=>{
     const name=names.shift(names)
@@ -28,63 +29,6 @@ const setMapObject=(map,names,value)=>{
     }
 }
 
-const StyledJRTable=styled.div`
-    color:#666666;
-    display:flex;
-    flex-direction: column;
-    border:1px solid red;
-
-    header,footer{
-        border:1px solid yellow;
-    }
-    footer{
-        height:200px;
-        overflow: overlay;
-    }
-    >div{
-        border:1px solid gray;
-        flex:1;
-    }
-    >main{
-        overflow: overlay;
-        Xborder:5px solid white;
-    }
-    table{
-        border-spacing: 0;
-        min-width:100%;
-        width: max-content;
-        border:1px solid gray;
-
-        thead{
-            position: sticky;
-            top: 0;
-
-            XXborder-right:1px solid red;
-            th{
-                color: #666666;
-                background: linear-gradient(180deg, rgb(46 46 45) 0%, rgb(45 44 44) 25%, rgb(85 82 82) 100%);
-                box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #b28d60bf inset;
-                
-            }
-        }
-
-        tfoot{
-            position: sticky;
-            bottom: 0;
-
-            background: linear-gradient(180deg, rgb(46 46 45) 0%, rgb(45 44 44) 25%, rgb(85 82 82) 100%);
-            box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #b28d60bf inset;
-            color: #666666;
-        }
-
-        tbody{
-            td{
-                border:1px solid #222222;
-                color:#666666;
-            }
-        }
-    }
-`
 const columnsConfig={
     columns:[
         [
@@ -147,7 +91,6 @@ export default class JRTable extends JRSubmit {
 
             if(_names?.length>1){
                 column.setValue=function(record,value){
-                    po('setValue 1111111111111111111111111111')
                     try{
                         po('try')
                         getMapObject(record,[..._names])[column.name]=value
@@ -229,11 +172,11 @@ export default class JRTable extends JRSubmit {
 
     //------------------------------------------------------------------------------------
     render(){
-        return<StyledJRTable 
+        return<StyledJRTable
             className={`${this.props.className??''} jr-table`}
             style={this.props.style}
         >
-            <header>header</header>
+            {/* <header>header</header> */}
             <main>
                 <table className={'jr-table-table'}>
                     <TBodies 
@@ -241,8 +184,11 @@ export default class JRTable extends JRSubmit {
                         dataSource={this.getDataSource()} 
                         table={this}
                         isGroup={true}
+
+                        groupHeader={this.props.groupHeader}
+                        groupFooter={this.props.groupFooter}
                     />
-                    <tfoot>
+                    {/* <tfoot>
                         <tr>
                             <td>TFooter</td>
                             <td>TFooter</td>
@@ -250,7 +196,7 @@ export default class JRTable extends JRSubmit {
                             <td>TFooter</td>
                             <td>TFooter</td>
                         </tr>
-                    </tfoot>
+                    </tfoot> */}
                     <THead 
                         columns={this.state.columns} 
                         leafColumns={this.state.leafColumns}
@@ -258,11 +204,11 @@ export default class JRTable extends JRSubmit {
                     />
                 </table>
             </main>
-            <div></div>
-            <footer>footer
+            {this.getDataSource()==null && <div>沒有資料</div>}
+            {/* <footer>footer
                 <pre>{JSON.stringify(this.getValue(),4,4)}</pre>
-                {/* <pre>{JSON.stringify(this.state.leafColumns,null,4)}</pre> */}
-            </footer>
+                <pre>{JSON.stringify(this.state.leafColumns,null,4)}</pre>
+            </footer> */}
         </StyledJRTable>
     }
 }

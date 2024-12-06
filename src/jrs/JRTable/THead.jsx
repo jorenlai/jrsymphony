@@ -4,8 +4,12 @@ import { po } from "../JRUtils"
 const Colgroup=({leafColumns})=>{
     return <colgroup>
     {
-        leafColumns?.map((column,index)=>{
-            return <col style={{width:`${column.width===undefined?50*index:column.width}`}}></col>
+        leafColumns?.map((_column,index)=>{
+            const {width,...column}=_column
+            const style={
+                width
+            }
+            return <col style={style} key={index}></col>
         })
     }
     </colgroup>
@@ -20,7 +24,17 @@ const Ths=({deep,rowColumn,rowIndex})=>{
             {column.label}
         </th>
     })
-    
+}
+
+export const HeadTrs=({columns:_columns,trClassName})=>{
+    const columns=Array.isArray(_columns?.[0])
+        ?_columns
+        :[_columns]
+    return columns?.map((rowColumn,rowIndex)=>{
+        return <tr className={trClassName} key={rowIndex}>
+            <Ths deep={columns.length-1} rowColumn={rowColumn} rowIndex={rowIndex}/>
+        </tr>
+    })
 }
 
 export const THead=({columns,leafColumns})=>{
@@ -31,7 +45,7 @@ export const THead=({columns,leafColumns})=>{
     })
     return <>
         <thead>
-            {trs}
+            <HeadTrs columns={columns}/>
         </thead>
         <Colgroup leafColumns={leafColumns}/>
     </>
