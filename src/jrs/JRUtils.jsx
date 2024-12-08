@@ -14,3 +14,32 @@ export const colonValueString=(string,value)=>{
         },string)
     ; 
 }
+
+export const genData=()=>{
+    const fa=1
+    // const gData=Array(10).fill(9).map((ff,fa,fd)=>{
+        const data=Array(50).fill(9).reduce((acc,f,a,d)=>{
+            po(acc,f,a,d)
+            acc.push({
+                id:a
+                ,name:`Name ${a}`
+                ,age:a+28+fa//dayjs//dayjs().add(-a,'day')
+                ,fullName:{
+                    firstName:`First Name ${fa}`
+                    ,lastName:`Last Name ${a}`
+                }
+                ,items:Array(5).fill(3).map((f1,a1,d1)=>{
+                    return {
+                        id:`IT${a}-${a1}`
+                        ,name:`ITN ${a} ${a1}`
+                    }
+                })
+            })
+            return acc
+        },[])
+        po(data)
+        return data
+    // })
+    
+	// po(gData)
+}

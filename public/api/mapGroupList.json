@@ -6,9 +6,23 @@
                     "firstName":"Joren"
                     ,"lastName":"Lai"
                 }
+                ,"form":{
+                    "name":"Form A"
+                    ,"age":28
+                }
             }
-            ,{"type":1,"no":1,"name":"Group A1","age":22}
-            ,{"type":1,"no":1,"name":"Group A2","age":36}
+            ,{"type":1,"no":1,"name":"Group A1","age":22
+                ,"form":{
+                    "name":"Form A1"
+                    ,"age":22
+                }
+            }
+            ,{"type":1,"no":1,"name":"Group A2","age":36
+                ,"form":{
+                    "name":"Form A2"
+                    ,"age":36
+                }
+            }
         ]
         ,[
             {"type":1,"no":1,"name":"Group C","age":1}
@@ -32,4 +46,5 @@
         ]
     ]
     ,"id":"SD3584739"
+
 }

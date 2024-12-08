@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import JRSubmit from "./JRSubmit";
-import { po } from "./JRUtils";
 import React from "react";
-import { JRInput } from "../App";
+import JRSubmit from "../JRSubmit";
+import { po } from "../JRUtils";
+import JRFrame from "../JRFrame/JRFrame";
 
 function checkMap(_name,inputValue,mapValue,nameList){
     if(nameList.length) {
@@ -12,6 +12,7 @@ function checkMap(_name,inputValue,mapValue,nameList){
         }
         checkMap(_name,inputValue,mapValue[name],nameList)
     }else{
+        po('checkMap',_name,mapValue,inputValue)
         mapValue[_name]=inputValue
     }
 }
@@ -120,7 +121,6 @@ const valueString=(str='',value = {})=>{
 
 const ColumnMessage=({value={},record})=>{
     if(value.isValid===false){
-        po('value.msg,record',value.msg,record)
         return valueString(value.msg,record)
     }    
 }
@@ -170,15 +170,15 @@ const StyleJRFields=styled.div`
     flex-direction: column;
 `
 
-export default class JRFields extends JRSubmit {
+export default class JRFields extends JRFrame {
     // constructor(props){
     //     super(props)
     //     po('JRFields----------------------',props)
     // }
 
     UNSAFE_componentWillMount(){
-        console.clear()
-        po('1---------------1 UNSAFE_componentWillMount')
+        // console.clear()
+        // po('1---------------1 UNSAFE_componentWillMount')
         this.#initValidateValue()
 
     }
@@ -241,7 +241,7 @@ export default class JRFields extends JRSubmit {
         Object.entries(this.getValidateValue())
         .filter(([fullname,validateConfig])=>validateConfig.isValid!=true)
         .forEach(([fullname,validateConfig])=>{
-            po('forEach',fullname,validateConfig)
+            // po('forEach',fullname,validateConfig)
             this.#exeValidateConfig(validateConfig,this.getValue(fullname),this.getValue())
         })
         this.setState({validateValue:this.getValidateValue()})
@@ -311,6 +311,7 @@ export default class JRFields extends JRSubmit {
         const fn=fullname.join('.')
         const onChange=(inputValue)=>{
             const targetValue=inputValue?.target?.value ?? inputValue
+            po('===Form onChange===',targetValue)
             try{
                 parentValue[name]=targetValue
                 this.setValue({...this.getValue()})

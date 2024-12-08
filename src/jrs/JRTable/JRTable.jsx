@@ -5,6 +5,9 @@ import { po } from "../JRUtils";
 import { THead } from "./THead";
 import { TBodies } from "./TBodies";
 import { StyledJRTable } from "./StyledJRTable";
+import JRFields from "../JRFields/JRFields";
+import JRThreeType from "../JRThreeType";
+import JRFrame from "../JRFrame/JRFrame";
 
 const getMapObject=(map,names)=>{
     const name=names.shift(names)
@@ -26,32 +29,29 @@ const setMapObject=(map,names,value)=>{
     }
 }
 
-export default class JRTable extends JRSubmit {
+export default class JRTable extends JRFrame {
     UNSAFE_componentWillMount(){
-        // po('1 UNSAFE_componentWillMount',this.getValue())
-        // this.setColumns(this.props.columns)
         this.setColumns(this.props.columns)
     }
 
     //------------------------------------------------------------------------------------
     setColumns(_columns){
-        // po('setColumns',_columns)
         const columns=[]
         const leafColumns=[]
         const initColumns=this.initColumns(_columns,0,columns,leafColumns,[])
         this.setState({columns,leafColumns})
     }
 
-    initColumn(_column,level,result,leafColumns,names){
-        const {columns,...column}=_column
+    initColumn(column,level,result,leafColumns,names){
+        // const {columns,...column}=_column
         
-        const isBranch=columns&&columns.length
-        const _names=_column.name
-            ?[...names,_column.name]
+        const isBranch=column.type===undefined&&column?.columns&&column?.columns.length
+        const _names=column.name
+            ?[...names,column.name]
             :names
         if(isBranch){
-            if(_column.label)result[level].push(column)
-            const c=this.initColumns(columns,level+(_column.label?1:0),result,leafColumns,_names)
+            if(column.label)result[level].push(column)
+            const c=this.initColumns(column.columns,level+(column.label?1:0),result,leafColumns,_names)
             column.colSpan=c.colSpan
             return {
                 colSpan:column.colSpan
@@ -83,11 +83,7 @@ export default class JRTable extends JRSubmit {
                     record[column.name]=value
                 }
                 column.getValue=function(record){
-                    if(typeof record[column.name] =='string'){
-                        return record[column.name]
-                    }else{
-                        return JSON.stringify(record[column.name])//if it is map than need to be show in string format
-                    }
+                    return record[column.name]
                 }
             }
             return {
@@ -141,13 +137,34 @@ export default class JRTable extends JRSubmit {
     }
 
     //------------------------------------------------------------------------------------
-    render(){
+    renderMe(){
+        let footerStyle={}
+        //////////1 type
+        // const me=this
+        // const {type:Type,style,...props}=this.props.footer??{}
+        // footerStyle=style
+        // const footer=<Type
+        //     me={'footer form'}
+        //     value={me.getValue()}
+        //     XXonChange={me.setValue}
+        //     onChange={(value)=>{
+        //         po('table onChange setValue')
+        //         me.setValue(value)
+        //     }}
+        //     {...props}
+        // />
+        //////////2 function
+        const footer=typeof this.props.footer==='function' 
+            ?this.props.footer?.bind(this)({style:footerStyle})
+            :null
         return<StyledJRTable
             className={`${this.props.className??''} jr-table`}
             style={this.props.style}
         >
-            {/* <header>header</header> */}
-            <main>
+            {/* <header>
+                <pre>{JSON.stringify(this.getValue(),4,4)}</pre>
+            </header> */}
+            {/* <main> */}
                 <table className={'jr-table-table'}>
                     <TBodies 
                         leafColumns={this.state.leafColumns} 
@@ -173,12 +190,16 @@ export default class JRTable extends JRSubmit {
                         table={this}
                     />
                 </table>
-            </main>
-            {this.getDataSource()==null && <div>沒有資料</div>}
-            {/* <footer>footer
-                <pre>{JSON.stringify(this.getValue(),4,4)}</pre>
-                <pre>{JSON.stringify(this.state.leafColumns,null,4)}</pre>
-            </footer> */}
+            {/* </main> */}
+            {/* {this.getDataSource()==null && <div>沒有資料</div>} */}
+
+            {/* {this.props.footer!=null && <footer style={footerStyle}>
+                <JRThreeType {...this.props.footer}/>
+                {footer}
+            </footer>} */}
         </StyledJRTable>
     }
 }
+
+
+//202412/07 要解決type=JRFields的讀寫問題

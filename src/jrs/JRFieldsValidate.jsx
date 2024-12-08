@@ -12,6 +12,7 @@ function checkMap(_name,inputValue,mapValue,nameList){
         }
         checkMap(_name,inputValue,mapValue[name],nameList)
     }else{
+        po('checkMap',_name)
         mapValue[_name]=inputValue
     }
 }

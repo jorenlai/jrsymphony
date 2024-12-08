@@ -91,6 +91,7 @@ export default class JRSubmit extends React.Component {
         this.setValue(this.rawValue,true)
     }
     setValue(value,reset=false){
+        po('-----submit isetValue',value,this.props.me)
         if(this.props.onChange){
             this.props.onChange(value)
         }else{

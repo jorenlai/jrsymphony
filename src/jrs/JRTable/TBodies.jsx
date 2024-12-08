@@ -2,15 +2,17 @@ import React from "react"
 import { po } from "../JRUtils"
 import styled from "styled-components"
 
-const StyledSeparator=styled.tr`
+const StyledSeparator=styled.tbody`
     th{
-        height:32px;
-        XXbackground:gray;
+        height:8px;
+        background:#c6c6c6;
     }
 `
 const Separator=({length,children})=>{
     return <StyledSeparator>
-        <th colSpan={length}>{children}</th>
+        <tr>
+            <th colSpan={length}>{children}</th>
+        </tr>
     </StyledSeparator>
 }
 
@@ -60,7 +62,6 @@ const GroupHeaderTr=styled.tr`
     z-index: 1;
     XXposition: sticky;
     XXtop: 50px;
-    background: #111111;
     th{
         text-align: left;
         border:1px solid #222222;
@@ -74,7 +75,6 @@ const GroupHeader=(props)=>{
 }
 
 const GroupFooterTr=styled.tr`
-    background: #111111;
     th{
         border:1px solid #222222;
         text-align: left;
@@ -95,6 +95,7 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     const {type,render,setValue,getValue,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
+        po('---Table onChange---',targetValue)
         setValue(record,targetValue)
         table.setValue(table.getValue())
     }
@@ -105,7 +106,9 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
             ,value:getValue(record)
             ,render
             ,...column
+
         })
+        // content='AAAAAAAAAAAAA'
     }else if(render){
         content=render({index:trIndex,groupIndex:tbodyIndex})
     }else{
@@ -135,40 +138,40 @@ const TBody=({groupData,dataSource,groupHeader,leafColumns,groupFooter,table,tbo
     // const dataGroup=dataSource[tbodyIndex]
 
     const neededProps={table,tbodyIndex}
-    return <tbody key={tbodyIndex}>
-        <GroupHeader 
-            groupData={groupData}
-            columns={groupHeader}
-            {...neededProps}
-        />
-        {
-            groupData?.map((record,trIndex)=>{
-                const onClick=table.props.onClick?.bind(table)
-                return <tr key={trIndex}
-                    onClick={()=>{
-                        onClick?.({record,index:trIndex,groupIndex:tbodyIndex})
-                    }}
-                >
-                    <Tds 
-                        record={record}
-                        trIndex={trIndex}
+    return <>
+        <tbody key={`tbody${tbodyIndex}`}>
+            {(groupData?.length >0 ) && <GroupHeader 
+                groupData={groupData}
+                columns={groupHeader}
+                {...neededProps}
+            />}
+            {
+                groupData?.map((record,trIndex)=>{
+                    const onClick=table.props.onClick?.bind(table)
+                    return <tr key={trIndex}
+                        onClick={()=>{
+                            onClick?.({record,index:trIndex,groupIndex:tbodyIndex})
+                        }}
+                    >
+                        <Tds 
+                            record={record}
+                            trIndex={trIndex}
 
-                        {...neededProps}
-                        leafColumns={leafColumns} 
-                    />
-                </tr>
-            })
-        }
-        <GroupFooter 
-            groupData={groupData}
-            columns={groupFooter}
-            {...neededProps}
-        />
-        {/* <GroupFooter columns={groupHeader}
-            leafColumns={leafColumns} dataGroup={dataGroup} tbodyIndex={tbodyIndex}
-        /> */}
-        
-    </tbody>
+                            {...neededProps}
+                            leafColumns={leafColumns} 
+                        />
+                    </tr>
+                })
+            }
+            {(groupData?.length > 0) && <GroupFooter 
+                groupData={groupData}
+                columns={groupFooter}
+                {...neededProps}
+            />}
+
+        </tbody>
+        {(dataSource.length > (tbodyIndex+1)) && <Separator length={leafColumns.length} key={`sp-${tbodyIndex}`}></Separator>}
+    </>
 }
 
 export const TBodies=({groupHeader,leafColumns,groupFooter,dataSource:_dataSource,table})=>{
@@ -191,7 +194,7 @@ export const TBodies=({groupHeader,leafColumns,groupFooter,dataSource:_dataSourc
                 leafColumns={leafColumns} 
                 groupFooter={groupFooter}
             /> 
-            // {dataSource.length > (tbodyIndex+1) && <Separator length={leafColumns.length} key={`sp-${tbodyIndex}`}></Separator>}
-        
+            
+            
     })
 }

@@ -1,12 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import AppForm from './AppForm';
+import AppTable from './AppTable';
+import AppFrame from './AppFrame';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
-
+root.render(<AppTable/>);
+// root.render(<AppForm/>);
+// root.render(<AppFrame/>);
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
