@@ -21,6 +21,10 @@ const StyledApp = styled.div`
         box-sizing: border-box;
     }
 	padding:22px;
+	flex:1;
+	display: flex;
+    flex-direction: column;
+	overflow: hidden;
 `
 
 export const JRInput=({value,onChange,name})=>{
@@ -75,93 +79,90 @@ function AppForm() {
 
 	return (
 		<StyledApp >
-			<button
-				onClick={()=>{
-					ref1.current.validateFields()
-				}}
-			>
-				Validate
-			</button>
+			<div>
+				<button
+					onClick={()=>{
+						ref1.current.validateFields()
+					}}
+				>
+					Validate
+				</button>
 
-			<button
-				onClick={()=>{
-					ref1.current.reset()
-				}}
-			>
-				Reset
-			</button>
-			<button
-				onClick={()=>{
-					ref1.current.get({
-						sendValue:false
-					})
-				}}
-			>
-			get
-			</button>
-			<button
-				onClick={()=>{
-					ref1.current.post({
-						sendValue:true
-						,formatValue(data){
-							return {
-								name:'formatValue'
+				<button
+					onClick={()=>{
+						ref1.current.reset()
+					}}
+				>
+					Reset
+				</button>
+				<button
+					onClick={()=>{
+						ref1.current.get({
+							sendValue:false
+						})
+					}}
+				>
+				get
+				</button>
+				<button
+					onClick={()=>{
+						ref1.current.post({
+							sendValue:true
+							,formatValue(data){
+								return {
+									name:'formatValue'
+								}
 							}
-						}
-						,callback(a,b,c,d){
-							po('aaaaaa,b,c,d',a,b,c,d)
-						}
-					})
-				}}
-			>
-			post
-			</button>
-			<button
-				onClick={()=>{
-					ref1.current.get({
-						url:'api/JRFields.json'
-						,value(value){
-							return {
-								valueFromOnClickGetFunction:'22222222222222'
+							,callback(a,b,c,d){
+								po('aaaaaa,b,c,d',a,b,c,d)
 							}
-						}
-						,formatValue(value){
-							return {
-								...value
-								,valueFromOnClickFormatedValue:'567456534'
+						})
+					}}
+				>
+				post
+				</button>
+				<button
+					onClick={()=>{
+						ref1.current.get({
+							url:'api/JRFields.json'
+							,value(value){
+								return {
+									valueFromOnClickGetFunction:'22222222222222'
+								}
 							}
-						}
-					})
-				}}
-			>
-			JRFields
-			</button>
-			<button
-				onClick={()=>{
-					ref1.current.get({
-						url:'api/XXXX'
-						,updateValue:true
-						,value(value){
-							return {
-								bbbbbbbbbbb:'22222222222222'
+							,formatValue(value){
+								return {
+									...value
+									,valueFromOnClickFormatedValue:'567456534'
+								}
 							}
-						}
+						})
+					}}
+				>
+				JRFields
+				</button>
+				<button
+					onClick={()=>{
+						ref1.current.get({
+							url:'api/XXXX'
+							,updateValue:true
+							,value(value){
+								return {
+									bbbbbbbbbbb:'22222222222222'
+								}
+							}
 
-					})
-				}}
-			>
-			XXX
-			</button>
-			
+						})
+					}}
+				>
+				XXX
+				</button>
+			</div>
 			<JRFields
 				debugMode={true}
-				style={{
-					padding:'22px'
-					,border:'1px solid gray'
-				}}
+	
 				ref={ref1}
-				gap={'22px'}
-				cols={1}
+				cols={2}
 				labelProps={{
 					horizontal:true
 					,layout:'h'
@@ -183,17 +184,18 @@ function AppForm() {
 				// value={value}
 				// onChange={setValue}
 				columns={[
-					{label:'Table',name:'list'
-						,type:JRTable
-						,columns:[
-							{name:'value',label:'Value',type:JRInput}
-							,{name:'label',label:'Item',type:JRInput}
-						]
-						,footer(){
-							return <div>Footer</div>
-						}
-					}
-					,{label:'Dist',name:'dist',type:JRInput,required:true},
+					// {label:'Table',name:'list'
+					// 	,type:JRTable
+					// 	,columns:[
+					// 		{name:'value',label:'Value',type:JRInput}
+					// 		,{name:'label',label:'Item',type:JRInput}
+					// 	]
+					// 	,footer(){
+					// 		return <div>Footer</div>
+					// 	}
+					// }
+					// ,
+					{label:'Dist',name:'dist',type:JRInput,required:true},
 					{
 						label:'Name A'
 						,required:{
@@ -205,26 +207,26 @@ function AppForm() {
 						,name:'name'
 					}
 					,{label:'Age',name:'age',type:InputNumber,typeStyle:{width:'150px'}}
-					,{
-						label:'Address JRFields'
-						,name:'address'
-						,type:JRFields
-						,columns:[
-							{label:'Dist',name:'dist',type:JRInput
-								,required:{
-									value:true
-									,msg:'當Name為{name},這需為3.'
-								}
-							}
-							,{label:'Load',name:'road',type:JRInput,xrequired:true}
-							// ,{label:'City',name:'city'
-							// 	,columns:[
-							// 		{label:'中',name:'ch'}
-							// 		,{label:'Englist',name:'en'}
-							// 	]
-							// }
-						]
-					}
+					// ,{
+					// 	label:'Address JRFields'
+					// 	,name:'address'
+					// 	,type:JRFields
+					// 	,columns:[
+					// 		{label:'Dist',name:'dist',type:JRInput
+					// 			,required:{
+					// 				value:true
+					// 				,msg:'當Name為{name},這需為3.'
+					// 			}
+					// 		}
+					// 		,{label:'Load',name:'road',type:JRInput,xrequired:true}
+					// 		// ,{label:'City',name:'city'
+					// 		// 	,columns:[
+					// 		// 		{label:'中',name:'ch'}
+					// 		// 		,{label:'Englist',name:'en'}
+					// 		// 	]
+					// 		// }
+					// 	]
+					// }
 					// ,{
 					// 	label:'Address 1'
 					// 	,name:'address'
@@ -248,13 +250,30 @@ function AppForm() {
 							,{label:'Load',name:'road',type:JRInput,required:true}
 						]
 					}
-					// ,{
-					// 	label:'Render'
-					// 	,render({record,props}){
-					// 		return `${record?.name*5}`
-					// 	}
-					// 	,required:true
-					// }
+					,{
+						label:'Render'
+						,render({record,props}){
+							return `${record?.name*5}`
+						}
+						,required:true
+					}
+
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
+					,{name:'test',label:'BR',type:Input}
 
 				]}
 				footer={({value})=>{

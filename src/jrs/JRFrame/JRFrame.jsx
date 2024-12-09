@@ -23,7 +23,7 @@ export default class JRFrame extends JRSubmit {
     }
 
     renderMe(){
-        return 'Render Me'
+        return <div style={{flex:1}}>Render me</div>
     }
 
 }

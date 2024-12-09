@@ -77,8 +77,8 @@ function AppTable() {
 			ref={ref1}
 			
 			get={{
-				url:'api/listS.json'
-				// url:'api/groupList.json'
+				// url:'api/list.json'
+				url:'api/groupList.json'
 				,autoRun:true
 			}}
 			xinitValue={{
@@ -112,7 +112,11 @@ function AppTable() {
 					,{label:'Address',colSpan:4}
 				]
 				,[
-					{label:'Group Footer 3',colSpan:7}
+					{label:'Group Footer 3',colSpan:7
+						,render({groupData}){
+							return ` All ${groupData.length} record`
+						}
+					}
 				]
 			]}
 			columns={[

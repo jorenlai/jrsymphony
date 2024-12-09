@@ -36,6 +36,9 @@ export const StyledJRTable=styled.div`
         tbody{
             tr{
                 background:#edecec;
+                th{
+                    color:#666666;
+                }
                 td{
                     border-bottom: 1px solid #c6c6c6;
                     color:#666666;

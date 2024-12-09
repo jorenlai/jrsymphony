@@ -6,8 +6,7 @@ export const StyledJRFrame=styled.div`
     overflow:hidden;
 
     > *{
-        border:10px solid gray;
-        Xoverflow: overlay;
+        Xborder:1px solid gray;
     }
     >main{
         display:flex;
@@ -15,8 +14,7 @@ export const StyledJRFrame=styled.div`
         overflow:hidden;
         flex-direction: column;
         > *{
-            border:10px solid blue;
-            Xoverflow: overlay;
+            Xborder:1px solid gray;
         }
         >main{
             display:flex;
@@ -24,7 +22,7 @@ export const StyledJRFrame=styled.div`
             overflow:hidden;
 
             > *{
-                border:10px solid green;
+                Xborder:1px solid gray;
             }
 
             >head{

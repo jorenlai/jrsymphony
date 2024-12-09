@@ -23,7 +23,6 @@ const StyledGridFrame = styled.div`
 `
 
 const StyledGrid = styled.div`
-    xborder:2px solid red;
     display: grid;
     grid: ${({ grid, cols, children }) =>
         grid
@@ -33,7 +32,7 @@ const StyledGrid = styled.div`
                 .map(() => "1fr")
                 .join(" ")}`};
 
-    gap: ${({ $gap }) => $gap ?? "12px"};
+    gap: ${({ $gap }) => $gap};
 `
 const StyledFooter = styled.div`
 `
@@ -41,6 +40,9 @@ const StyledFooter = styled.div`
 const StyledColumn=styled.div`
     flex:1;
     display: grid;
+    border-bottom: 1px solid #d0d0d0;
+    border-right: 1px solid #d0d0d0;
+    padding: 6px;
 
     ${({$layout,$labelWidth,$hasLabel,$valueWidth})=>{
         if($layout=='v'){
@@ -165,9 +167,14 @@ const maxValidator=({value,max})=>{
     } 
 }
 
-const StyleJRFields=styled.div`
-    xxdisplay: flex;
+const StyleJRFields=styled.main`
     flex-direction: column;
+    flex:1;
+    overflow: overlay;
+
+    border: 1px solid #a0a0a0;
+    background: #e1e1e1;
+    color: #505050;
 `
 
 export default class JRFields extends JRFrame {
@@ -396,7 +403,7 @@ export default class JRFields extends JRFrame {
                         <ColumnMessage value={this.getValidateValue(_parentName.join('.'))} record={this.getValue()}/>
                     </div>
                     <div className="right">
-                        {_parentName.join('.')}
+                        {/* {_parentName.join('.')} */}
                     </div>
                 </StyledColumnFooter>
                 // validateValue?.[name]!==undefined && <StyledColumnFooter $layout={layout}>
@@ -418,22 +425,22 @@ export default class JRFields extends JRFrame {
         })
     }
 
-    render(){
-        return <StyleJRFields style={this.props.style}>
-            <StyledGridFrame>
-                <StyledGrid cols={this.props.cols} style={this.props.gridStyle} className={'jr-grid'} $gap={this.props.gap}>
-                    {
-                        this.createColumns(
-                            this.props.dataSourceName?this.getValue()?.[this.props.dataSourceName]:this.getValue()
-                            ,this.props.columns
-                            ,this.props.dataSourceName?[this.props.dataSourceName]:[]
-                            ,this.props.dataSourceName?[this.props.dataSourceName]:[]
-                        )
-                    }
-                </StyledGrid>
-            </StyledGridFrame>
 
-            {this.props.footer!==undefined 
+
+    renderMe(){
+        return <StyleJRFields style={this.props.style}>
+            <StyledGrid cols={this.props.cols} style={this.props.gridStyle} className={'jr-grid'} $gap={this.props.gap}>
+                {
+                    this.createColumns(
+                        this.props.dataSourceName?this.getValue()?.[this.props.dataSourceName]:this.getValue()
+                        ,this.props.columns
+                        ,this.props.dataSourceName?[this.props.dataSourceName]:[]
+                        ,this.props.dataSourceName?[this.props.dataSourceName]:[]
+                    )
+                }
+            </StyledGrid>
+
+            {/* {this.props.footer!==undefined 
                 && <StyledFooter>
                     {this.state.test1}
                 {
@@ -442,7 +449,11 @@ export default class JRFields extends JRFrame {
                         : this.props.footer
                 }
                 </StyledFooter>
-            }
+            } */}
         </StyleJRFields>
     }
+
+    // render(){
+    //     return this.renderMe()
+    // }
 }
