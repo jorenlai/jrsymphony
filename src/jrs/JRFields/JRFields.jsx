@@ -23,6 +23,7 @@ const StyledGridFrame = styled.div`
 `
 
 const StyledGrid = styled.div`
+    background: #ededed;
     display: grid;
     grid: ${({ grid, cols, children }) =>
         grid
@@ -40,8 +41,8 @@ const StyledFooter = styled.div`
 const StyledColumn=styled.div`
     flex:1;
     display: grid;
-    border-bottom: 1px solid #d0d0d0;
-    border-right: 1px solid #d0d0d0;
+    Xborder-bottom: 1px solid #d0d0d0;
+    Xborder-right: 1px solid #d0d0d0;
     padding: 6px;
 
     ${({$layout,$labelWidth,$hasLabel,$valueWidth})=>{
@@ -174,7 +175,12 @@ const StyleJRFields=styled.main`
 
     border: 1px solid #a0a0a0;
     background: #e1e1e1;
-    color: #505050;
+
+    .columns{
+        label{
+            color:#525252;
+        }
+    }
 `
 
 export default class JRFields extends JRFrame {

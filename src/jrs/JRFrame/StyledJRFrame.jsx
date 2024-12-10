@@ -11,28 +11,25 @@ export const StyledJRFrame=styled.div`
     >main{
         display:flex;
         flex:1;
-        overflow:hidden;
+        overflow:overlay;
         flex-direction: column;
         > *{
-            Xborder:1px solid gray;
+            XXborder:1px solid gray;
+            min-height:30px;
+        }
+
+        >header{
+            XXborder:1px solid  red;
+            XXoverflow: overlay;
         }
         >main{
             display:flex;
             flex:1;
             overflow:hidden;
-
-            > *{
-                Xborder:1px solid gray;
-            }
-
-            >head{
-            }
-            >main{
-                overflow: overlay;
-                flex:1;
-            }
-            >footer{
-            }
+        }
+        >footer{
+            XXborder:1px solid  blue;
+            overflow: overlay;
         }
 
     }

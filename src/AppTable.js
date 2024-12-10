@@ -65,11 +65,22 @@ function AppTable() {
 					++count
 					ref1.current.add({
 						name:`Add ${count}`
-					},null,1)
+					},null)
 				}}
-			>Add</button>
+			>Add </button>
+			<button
+				onClick={()=>{
+					++count
+					ref1.current.add({
+						name:`Add ${count}`
+					},0,0)
+				}}
+			>Add to group</button>
 		</div>
 		<Table
+			onRowClick={({record})=>{
+				alert(JSON.stringify(record))
+			}}
 			me={'Table'}
 			// style={{
 			// 	width:'800px',height:'500px',flex:1
@@ -81,16 +92,15 @@ function AppTable() {
 				url:'api/groupList.json'
 				,autoRun:true
 			}}
-			xinitValue={{
-				data:[
+			initValue={[
 					{name:'Joren'}
 				]
-			}}
-			// dataSourceName={'dataList'}
+			}
+			xdataSourceName={'dataList'}
 			XXonClick={function(props){
 				alert(JSON.stringify(props))
 			}}
-			groupHeader={[
+			XgroupHeader={[
 				{
 					label:'Group Header',colSpan:7
 					,render({groupData,groupIndex}){
@@ -101,7 +111,7 @@ function AppTable() {
 					}
 				}
 			]}
-			groupFooter={[
+			XgroupFooter={[
 				[
 					{label:'Name',colSpan:2
 						,render({groupData}){
@@ -123,60 +133,67 @@ function AppTable() {
 				
 				{name:'name',label:'Name',type:JRInput}
 				,{name:'fullName',label:'Full Name'
+					// ,type:JRFields
 					,columns:[
 						{name:'firstName',label:'First Name',Xtype:Input}
-						,{name:'lastName',label:'Last Name',Xtype:JRInput}
+						,{name:'lastName',label:'Last Name',XgroupFootertype:JRInput}
 					]	
 				}
 				,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}
-				// ,{name:'address',label:'Address'}
+				,{name:'address',label:'Address'}
 				
 				
 
 			]}
-			footer={function({style}){
-				style.padding='12px'
-				const type=()=>{
 
-				}
-
-				const type2=<JRFields/>
-
-				const type3={
-					type:JRFields
-				}
-				po('type',type)
-				po('type2',type2)
-				po('type3',type3)
-				return <div style={{color:'white'}}>
-					{typeof type}<br/>
-					{typeof type2} - {type2.type}<br/>
-					{typeof type3} - {type3.type}<br/>
+			// start={function({setStyle}){
+			// 	setStyle({
+			// 		border:'1px solid red'
+			// 	})
+			// 	return <div>start</div>
+			// }}
+			// left={function({setStyle}){
+			// 	setStyle({
+			// 		flexBasis:'200px'
+			// 		,border:'1px solid green'
+			// 	})
+			// 	return <div>I am Left</div>
+			// }}
+			Xheader={function({setStyle}){
+				setStyle({
+					border:'1px solid blue'
+					,flexBasis:'200px'
+					,overflow: 'overlay'
+				})
+				const me=this
+				return <div>
+					<button
+						onClick={()=>{
+							me.add({name:'Added name'},1,0)
+						}}
+					>Button</button>
+					<pre>{JSON.stringify(this.getValue(),null,4)}</pre>
 				</div>
-				// style.border='10px solid red'
-				// style.overflow='hidden'
-				// po('this footer',this)
-				// const me=this
-				// return <JRFields
-				// 	onChange={me.setValue}
-				// 	value={this.getValue()}
-				// 	columns={[
-				// 		{name:'id',label:'ID',type:Input}
-				// 	]}
-				// />
-				//<pre>{JSON.stringify(this.getValue(),4,4)}</pre>
 			}}
-			cccfooter={{
-				type:JRFields
-				,me:'Form'
-				,columns:[
-					{name:'id',label:'ID',type:Input}
-				]
-				,style:{
-					border:'10px solid red'
-				}
+			Xfooter={function({setStyle}){
+				setStyle({
+					border:'1px solid yellow'
+				})
+				return <div>AVC</div>
 			}}
-			fyyter={<JRFields/>}
+			// right={function({setStyle}){
+			// 	setStyle({
+			// 		flexBasis:'200px'
+			// 		,border:'1px solid pink'
+			// 	})
+			// 	return <div>I am Right</div>
+			// }}
+			// end={function({setStyle}){
+			// 	setStyle({
+			// 		border:'1px solid purple'
+			// 	})
+			// 	return <div>End</div>
+			// }}
 		/>
 	</div>
 }

@@ -136,67 +136,44 @@ export default class JRTable extends JRFrame {
         }
     }
 
+    noData(){
+        const data=this.getDataSource()
+        return data==null || data.length==0
+    }
     //------------------------------------------------------------------------------------
     renderMe(){
-        let footerStyle={}
-        //////////1 type
-        // const me=this
-        // const {type:Type,style,...props}=this.props.footer??{}
-        // footerStyle=style
-        // const footer=<Type
-        //     me={'footer form'}
-        //     value={me.getValue()}
-        //     XXonChange={me.setValue}
-        //     onChange={(value)=>{
-        //         po('table onChange setValue')
-        //         me.setValue(value)
-        //     }}
-        //     {...props}
-        // />
-        //////////2 function
-        const footer=typeof this.props.footer==='function' 
-            ?this.props.footer?.bind(this)({style:footerStyle})
-            :null
+        
         return<StyledJRTable
-            className={`${this.props.className??''} jr-table`}
+            className={`${this.props.className??''} jr-table ${this.props.onRowClick?'row-highlightable':''}`}
             style={this.props.style}
         >
-            {/* <header>
-                <pre>{JSON.stringify(this.getValue(),4,4)}</pre>
-            </header> */}
-            {/* <main> */}
-                <table className={'jr-table-table'}>
-                    <TBodies 
-                        leafColumns={this.state.leafColumns} 
-                        dataSource={this.getDataSource()} 
-                        table={this}
-                        isGroup={true}
+            <table className={'jr-table-table'}>
+                <TBodies 
+                    leafColumns={this.state.leafColumns} 
+                    dataSource={this.getDataSource()} 
+                    table={this}
+                    isGroup={true}
 
-                        groupHeader={this.props.groupHeader}
-                        groupFooter={this.props.groupFooter}
-                    />
-                    {/* <tfoot>
-                        <tr>
-                            <td>TFooter</td>
-                            <td>TFooter</td>
-                            <td>TFooter</td>
-                            <td>TFooter</td>
-                            <td>TFooter</td>
-                        </tr>
-                    </tfoot> */}
-                    <THead 
-                        columns={this.state.columns} 
-                        leafColumns={this.state.leafColumns}
-                        table={this}
-                    />
-                </table>
-            {/* </main> */}
-            {/* {this.getDataSource()==null && <div>沒有資料</div>} */}
+                    onRowClick={this.props.onRowClick}
 
-            {/* {this.props.footer!=null && <footer style={footerStyle}>
-                <JRThreeType {...this.props.footer}/>
-                {footer}
-            </footer>} */}
+                    groupHeader={this.props.groupHeader}
+                    groupFooter={this.props.groupFooter}
+                />
+                {/* <tfoot>
+                    <tr>
+                        <th>TFooter</th>
+                        <th>TFooter</th>
+                        <th>TFooter</th>
+                        <th>TFooter</th>
+                    </tr>
+                </tfoot> */}
+                <THead 
+                    columns={this.state.columns} 
+                    leafColumns={this.state.leafColumns}
+                    table={this}
+                />
+            </table>
+            {this.noData() && <div className={'empty'}>無資料</div>}
         </StyledJRTable>
     }
 }

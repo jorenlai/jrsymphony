@@ -147,10 +147,10 @@ const TBody=({groupData,dataSource,groupHeader,leafColumns,groupFooter,table,tbo
             />}
             {
                 groupData?.map((record,trIndex)=>{
-                    const onClick=table.props.onClick?.bind(table)
+                    const onRowClick=table.props.onRowClick?.bind(table)
                     return <tr key={trIndex}
                         onClick={()=>{
-                            onClick?.({record,index:trIndex,groupIndex:tbodyIndex})
+                            onRowClick?.({record,index:trIndex,groupIndex:tbodyIndex})
                         }}
                     >
                         <Tds 

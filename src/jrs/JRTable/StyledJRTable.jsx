@@ -1,13 +1,42 @@
 import styled from "styled-components";
 
 export const StyledJRTable=styled.div`
-    xxcolor:#666666;
-    display:flex;
-
+    background: #ededed;
     border-left:1px solid gray;
     border-right:1px solid gray;
-    overflow: overlay;
+
+    display:flex;
+    flex-direction: column;
     flex:1;
+    overflow: overlay;
+
+    .empty{
+        color:#848484;
+        Xborder:10px solid red;
+
+        height:100%;
+        flex:1;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+
+
+    &.row-highlightable{
+        tbody{
+            tr:not(.jr-group-header,.jr-group-footer):hover{
+                background:#ffffff;
+                cursor: pointer;
+                transition:  background-color .8s;
+                td{
+                    color:black;
+                    transition:color .8s;
+                }
+
+            }
+        }
+    }
 
     table{
         thead{
@@ -18,8 +47,8 @@ export const StyledJRTable=styled.div`
                 height:32px;
                 padding: 4px;
                 background: linear-gradient(180deg, rgba(227, 227, 226, 1) 0%, rgba(255, 255, 255, 1) 25%, rgba(210, 210, 210, 1) 100%);
-                box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #b28d60bf inset;
-                color: #666666;
+                box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #8a847dbf inset;
+                color: #525252;
                 white-space: nowrap;
             }
         }
@@ -28,26 +57,31 @@ export const StyledJRTable=styled.div`
             position: sticky;
             bottom: 0;
 
-            background: linear-gradient(180deg, rgb(46 46 45) 0%, rgb(45 44 44) 25%, rgb(85 82 82) 100%);
-            box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #b28d60bf inset;
-            color: #666666;
+            th{
+                height:32px;
+                padding: 4px;
+                background: #ebecec;
+                Xbackground: linear-gradient(180deg, rgba(227, 227, 226, 1) 0%, rgba(255, 255, 255, 1) 25%, rgba(210, 210, 210, 1) 100%);
+                box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #8a847dbf inset;
+                color: #525252;
+                white-space: nowrap;
+            }
         }
 
         tbody{
             tr{
-                background:#edecec;
+                background:#ededed;
                 th{
-                    color:#666666;
+                    color:#444444;
                 }
                 td{
                     border-bottom: 1px solid #c6c6c6;
-                    color:#666666;
+                    color:#2e2e2e;
                     padding: 4px;
                 }
             }
-            tr:hover{
-                background:#f8f7f7;
-            }
+
+
             
             tr.jr-group-header
             ,tr.jr-group-footer{
@@ -61,6 +95,8 @@ export const StyledJRTable=styled.div`
                 }
             }
         }
+
+
                 
 
         XXtable-layout: fixed;
@@ -72,7 +108,8 @@ export const StyledJRTable=styled.div`
 
 
 
-    
+
     }   
-            
+          
+
 `

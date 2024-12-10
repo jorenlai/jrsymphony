@@ -159,7 +159,7 @@ function AppForm() {
 				</button>
 			</div>
 			<JRFields
-				debugMode={true}
+				debugMode={false}
 	
 				ref={ref1}
 				cols={2}
@@ -276,8 +276,17 @@ function AppForm() {
 					,{name:'test',label:'BR',type:Input}
 
 				]}
-				footer={({value})=>{
-					return <pre>{JSON.stringify(value,null,4)}</pre>
+				header={function({setStyle}){
+					setStyle({
+						flexBasis:'50px'
+					})
+					return 'Header'
+				}}
+				footer={function({setStyle}){
+					setStyle({
+						flexBasis:'100px'
+					})
+					return <pre>{JSON.stringify(this.getValue(),null,4)}</pre>
 				}}
 
 				get={{

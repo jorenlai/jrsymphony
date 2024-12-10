@@ -3,22 +3,33 @@ import JRSubmit from "../JRSubmit";
 import { po } from "../JRUtils";
 import { StyledJRFrame } from "./StyledJRFrame";
 
+const FreeType=({tag:Tag,config,me,className})=>{
+    if(config){
+        let style
+        const setStyle=function(_style){
+            style=_style
+        }
+        const content=config.bind(me)({setStyle})
+        return <Tag className={className} style={style}>{content}</Tag>
+    }
+}
 
 export default class JRFrame extends JRSubmit {
+
     render(){
         po('JRFrame JRFrame======================')
-        return <StyledJRFrame className={`${this.props.className} jr-frame`}>
-            <div>start</div>
+        return <StyledJRFrame className={`${this.props.className} jr-frame`} >
+            <FreeType tag='div' config={this.props.start} me={this} className={'start'}/>
             <main>
-                <header>header</header>
+                <FreeType tag='header' config={this.props.header} me={this}/>
                 <main>
-                    <div className={'left'}>left</div>
+                    <FreeType tag='div' config={this.props.left} me={this} className={'left'}/>
                     {this.renderMe()}
-                    <div className={'right'}>right</div>
+                    <FreeType tag='div' config={this.props.right} me={this} className={'right'}/>
                 </main>
-                <footer>footer</footer>
+                <FreeType tag='footer' config={this.props.footer} me={this}/>
             </main>
-            <div>end</div>
+            <FreeType tag='div' config={this.props.end} me={this} className={'end'}/>
         </StyledJRFrame>
     }
 
