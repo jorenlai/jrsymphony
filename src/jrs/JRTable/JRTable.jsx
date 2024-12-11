@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { useMemo } from "react";
 import JRSubmit from "../JRSubmit";
 import { po } from "../JRUtils";
-import { THead } from "./THead";
+import { TFoot, THead } from "./THead";
 import { TBodies } from "./TBodies";
 import { StyledJRTable } from "./StyledJRTable";
 import JRFields from "../JRFields/JRFields";
@@ -149,24 +149,16 @@ export default class JRTable extends JRFrame {
         >
             <table className={'jr-table-table'}>
                 <TBodies 
-                    leafColumns={this.state.leafColumns} 
-                    dataSource={this.getDataSource()} 
                     table={this}
-                    isGroup={true}
-
-                    onRowClick={this.props.onRowClick}
-
+                    leafColumns={this.state.leafColumns} 
                     groupHeader={this.props.groupHeader}
                     groupFooter={this.props.groupFooter}
+
+                    dataSource={this.getDataSource()} 
+                    isGroup={true}
+                    onRowClick={this.props.onRowClick}
                 />
-                {/* <tfoot>
-                    <tr>
-                        <th>TFooter</th>
-                        <th>TFooter</th>
-                        <th>TFooter</th>
-                        <th>TFooter</th>
-                    </tr>
-                </tfoot> */}
+                <TFoot columns={this.props.footColumns} deep={this.props.footColumns?.length} />
                 <THead 
                     columns={this.state.columns} 
                     leafColumns={this.state.leafColumns}

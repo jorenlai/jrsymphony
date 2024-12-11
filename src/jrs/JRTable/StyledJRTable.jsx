@@ -1,9 +1,11 @@
 import styled from "styled-components";
 
 export const StyledJRTable=styled.div`
+    --row-bd-color:#cccccc;
+    --row-b-color:#ffffff;
     background: #ededed;
-    border-left:1px solid gray;
-    border-right:1px solid gray;
+    border-left:1px solid var(--row-bd-color);
+    border-right:1px solid var(--row-bd-color);
 
     display:flex;
     flex-direction: column;
@@ -21,12 +23,10 @@ export const StyledJRTable=styled.div`
         align-items: center;
     }
 
-
-
     &.row-highlightable{
         tbody{
             tr:not(.jr-group-header,.jr-group-footer):hover{
-                background:#ffffff;
+                background:#ededed;
                 cursor: pointer;
                 transition:  background-color .8s;
                 td{
@@ -39,6 +39,10 @@ export const StyledJRTable=styled.div`
     }
 
     table{
+        min-width:100%;
+        width: max-content;
+        border-spacing: 0;
+
         thead{
             position: sticky;
             top: 0;
@@ -57,31 +61,43 @@ export const StyledJRTable=styled.div`
             position: sticky;
             bottom: 0;
 
+            tr:nth-child(1){
+                th{
+                    Xborder-top:1px solid var(--row-bd-color);
+                }
+            }
+            th:nth-child(1){
+                Xborder-left:1px solid var(--row-bd-color);
+            }
             th{
                 height:32px;
                 padding: 4px;
-                background: #ebecec;
-                Xbackground: linear-gradient(180deg, rgba(227, 227, 226, 1) 0%, rgba(255, 255, 255, 1) 25%, rgba(210, 210, 210, 1) 100%);
-                box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #8a847dbf inset;
+                background: #e4e4e4;
+                xbackground: linear-gradient(180deg, rgba(227, 227, 226, 1) 0%, rgba(255, 255, 255, 1) 25%, rgba(210, 210, 210, 1) 100%);
+                xbox-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #8a847dbf inset;
                 color: #525252;
                 white-space: nowrap;
+
+                border-left:2px solid #f4f4f4;
+                border-top:2px solid #f4f4f4;
+                border-right:2px solid var(--row-bd-color);
+                border-bottom:2px solid var(--row-bd-color);
             }
         }
 
         tbody{
             tr{
-                background:#ededed;
+                background:var(--row-b-color);
+                a:#ededed;
                 th{
                     color:#444444;
                 }
                 td{
-                    border-bottom: 1px solid #c6c6c6;
+                    border-bottom: 1px solid var(--row-bd-color);
                     color:#2e2e2e;
                     padding: 4px;
                 }
             }
-
-
             
             tr.jr-group-header
             ,tr.jr-group-footer{
@@ -89,26 +105,12 @@ export const StyledJRTable=styled.div`
                 background:#dddbdb;
 
                 th{
-                    border-bottom: 1px solid #c6c6c6;
-                    border-right: 1px solid #c6c6c6;
+                    border-bottom: 1px solid var(--row-bd-color);
+                    border-right: 1px solid var(--row-bd-color);
                     padding: 4px 8px;
                 }
             }
         }
-
-
-                
-
-        XXtable-layout: fixed;
-        min-width:100%;
-        width: max-content;
-
-        border-spacing: 0;
-        XXborder:1px solid gray;
-
-
-
-
     }   
           
 

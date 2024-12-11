@@ -4,12 +4,12 @@ import styled from "styled-components"
 
 const StyledSeparator=styled.tbody`
     th{
-        height:8px;
+        height:4px;
         background:#c6c6c6;
     }
 `
 const Separator=({length,children})=>{
-    return <StyledSeparator>
+    return <StyledSeparator className={'separator'}>
         <tr>
             <th colSpan={length}>{children}</th>
         </tr>

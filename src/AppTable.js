@@ -111,7 +111,7 @@ function AppTable() {
 					}
 				}
 			]}
-			XgroupFooter={[
+			groupFooter={[
 				[
 					{label:'Name',colSpan:2
 						,render({groupData}){
@@ -129,6 +129,31 @@ function AppTable() {
 					}
 				]
 			]}
+
+			footColumns={[
+				[
+					{label:'Name',xcolSpan:2
+						,render({groupData}){
+							return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+						}
+					}
+					,{label:'Address',xcolSpan:4}
+					,{label:'Address',xcolSpan:4}
+					,{label:'Address',rowSpan:4}
+					,{label:'Address',rowSpan:4}
+				]
+				,[
+					{label:'Name',xcolSpan:2
+						,render({groupData}){
+							return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+						}
+					}
+					,{label:'2',colSpan:2}
+				]
+				
+			]}
+
+
 			columns={[
 				
 				{name:'name',label:'Name',type:JRInput}
@@ -145,20 +170,22 @@ function AppTable() {
 				
 
 			]}
-
+			
 			// start={function({setStyle}){
 			// 	setStyle({
 			// 		border:'1px solid red'
 			// 	})
 			// 	return <div>start</div>
 			// }}
-			// left={function({setStyle}){
-			// 	setStyle({
-			// 		flexBasis:'200px'
-			// 		,border:'1px solid green'
-			// 	})
-			// 	return <div>I am Left</div>
-			// }}
+			right={function({setStyle}){
+				po('left this ',this)
+				setStyle({
+					flexBasis:'300px'
+					,border:'1px solid gray'
+					,overflow: 'overlay'
+				})
+				return <pre>{JSON.stringify(this.getValue(),null,2)}</pre>
+			}}
 			Xheader={function({setStyle}){
 				setStyle({
 					border:'1px solid blue'
