@@ -157,10 +157,8 @@ function AppTable() {
 			columns={[
 				{name:'name',label:'Name'
 					,type:InputNumber
-					,typeStyle({record}){
-						return{
-							width:'100%'
-						}
+					,typeStyle:{
+						border:'10px solid blue'
 					}
 				}
 				,{name:'fullName',label:'Full Name'

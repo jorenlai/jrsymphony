@@ -92,7 +92,7 @@ const GroupFooter=(props)=>{
 ////////////////////////////////////////////////////////////////////////////
 const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     let content 
-    const {type,typeStyle:setTypeStyle,render,setValue,getValue,...column}=_column
+    const {type,typeStyle:_typeStyle,render,setValue,getValue,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
         // po('---Table onChange---',targetValue)
@@ -101,7 +101,9 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     }
     render?.bind(table)
     if(type){
-        const typeStyle=setTypeStyle?.bind(table)({record})
+        const typeStyle=typeof _typeStyle==='function'
+            ?_typeStyle?.bind(table)({record})
+            :_typeStyle
         
         content=React.createElement(type,{
             onChange
