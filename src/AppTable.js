@@ -78,7 +78,7 @@ function AppTable() {
 			>Add to group</button>
 		</div>
 		<Table
-			onRowClick={({record})=>{
+			XXonRowClick={({record})=>{
 				alert(JSON.stringify(record))
 			}}
 			me={'Table'}
@@ -155,8 +155,14 @@ function AppTable() {
 
 
 			columns={[
-				
-				{name:'name',label:'Name',type:JRInput}
+				{name:'name',label:'Name'
+					,type:InputNumber
+					,typeStyle({record}){
+						return{
+							width:'100%'
+						}
+					}
+				}
 				,{name:'fullName',label:'Full Name'
 					// ,type:JRFields
 					,columns:[
@@ -166,9 +172,6 @@ function AppTable() {
 				}
 				,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}
 				,{name:'address',label:'Address'}
-				
-				
-
 			]}
 			
 			// start={function({setStyle}){

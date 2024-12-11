@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import React from "react";
-import JRSubmit from "../JRSubmit";
 import { po } from "../JRUtils";
 import JRFrame from "../JRFrame/JRFrame";
+import {StyleJRFields} from "./StyleJRFields"
 
 function checkMap(_name,inputValue,mapValue,nameList){
     if(nameList.length) {
@@ -12,7 +12,6 @@ function checkMap(_name,inputValue,mapValue,nameList){
         }
         checkMap(_name,inputValue,mapValue[name],nameList)
     }else{
-        po('checkMap',_name,mapValue,inputValue)
         mapValue[_name]=inputValue
     }
 }
@@ -41,9 +40,6 @@ const StyledFooter = styled.div`
 const StyledColumn=styled.div`
     flex:1;
     display: grid;
-    Xborder-bottom: 1px solid #d0d0d0;
-    Xborder-right: 1px solid #d0d0d0;
-    padding: 6px;
 
     ${({$layout,$labelWidth,$hasLabel,$valueWidth})=>{
         if($layout=='v'){
@@ -52,17 +48,8 @@ const StyledColumn=styled.div`
             return `grid: 1fr / ${$hasLabel?$labelWidth:''} ${$valueWidth};`
         }
     }}
-    
-    > label,> main{
-        xborder:1px solid gray;
-        xbackground:#3d3d3d;
-    }
 `
 const StyledColumnLabel=styled.label`
-    text-wrap: nowrap;
-    padding: 4px 10px 4px 0;
-    font-weight: bold;
-
     ${({$layout})=>{
         if($layout=='v'){
             return `text-align: start;`
@@ -168,30 +155,10 @@ const maxValidator=({value,max})=>{
     } 
 }
 
-const StyleJRFields=styled.main`
-    flex-direction: column;
-    flex:1;
-    overflow: overlay;
 
-    border: 1px solid #a0a0a0;
-    background: #e1e1e1;
-
-    .columns{
-        label{
-            color:#525252;
-        }
-    }
-`
 
 export default class JRFields extends JRFrame {
-    // constructor(props){
-    //     super(props)
-    //     po('JRFields----------------------',props)
-    // }
-
     UNSAFE_componentWillMount(){
-        // console.clear()
-        // po('1---------------1 UNSAFE_componentWillMount')
         this.#initValidateValue()
 
     }
@@ -254,7 +221,6 @@ export default class JRFields extends JRFrame {
         Object.entries(this.getValidateValue())
         .filter(([fullname,validateConfig])=>validateConfig.isValid!=true)
         .forEach(([fullname,validateConfig])=>{
-            // po('forEach',fullname,validateConfig)
             this.#exeValidateConfig(validateConfig,this.getValue(fullname),this.getValue())
         })
         this.setState({validateValue:this.getValidateValue()})
@@ -307,6 +273,9 @@ export default class JRFields extends JRFrame {
         ,parentName
         ,fullname
     ){
+        po('----------------------------------------')
+        po('parentName',parentName)
+        po('fullname',fullname)
         const value=name?parentValue?.[name]:parentValue
 
         const gap=column.gap??this.props.gap
@@ -352,7 +321,6 @@ export default class JRFields extends JRFrame {
                         type
                         ,{
                             value:value,onChange,record:parentValue,style:{width:'100%',...typeStyle}
-                            //,parentName:_parentName 移除了這個, 不知道會不會有問題
                             ,...column
                         }
                     )
@@ -434,7 +402,7 @@ export default class JRFields extends JRFrame {
 
 
     renderMe(){
-        return <StyleJRFields style={this.props.style}>
+        return <StyleJRFields style={this.props.style} className={'jr-fields'}>
             <StyledGrid cols={this.props.cols} style={this.props.gridStyle} className={'jr-grid'} $gap={this.props.gap}>
                 {
                     this.createColumns(
@@ -445,17 +413,6 @@ export default class JRFields extends JRFrame {
                     )
                 }
             </StyledGrid>
-
-            {/* {this.props.footer!==undefined 
-                && <StyledFooter>
-                    {this.state.test1}
-                {
-                    typeof this.props.footer === 'function'
-                        ? this.props.footer.bind(this)({value:this.getValue()})
-                        : this.props.footer
-                }
-                </StyledFooter>
-            } */}
         </StyleJRFields>
     }
 
