@@ -145,7 +145,7 @@ export default class JRTable extends JRFrame {
         
         return<StyledJRTable
             className={`${this.props.className??''} jr-table ${this.props.onRowClick?'row-highlightable':''}`}
-            style={this.props.style}
+            //style={this.props.style} this.props.style 只能放在frame
         >
             <table className={'jr-table-table'}>
                 <TBodies 

@@ -1,11 +1,13 @@
 import styled from "styled-components";
 
 export const StyledJRTable=styled.div`
-    --row-bd-color:#cccccc;
-    --row-b-color:#ffffff;
-    background: #ededed;
-    border-left:1px solid var(--row-bd-color);
-    border-right:1px solid var(--row-bd-color);
+    --column-bd-color:#cccccc;
+    --column-b-color:#eeeeee;
+    --column-b-hover-color:#ffffff;
+
+    background: var(--column-b-color);
+    border-left:1px solid var(--column-bd-color);
+    border-right:1px solid var(--column-bd-color);
 
     display:flex;
     flex-direction: column;
@@ -26,7 +28,7 @@ export const StyledJRTable=styled.div`
     &.row-highlightable{
         tbody{
             tr:not(.jr-group-header,.jr-group-footer):hover{
-                background:#ededed;
+                background:var(--column-b-hover-color);
                 cursor: pointer;
                 transition:  background-color .8s;
                 td{
@@ -63,11 +65,11 @@ export const StyledJRTable=styled.div`
 
             tr:nth-child(1){
                 th{
-                    Xborder-top:1px solid var(--row-bd-color);
+                    Xborder-top:1px solid var(--column-bd-color);
                 }
             }
             th:nth-child(1){
-                Xborder-left:1px solid var(--row-bd-color);
+                Xborder-left:1px solid var(--column-bd-color);
             }
             th{
                 height:32px;
@@ -80,20 +82,20 @@ export const StyledJRTable=styled.div`
 
                 border-left:2px solid #f4f4f4;
                 border-top:2px solid #f4f4f4;
-                border-right:2px solid var(--row-bd-color);
-                border-bottom:2px solid var(--row-bd-color);
+                border-right:2px solid var(--column-bd-color);
+                border-bottom:2px solid var(--column-bd-color);
             }
         }
 
         tbody{
             tr{
-                background:var(--row-b-color);
+                background:var(--column-b-color);
                 a:#ededed;
                 th{
                     color:#444444;
                 }
                 td{
-                    border-bottom: 1px solid var(--row-bd-color);
+                    border-bottom: 1px solid var(--column-bd-color);
                     color:#2e2e2e;
                     padding: 4px;
                 }
@@ -105,8 +107,8 @@ export const StyledJRTable=styled.div`
                 background:#dddbdb;
 
                 th{
-                    border-bottom: 1px solid var(--row-bd-color);
-                    border-right: 1px solid var(--row-bd-color);
+                    border-bottom: 1px solid var(--column-bd-color);
+                    border-right: 1px solid var(--column-bd-color);
                     padding: 4px 8px;
                 }
             }

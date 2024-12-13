@@ -156,9 +156,13 @@ function AppTable() {
 
 			columns={[
 				{name:'name',label:'Name'
-					,type:InputNumber
-					,typeStyle:{
-						border:'10px solid blue'
+					,type:Input
+					,typeStyle({record}){
+						po(record)
+						return {
+							border:`1px solid ${record.name==null||record.name.trim()==''?'red':''}`
+							,width:'100%'
+						}
 					}
 				}
 				,{name:'fullName',label:'Full Name'
@@ -178,7 +182,7 @@ function AppTable() {
 			// 	})
 			// 	return <div>start</div>
 			// }}
-			right={function({setStyle}){
+			XXright={function({setStyle}){
 				po('left this ',this)
 				setStyle({
 					flexBasis:'300px'

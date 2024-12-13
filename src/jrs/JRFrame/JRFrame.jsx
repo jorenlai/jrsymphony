@@ -18,7 +18,7 @@ export default class JRFrame extends JRSubmit {
 
     render(){
         po('JRFrame JRFrame======================')
-        return <StyledJRFrame className={`${this.props.className} jr-frame`} >
+        return <StyledJRFrame style={this.props.style} className={`${this.props.className} jr-frame`} >
             <FreeType tag='div' config={this.props.start} me={this} className={'start'}/>
             <main>
                 <FreeType tag='header' config={this.props.header} me={this}/>

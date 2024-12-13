@@ -43,3 +43,11 @@ export const genData=()=>{
     
 	// po(gData)
 }
+
+
+export const flexType=(config,me,payload,doElse)=>{
+    const result=typeof config==='function'
+        ?config?.bind(me)(payload)
+        :config??doElse
+    return result
+}

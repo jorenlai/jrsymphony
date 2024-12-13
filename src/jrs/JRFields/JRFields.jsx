@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import React from "react";
-import { po } from "../JRUtils";
+import { flexType, po } from "../JRUtils";
 import JRFrame from "../JRFrame/JRFrame";
 import {StyleJRFields} from "./StyleJRFields"
 
@@ -22,7 +22,6 @@ const StyledGridFrame = styled.div`
 `
 
 const StyledGrid = styled.div`
-    background: #ededed;
     display: grid;
     grid: ${({ grid, cols, children }) =>
         grid
@@ -81,8 +80,8 @@ const StyledColumnLabel=styled.label`
 
 `
 const StyledColumnValue=styled.main`
-    flex:1;
-    display:flex;
+    Xflex:1;
+    Xdisplay:flex;
     overflow: hidden;
 
     text-align: start;
@@ -93,9 +92,9 @@ const StyledColumnValue=styled.main`
                     xborder:1px solid red;
                 }
             `
-            }
-        }}
-        `
+        }
+    }}
+`
 
 // String.prototype.valueString = function (value = {}) {
 //     return Array.from(new Set(this.match(/[^{}]+(?=})/g))).reduce((aco, name) => {
@@ -265,7 +264,8 @@ export default class JRFields extends JRFrame {
     createColumn(
         parentValue
         ,{
-            type,name,colSpan,rowSpan,style,typeStyle
+            type,name,colSpan,rowSpan,style
+            ,typeStyle:_typeStyle
             ,required
             ,...column
         }
@@ -273,17 +273,17 @@ export default class JRFields extends JRFrame {
         ,parentName
         ,fullname
     ){
-        po('----------------------------------------')
-        po('parentName',parentName)
-        po('fullname',fullname)
+        // po('----------------------------------------')
+        // po('parentName',parentName)
+        // po('fullname',fullname)
         const value=name?parentValue?.[name]:parentValue
 
         const gap=column.gap??this.props.gap
         const label=column.label
-        const _style={}
+        const _style=flexType(style,this,{},{})
         if (colSpan) _style.gridColumn = `span ${colSpan}`
         if (rowSpan) _style.gridRow = `span ${rowSpan}`
-        Object.assign(_style,style)
+        // Object.assign(_style,style)
 
 
         let content
@@ -293,7 +293,7 @@ export default class JRFields extends JRFrame {
         const fn=fullname.join('.')
         const onChange=(inputValue)=>{
             const targetValue=inputValue?.target?.value ?? inputValue
-            po('===Form onChange===',targetValue)
+            // po('===Form onChange===',targetValue)
             try{
                 parentValue[name]=targetValue
                 this.setValue({...this.getValue()})
@@ -311,6 +311,7 @@ export default class JRFields extends JRFrame {
         }
 
         if(type){
+            const typeStyle=flexType(_typeStyle,this,null)
             content=<StyledColumnValue className={'jr-column-value'}
                 style={{
                     gridColumn:label==null?'span 2':null
@@ -357,7 +358,7 @@ export default class JRFields extends JRFrame {
             $hasLabel={label!=null }
             key={`f${index}`} 
             style={_style} 
-            className={'columns'}
+            className={'jr-column'}
             $labelWidth={ column.labelProps?.width ?? this.props.labelProps?.width ?? '120px'}
             $valueWidth={ column.valueProps?.width ?? this.props.valueProps?.width ?? '1fr'}
         >
@@ -402,7 +403,9 @@ export default class JRFields extends JRFrame {
 
 
     renderMe(){
-        return <StyleJRFields style={this.props.style} className={'jr-fields'}>
+        return <StyleJRFields className={'jr-fields'}
+            //st`yle={this.props.style} this.props.style只能放在frame
+        >
             <StyledGrid cols={this.props.cols} style={this.props.gridStyle} className={'jr-grid'} $gap={this.props.gap}>
                 {
                     this.createColumns(

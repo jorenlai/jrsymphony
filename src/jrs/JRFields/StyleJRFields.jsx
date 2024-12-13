@@ -1,17 +1,22 @@
 import styled from "styled-components";
 
 export const StyleJRFields=styled.main`
+    --column-bd-color:#cccccc;
+    --column-b-color:#eeeeee;
+    --column-b-hover-color:#ffffff;
+
     flex-direction: column;
     flex:1;
     overflow: overlay;
 
+    color:#525252;
     border: 1px solid #a0a0a0;
-    background: #e1e1e1;
+    background: var(--column-b-color);
 
     >.jr-grid{
-        border:10px solid gray;
+        background:var(--column-b-color);
 
-        .columns{
+        .jr-column{
             padding: 6px;
 
             label{

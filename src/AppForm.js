@@ -20,7 +20,6 @@ const StyledApp = styled.div`
     html,*,*:before,*:after {
         box-sizing: border-box;
     }
-	padding:22px;
 	flex:1;
 	display: flex;
     flex-direction: column;
@@ -206,7 +205,12 @@ function AppForm() {
 						,type:Input
 						,name:'name'
 					}
-					,{label:'Age',name:'age',type:InputNumber,typeStyle:{width:'150px'}}
+					,{label:'Age',name:'age'
+						,type:InputNumber
+						,Xrender(){
+							return 'AAAAAAAA'
+						}
+					}
 					// ,{
 					// 	label:'Address JRFields'
 					// 	,name:'address'
@@ -257,9 +261,21 @@ function AppForm() {
 						}
 						,required:true
 					}
-
 					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
+					,{name:'list',label:'Table',type:JRTable
+						,colSpan:2
+						
+						,typeStyle:{
+							height:'120px'
+							
+						}
+						,columns:[
+							{name:'label',label:'Name',width:'120px',type:Input}
+							,{name:'value',label:'Age'}
+						]
+						,height:'200px'
+					}
+					
 					,{name:'test',label:'BR',type:Input}
 					,{name:'test',label:'BR',type:Input}
 					,{name:'test',label:'BR',type:Input}
@@ -276,13 +292,13 @@ function AppForm() {
 					,{name:'test',label:'BR',type:Input}
 
 				]}
-				header={function({setStyle}){
+				Xheader={function({setStyle}){
 					setStyle({
 						flexBasis:'50px'
 					})
 					return 'Header'
 				}}
-				footer={function({setStyle}){
+				Xleft={function({setStyle}){
 					setStyle({
 						flexBasis:'100px'
 					})

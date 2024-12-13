@@ -95,7 +95,6 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     const {type,typeStyle:_typeStyle,render,setValue,getValue,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
-        // po('---Table onChange---',targetValue)
         setValue(record,targetValue)
         table.setValue(table.getValue())
     }
@@ -113,7 +112,6 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
             ,...column
 
         })
-        // content='AAAAAAAAAAAAA'
     }else if(render){
         content=render({index:trIndex,groupIndex:tbodyIndex})
     }else{
