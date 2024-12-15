@@ -15,6 +15,7 @@ import JRTable2 from './jrs/JRTable2';
 import JRTable from './jrs/JRTable/JRTable';
 import JValue from './jrs/JValue';
 import { Table } from './jru/Table';
+import { Form } from './jru/Form';
 
 const StyledApp = styled.div`
     html,*,*:before,*:after {
@@ -157,7 +158,7 @@ function AppForm() {
 				XXX
 				</button>
 			</div>
-			<JRFields
+			<Form
 				debugMode={false}
 	
 				ref={ref1}
@@ -298,13 +299,13 @@ function AppForm() {
 					})
 					return 'Header'
 				}}
-				Xleft={function({setStyle}){
+				left={function({setStyle}){
 					setStyle({
-						flexBasis:'100px'
+						flexBasis:'300px'
+						,overflow: 'overlay'
 					})
 					return <pre>{JSON.stringify(this.getValue(),null,4)}</pre>
 				}}
-
 				get={{
 					autoRun:1
 					,url:'api/JRFields.json'

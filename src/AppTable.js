@@ -88,8 +88,8 @@ function AppTable() {
 			ref={ref1}
 			
 			get={{
-				// url:'api/list.json'
-				url:'api/groupList.json'
+				url:'api/list.json'
+				// url:'api/groupList.json'
 				,autoRun:true
 			}}
 			initValue={[
@@ -133,22 +133,33 @@ function AppTable() {
 			footColumns={[
 				[
 					{label:'Name',xcolSpan:2
-						,render({groupData}){
-							return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+						,style(){
+							return {
+								border:'10px solid green'
+								,color:'red'
+							}
+						}
+						// ,type:Input
+						,render(){
+							return 'render'
 						}
 					}
-					,{label:'Address',xcolSpan:4}
-					,{label:'Address',xcolSpan:4}
+					,{label:'Address',xcolSpan:4
+						,type:Input
+						
+					}
+					,{label:'Label',colSpan:2}
 					,{label:'Address',rowSpan:4}
 					,{label:'Address',rowSpan:4}
 				]
 				,[
 					{label:'Name',xcolSpan:2
-						,render({groupData}){
-							return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
-						}
+						// ,render({groupData}){
+						// 	return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+						// }
 					}
 					,{label:'2',colSpan:2}
+					,{label:'21'}
 				]
 				
 			]}
@@ -164,6 +175,11 @@ function AppTable() {
 							,width:'100%'
 						}
 					}
+					,style(){
+						return {
+							border:'1px solid red'
+						}
+					}
 				}
 				,{name:'fullName',label:'Full Name'
 					// ,type:JRFields
@@ -174,6 +190,14 @@ function AppTable() {
 				}
 				,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}
 				,{name:'address',label:'Address'}
+				,{name:'theMap',label:'Form'
+					,width:'280px'
+					,type:JRFields
+					,columns:[
+						{name:'dist',label:'Dist',type:Input}
+						,{name:'road',label:'Road',type:Input}
+					]
+				}
 			]}
 			
 			// start={function({setStyle}){

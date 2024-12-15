@@ -1,5 +1,5 @@
 import React from "react"
-import { po } from "../JRUtils"
+import { flexType, po } from "../JRUtils"
 import styled from "styled-components"
 
 const StyledSeparator=styled.tbody`
@@ -92,17 +92,16 @@ const GroupFooter=(props)=>{
 ////////////////////////////////////////////////////////////////////////////
 const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     let content 
-    const {type,typeStyle:_typeStyle,render,setValue,getValue,...column}=_column
+    const {style:_style,type,typeStyle:_typeStyle,render,setValue,getValue,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
         setValue(record,targetValue)
         table.setValue(table.getValue())
     }
+    const style=flexType(_style,table,{},{})
     render?.bind(table)
     if(type){
-        const typeStyle=typeof _typeStyle==='function'
-            ?_typeStyle?.bind(table)({record})
-            :_typeStyle
+        const typeStyle=flexType(_typeStyle,table,{record},{})
         
         content=React.createElement(type,{
             onChange
@@ -117,13 +116,17 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     }else{
         content=getValue(record)
     }
-    return <td key={tdIndex}>
+    return <td 
+        style={style}
+        key={tdIndex}
+    >
         {content}
     </td>
 }
 const Tds=({leafColumns,record,table,tbodyIndex,trIndex})=>{
     return leafColumns?.map((column,tdIndex)=>{
-        return <Td 
+        
+        return <Td
             column={column} 
             key={tdIndex} 
             record={record} 

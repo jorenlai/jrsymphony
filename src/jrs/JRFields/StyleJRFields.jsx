@@ -10,7 +10,7 @@ export const StyleJRFields=styled.main`
     overflow: overlay;
 
     color:#525252;
-    border: 1px solid #a0a0a0;
+    XXXborder: 1px solid #a0a0a0;
     background: var(--column-b-color);
 
     >.jr-grid{

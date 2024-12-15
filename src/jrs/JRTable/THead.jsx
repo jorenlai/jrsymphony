@@ -1,4 +1,4 @@
-import { po } from "../JRUtils"
+import { flexType, po, whatType } from "../JRUtils"
 
 
 const Colgroup=({leafColumns})=>{
@@ -58,7 +58,7 @@ export const THead=({columns,leafColumns})=>{
 
 
 const FootThs=({table,groupData,groupIndex,deep,columns,rowIndex})=>{
-    return columns?.map(({type,render,...column},colIndex)=>{
+    return columns?.map((column,colIndex)=>{
         // let content
         // if(type){
         //     content='type'
@@ -68,13 +68,14 @@ const FootThs=({table,groupData,groupIndex,deep,columns,rowIndex})=>{
         // }else{
         //     content=column.label
         // }
-
+        let style=flexType(column.style,table,{},{})
+        const content=whatType(column,table,column.label)
         return <th 
-            // key={colIndex} 
+            style={style}
             colSpan={column.colSpan} 
             rowSpan={column.rowSpan} 
         >
-            AAA
+            {content}
         </th>
     })
 }

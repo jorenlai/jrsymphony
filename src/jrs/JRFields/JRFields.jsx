@@ -403,9 +403,7 @@ export default class JRFields extends JRFrame {
 
 
     renderMe(){
-        return <StyleJRFields className={'jr-fields'}
-            //st`yle={this.props.style} this.props.style只能放在frame
-        >
+        return <StyleJRFields className={'jr-fields'}>
             <StyledGrid cols={this.props.cols} style={this.props.gridStyle} className={'jr-grid'} $gap={this.props.gap}>
                 {
                     this.createColumns(

@@ -4,7 +4,7 @@ import { po } from "../JRUtils";
 import { StyledJRFrame } from "./StyledJRFrame";
 
 const FreeType=({tag:Tag,config,me,className})=>{
-    if(config){
+    if(typeof config==='function'){
         let style
         const setStyle=function(_style){
             style=_style
@@ -17,7 +17,6 @@ const FreeType=({tag:Tag,config,me,className})=>{
 export default class JRFrame extends JRSubmit {
 
     render(){
-        po('JRFrame JRFrame======================')
         return <StyledJRFrame style={this.props.style} className={`${this.props.className} jr-frame`} >
             <FreeType tag='div' config={this.props.start} me={this} className={'start'}/>
             <main>

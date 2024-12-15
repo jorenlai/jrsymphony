@@ -1,3 +1,5 @@
+import React from "react"
+
 export const po=console.debug
 
 export const colonValueString=(string,value)=>{
@@ -45,9 +47,33 @@ export const genData=()=>{
 }
 
 
-export const flexType=(config,me,payload,doElse)=>{
-    const result=typeof config==='function'
-        ?config?.bind(me)(payload)
-        :config??doElse
+export const flexType=(type,me,payload,doElse)=>{
+    const result=typeof type==='function'
+        ?type?.bind(me)(payload)
+        :type??doElse
     return result
+}
+
+export const whatType=(
+    {type,typeStyle:_typeStyle,render,...config}
+    ,me
+    ,doElse
+)=>{
+    if(type){
+        // const style=flexType(typeStyle,me,{},{})
+        // return 'type'
+        const typeStyle=typeof _typeStyle==='function'
+            ?_typeStyle?.bind(me)()
+            :_typeStyle
+        
+        return React.createElement(type,{
+            style:typeStyle
+
+        })
+    }else if(render){
+        return render.bind(me)()
+    }else {
+        return doElse
+    }
+    return 'what type'
 }
