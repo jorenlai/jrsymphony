@@ -165,7 +165,7 @@ export default class JRTable extends JRFrame {
                     table={this}
                 />
             </table>
-            {this.noData() && <div className={'empty'}>無資料</div>}
+            <div className={'empty'}>{this.noData() && '無資料'}</div>
         </StyledJRTable>
     }
 }

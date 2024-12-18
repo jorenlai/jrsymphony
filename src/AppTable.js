@@ -111,7 +111,7 @@ function AppTable() {
 					}
 				}
 			]}
-			groupFooter={[
+			xgroupFooter={[
 				[
 					{label:'Name',colSpan:2
 						,render({groupData}){
@@ -130,7 +130,7 @@ function AppTable() {
 				]
 			]}
 
-			footColumns={[
+			xfootColumns={[
 				[
 					{label:'Name',xcolSpan:2
 						,style(){
@@ -168,14 +168,14 @@ function AppTable() {
 			columns={[
 				{name:'name',label:'Name'
 					,type:Input
-					,typeStyle({record}){
+					,XtypeStyle({record}){
 						po(record)
 						return {
 							border:`1px solid ${record.name==null||record.name.trim()==''?'red':''}`
 							,width:'100%'
 						}
 					}
-					,style(){
+					,Xstyle(){
 						return {
 							border:'1px solid red'
 						}
@@ -184,7 +184,7 @@ function AppTable() {
 				,{name:'fullName',label:'Full Name'
 					// ,type:JRFields
 					,columns:[
-						{name:'firstName',label:'First Name',Xtype:Input}
+						{name:'firstName',label:'First Name',Xtype:Input,align:'end'}
 						,{name:'lastName',label:'Last Name',XgroupFootertype:JRInput}
 					]	
 				}

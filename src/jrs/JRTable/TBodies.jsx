@@ -92,13 +92,14 @@ const GroupFooter=(props)=>{
 ////////////////////////////////////////////////////////////////////////////
 const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     let content 
-    const {style:_style,type,typeStyle:_typeStyle,render,setValue,getValue,...column}=_column
+    const {style:_style,align,type,typeStyle:_typeStyle,render,setValue,getValue,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
         setValue(record,targetValue)
         table.setValue(table.getValue())
     }
     const style=flexType(_style,table,{},{})
+
     render?.bind(table)
     if(type){
         const typeStyle=flexType(_typeStyle,table,{record},{})
@@ -117,7 +118,10 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
         content=getValue(record)
     }
     return <td 
-        style={style}
+        style={{
+            textAlign:align
+            ,...style
+        }}
         key={tdIndex}
     >
         {content}

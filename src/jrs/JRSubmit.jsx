@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import { colonValueString, po } from './JRUtils'
+import { colonValueString, flexType, po } from './JRUtils'
 import { displaySpinner } from '../jrx/LoadingBar'
 import msg from '../jrx/IMessage'
 
@@ -120,12 +120,13 @@ export default class JRSubmit extends React.Component {
             return this.#getValueByName(fullnamList,record[name])
         }
     }
+
     getValue(fullname){
         if(fullname){
             const fullnamList=fullname.split('.')
             return this.#getValueByName(fullnamList,this[this.from]?.value)
         }else{
-            return this[this.from]?.value 
+            return flexType(this[this.from]?.value,this,null,null)
         }
     }
 

@@ -6,8 +6,7 @@ export const StyledJRTable=styled.div`
     --column-b-hover-color:#ffffff;
 
     background: var(--column-b-color);
-    border-left:1px solid var(--column-bd-color);
-    border-right:1px solid var(--column-bd-color);
+    border:1px solid var(--column-bd-color);
 
     display:flex;
     flex-direction: column;
@@ -16,7 +15,7 @@ export const StyledJRTable=styled.div`
 
     .empty{
         color:#848484;
-        Xborder:10px solid red;
+
 
         height:100%;
         flex:1;
@@ -63,12 +62,12 @@ export const StyledJRTable=styled.div`
             position: sticky;
             bottom: 0;
 
-            tr:nth-child(1){
+            Xtr:nth-child(1){
                 th{
                     Xborder-top:1px solid var(--column-bd-color);
                 }
             }
-            th:nth-child(1){
+            Xth:nth-child(1){
                 Xborder-left:1px solid var(--column-bd-color);
             }
             th{
@@ -114,6 +113,4 @@ export const StyledJRTable=styled.div`
             }
         }
     }   
-          
-
 `
