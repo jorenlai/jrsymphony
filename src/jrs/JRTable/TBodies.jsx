@@ -92,7 +92,7 @@ const GroupFooter=(props)=>{
 ////////////////////////////////////////////////////////////////////////////
 const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     let content 
-    const {style:_style,align,type,typeStyle:_typeStyle,render,setValue,getValue,...column}=_column
+    const {style:_style,align,type,typeStyle:_typeStyle,render,setValue,getValue,onChange:_onChange,funcConfig,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
         setValue(record,targetValue)
@@ -101,19 +101,25 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     const style=flexType(_style,table,{},{})
 
     render?.bind(table)
+    const value=getValue(record)
     if(type){
         const typeStyle=flexType(_typeStyle,table,{record},{})
         
         content=React.createElement(type,{
-            onChange
-            ,value:getValue(record)
+            onChange:_onChange
+                ?(e)=>{
+                    _onChange?.bind(this)(e,{value,onChange,me:content})
+                }
+                :onChange
+            ,value
             ,style:typeStyle
             ,render
             ,...column
+            ,...funcConfig?.bind(this)({value})
 
         })
     }else if(render){
-        content=render({index:trIndex,groupIndex:tbodyIndex})
+        content=render({index:trIndex,groupIndex:tbodyIndex,value,record,onChange})
     }else{
         content=getValue(record)
     }

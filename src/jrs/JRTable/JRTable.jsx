@@ -8,6 +8,7 @@ import { StyledJRTable } from "./StyledJRTable";
 import JRFields from "../JRFields/JRFields";
 import JRThreeType from "../JRThreeType";
 import JRFrame from "../JRFrame/JRFrame";
+import { Checkbox, Input, InputNumber, Radio } from "antd";
 
 const getMapObject=(map,names)=>{
     const name=names.shift(names)
@@ -35,7 +36,32 @@ export default class JRTable extends JRFrame {
     }
 
     //------------------------------------------------------------------------------------
-    setColumns(_columns){
+    checkableColumn(props){
+        return {
+            render({value,onChange,...props}){
+                return <Checkbox checked={value} onChange={(e)=>{onChange(e.target.checked)}}/>
+            }
+            ,...props
+        }
+        // return {
+        //     type:Checkbox
+        //     ,funcConfig({value}){
+        //         po('fffffffffffff',value)
+        //         return {
+        //             align:'center'
+        //             ,checked:value
+        //         }
+        //     }
+        //     // ,label:'A'
+        //     ,onChange(e,{value,onChange,me}){
+        //         onChange(e.target.checked)
+        //     }
+        //     ,...props
+        // }
+    }
+    setColumns([..._columns]){
+        if(this.props.checkable) 
+            _columns.unshift(this.checkableColumn(this.props.checkable))
         const columns=[]
         const leafColumns=[]
         const initColumns=this.initColumns(_columns,0,columns,leafColumns,[])

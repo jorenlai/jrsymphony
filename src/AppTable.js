@@ -8,7 +8,7 @@ import JRSelect from './jrs/JRSelect';
 import { useRef, useState } from 'react';
 import { genData, po } from './jrs/JRUtils';
 import styled from 'styled-components';
-import { Input, InputNumber, Select } from 'antd';
+import { Checkbox, Input, InputNumber, Select } from 'antd';
 import JRCrud from './jrs/JRCrud';
 import JRTable2 from './jrs/JRTable2';
 import JRTable from './jrs/JRTable/JRTable';
@@ -96,6 +96,7 @@ function AppTable() {
 					{name:'Joren'}
 				]
 			}
+
 			xdataSourceName={'dataList'}
 			XXonClick={function(props){
 				alert(JSON.stringify(props))
@@ -164,10 +165,18 @@ function AppTable() {
 				
 			]}
 
-
+			checkable={{
+				name:'selected'
+			}}
 			columns={[
-				{name:'name',label:'Name'
-					,type:Input
+				{name:'selected',label:'selected'
+					,type:Input}
+				,{name:'id',label:'ID'}
+				,{name:'selected',label:'selected'
+					,type:Checkbox
+					,onChange(e,{value,onChange,me}){
+						onChange(e.target.checked)
+					}
 					,XtypeStyle({record}){
 						po(record)
 						return {
@@ -184,7 +193,7 @@ function AppTable() {
 				,{name:'fullName',label:'Full Name'
 					// ,type:JRFields
 					,columns:[
-						{name:'firstName',label:'First Name',Xtype:Input,align:'end'}
+						{name:'firstName',label:'First Name',type:Input,align:'end'}
 						,{name:'lastName',label:'Last Name',XgroupFootertype:JRInput}
 					]	
 				}
@@ -206,7 +215,7 @@ function AppTable() {
 			// 	})
 			// 	return <div>start</div>
 			// }}
-			XXright={function({setStyle}){
+			right={function({setStyle}){
 				po('left this ',this)
 				setStyle({
 					flexBasis:'300px'

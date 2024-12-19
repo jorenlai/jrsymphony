@@ -2,6 +2,7 @@
     {
         "id": 0,
         "name": "Name 0",
+        "selected":true,
         "age": 29,
         "fullName": {
             "firstName": "First Name 1",
@@ -33,6 +34,7 @@
     {
         "id": 1,
         "name": "Name 1",
+        "selected":false,
         "age": 30,
         "fullName": {
             "firstName": "First Name 1",
@@ -64,6 +66,7 @@
     {
         "id": 2,
         "name": "Name 2",
+        "selected":true,
         "age": 31,
         "fullName": {
             "firstName": "First Name 1",
