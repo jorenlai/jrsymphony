@@ -40,6 +40,7 @@ export const StyledJRTable=styled.div`
     }
 
     table{
+        Xheight: 100%;
         min-width:100%;
         width: max-content;
         border-spacing: 0;
@@ -60,7 +61,7 @@ export const StyledJRTable=styled.div`
 
         tfoot{
             position: sticky;
-            bottom: 0;
+            bottom: -1px;
 
             Xtr:nth-child(1){
                 th{
@@ -110,6 +111,11 @@ export const StyledJRTable=styled.div`
                     border-right: 1px solid var(--column-bd-color);
                     padding: 4px 8px;
                 }
+            }
+        }
+        tbody.empty-tbody{
+            td{
+                border:10px solid red;
             }
         }
     }   

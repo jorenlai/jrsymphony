@@ -15,29 +15,29 @@ const Colgroup=({leafColumns})=>{
     </colgroup>
 }
 
-const Ths=({deep,rowColumn,rowIndex})=>{
+const Ths=({deep,rowColumn,rowIndex,table})=>{
     return rowColumn?.map((column,colIndex)=>{
         return <th key={colIndex} 
             colSpan={column.colSpan} 
             rowSpan={column.isLeaf&&(deep>rowIndex)?deep-rowIndex+1:null} 
         >
-            {column.label}
+            {flexType(column.label,table)}
         </th>
     })
 }
 
-export const HeadTrs=({columns:_columns,trClassName})=>{
+export const HeadTrs=({columns:_columns,trClassName,table})=>{
     const columns=Array.isArray(_columns?.[0])
         ?_columns
         :[_columns]
     return columns?.map((rowColumn,rowIndex)=>{
         return <tr className={trClassName} key={rowIndex}>
-            <Ths deep={columns.length-1} rowColumn={rowColumn} rowIndex={rowIndex}/>
+            <Ths deep={columns.length-1} rowColumn={rowColumn} rowIndex={rowIndex} table={table}/>
         </tr>
     })
 }
 
-export const THead=({columns,leafColumns})=>{
+export const THead=({columns,leafColumns,table})=>{
     const trs=columns?.map((rowColumn,rowIndex)=>{
         return <tr key={rowIndex}>
             <Ths deep={columns.length-1} rowColumn={rowColumn} rowIndex={rowIndex}/>
@@ -45,7 +45,7 @@ export const THead=({columns,leafColumns})=>{
     })
     return <>
         <thead>
-            <HeadTrs columns={columns}/>
+            <HeadTrs columns={columns} table={table}/>
         </thead>
         <Colgroup leafColumns={leafColumns}/>
     </>
@@ -81,10 +81,10 @@ const FootThs=({table,groupData,groupIndex,deep,columns,rowIndex})=>{
 }
 
 
-export const TFoot=({columns,leafColumns})=>{
+export const TFoot=({table,columns,leafColumns})=>{
     const trs=columns?.map((rowColumn,rowIndex)=>{
         return <tr key={rowIndex}>
-            <FootThs columns={rowColumn}/>
+            <FootThs columns={rowColumn} table={table}/>
             {/* <Ths deep={columns.length-1} rowColumn={rowColumn} rowIndex={rowIndex}/> */}
         </tr>
     })

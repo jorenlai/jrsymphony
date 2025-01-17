@@ -1,14 +1,9 @@
-import styled from "styled-components";
-import { useMemo } from "react";
-import JRSubmit from "../JRSubmit";
 import { po } from "../JRUtils";
 import { TFoot, THead } from "./THead";
 import { TBodies } from "./TBodies";
 import { StyledJRTable } from "./StyledJRTable";
-import JRFields from "../JRFields/JRFields";
-import JRThreeType from "../JRThreeType";
 import JRFrame from "../JRFrame/JRFrame";
-import { Checkbox, Input, InputNumber, Radio } from "antd";
+import { Button, Checkbox } from "antd";
 
 const getMapObject=(map,names)=>{
     const name=names.shift(names)
@@ -36,16 +31,21 @@ export default class JRTable extends JRFrame {
     }
 
     //------------------------------------------------------------------------------------
+    getChecked(){
+        return [1,2,3,4]
+    }
     checkableColumn(props){
-        return {
-            render({value,onChange,...props}){
+        return {//方法1
+            render({value,onChange}){
                 return <Checkbox checked={value} onChange={(e)=>{onChange(e.target.checked)}}/>
             }
+            ,align:'center'
+            ,name:'checked'
             ,...props
         }
-        // return {
+        // return {//方法2
         //     type:Checkbox
-        //     ,funcConfig({value}){
+        //     ,funcProps({value}){
         //         po('fffffffffffff',value)
         //         return {
         //             align:'center'
@@ -59,9 +59,39 @@ export default class JRTable extends JRFrame {
         //     ,...props
         // }
     }
+    deletableColumn({name='deletable',sendValue,sendName,valueName,...props}){
+        return {
+            render({value,onChange}){
+                return <Checkbox checked={value} onChange={(e)=>{onChange(e.target.checked)}}/>
+            }
+            ,align:'center'
+            ,name
+            ,label(){
+                return <Button
+                    onClick={()=>{
+                        const value=this.props.delete.value 
+                            ?? this.getDataSource()?.filter(record=>record[name]).map(record=>sendValue?record[sendValue]:record)
+                        const callback=this.props.delete.callback 
+                            ?? function(a,b,c){
+                                this.reload()
+                            }
+                        this.delete({
+                            value:sendName?{[sendName]:value}:value  
+                            ,callback
+                            ,...props
+                        })
+                    }}
+                >刪除</Button>
+            }
+            ,...props
+        }
+    }
     setColumns([..._columns]){
         if(this.props.checkable) 
             _columns.unshift(this.checkableColumn(this.props.checkable))
+        if(this.props.deletable){
+            _columns.unshift(this.deletableColumn(this.props.deletable))
+        }
         const columns=[]
         const leafColumns=[]
         const initColumns=this.initColumns(_columns,0,columns,leafColumns,[])
@@ -69,8 +99,6 @@ export default class JRTable extends JRFrame {
     }
 
     initColumn(column,level,result,leafColumns,names){
-        // const {columns,...column}=_column
-        
         const isBranch=column.type===undefined&&column?.columns&&column?.columns.length
         const _names=column.name
             ?[...names,column.name]
@@ -88,7 +116,6 @@ export default class JRTable extends JRFrame {
                 ,isLeaf:true
             })
             leafColumns.push(column)
-            // column.isLeaf=true
             column.names=_names
 
             if(_names?.length>1){
@@ -144,19 +171,13 @@ export default class JRTable extends JRFrame {
         //group 還沒有考慮到
 
         if(this.getDataSource()){
-            po('------有資料時')
-            po('index',index)
             if(group===undefined){
-                po('is not group')
                 this.getDataSource().splice(index,0,record)//.push(record)
             }else{
-                po('is group',group)
-                po('value',this.getDataSource()[group])
                 this.getDataSource()[group].splice(index,0,record)//.push(record)
             }
             this.setValue(this.getValue())
         }else{
-            po('------沒有資料時')
             //未完成. 沒有資料的時候, 要考慮有或沒有dataSourceName的不同處理
             this.setValue({[this.props.dataSourceName]:[record]})
         }
@@ -171,7 +192,6 @@ export default class JRTable extends JRFrame {
         
         return<StyledJRTable
             className={`${this.props.className??''} jr-table ${this.props.onRowClick?'row-highlightable':''}`}
-            //style={this.props.style} this.props.style 只能放在frame
         >
             <table className={'jr-table-table'}>
                 <TBodies 
@@ -181,10 +201,17 @@ export default class JRTable extends JRFrame {
                     groupFooter={this.props.groupFooter}
 
                     dataSource={this.getDataSource()} 
-                    isGroup={true}
                     onRowClick={this.props.onRowClick}
                 />
-                <TFoot columns={this.props.footColumns} deep={this.props.footColumns?.length} />
+                {/* <tbody className={'empty-tbody'}style={{height:'100%'}}>
+                    <tr><td colSpan={this.state?.leafColumns?.length}></td></tr>
+                </tbody>
+                <div className={'empty-div'}>AAAAAAAAAAAAA</div> */}
+                <TFoot 
+                    columns={this.props.footColumns} 
+                    deep={this.props.footColumns?.length} 
+                    table={this}
+                />
                 <THead 
                     columns={this.state.columns} 
                     leafColumns={this.state.leafColumns}

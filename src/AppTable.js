@@ -4,7 +4,6 @@ import Test from './test';
 import Test1 from './jrs/test1';
 import JRSubmit from './jrs/JRSubmit';
 import JRSelect from './jrs/JRSelect';
-// import JRTable from './jrs/JRTableOld';
 import { useRef, useState } from 'react';
 import { genData, po } from './jrs/JRUtils';
 import styled from 'styled-components';
@@ -78,6 +77,7 @@ function AppTable() {
 			>Add to group</button>
 		</div>
 		<Table
+			cover={'aaaaaaaaaaaaaaaa'}
 			XXonRowClick={({record})=>{
 				alert(JSON.stringify(record))
 			}}
@@ -91,6 +91,8 @@ function AppTable() {
 				url:'api/list.json'
 				// url:'api/groupList.json'
 				,autoRun:true
+				// ,successMessage:'yyyyyyyyyyy'
+				// ,failedMessage:'ffffffffffffff'
 			}}
 			initValue={[
 					{name:'Joren'}
@@ -103,70 +105,96 @@ function AppTable() {
 			}}
 			XgroupHeader={[
 				{
-					label:'Group Header',colSpan:7
+					label:'Group Header',colSpan:8
+					,align:'center'
+					// ,style(){
+					// 	return {
+					// 		border:'1px solid red'
+					// 	}
+					// }
+					,style:{
+						border:'1px solid blue'
+					}
 					,render({groupData,groupIndex}){
 						const totalAge=groupData?.reduce((acc,record)=>{
 							return acc+=record.age ?? 0
 						},0)
-						return `Total age: ${totalAge}`
+						return `Total age: ${groupIndex}`
 					}
 				}
 			]}
-			xgroupFooter={[
-				[
-					{label:'Name',colSpan:2
-						,render({groupData}){
-							return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
-						}
-					}
-					,{}
-					,{label:'Address',colSpan:4}
-				]
-				,[
-					{label:'Group Footer 3',colSpan:7
-						,render({groupData}){
-							return ` All ${groupData.length} record`
-						}
-					}
-				]
-			]}
+			// groupFooter={[
+			// 	[
+			// 		{label:'Name',colSpan:2
+			// 			,render({groupData}){
+			// 				return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+			// 			}
+			// 		}
+			// 		,{}
+			// 		,{label:'Address',colSpan:4}
+			// 	]
+			// 	,[
+			// 		{label:'Group Footer 3',colSpan:7
+			// 			,render({groupData,groupIndex}){
+			// 				return ` All ${groupIndex} record`
+			// 			}
+			// 		}
+			// 	]
+			// ]}
 
-			xfootColumns={[
-				[
-					{label:'Name',xcolSpan:2
-						,style(){
-							return {
-								border:'10px solid green'
-								,color:'red'
-							}
-						}
-						// ,type:Input
-						,render(){
-							return 'render'
-						}
-					}
-					,{label:'Address',xcolSpan:4
-						,type:Input
+			// footColumns={[
+			// 	[
+			// 		{label:'Name A',xcolSpan:2
+			// 			,style(){
+			// 				return {
+			// 					border:'10px solid green'
+			// 					,color:'red'
+			// 				}
+			// 			}
+			// 			// ,type:Input
+			// 			,render(a,b,c){
+			// 				po('a,b,c',a,b,c)
+			// 				po('this',this.getDataSource())
+			// 				return 'render AA'
+			// 			}
+			// 		}
+			// 		,{label:'Address',xcolSpan:4
+			// 			,type:Input
 						
-					}
-					,{label:'Label',colSpan:2}
-					,{label:'Address',rowSpan:4}
-					,{label:'Address',rowSpan:4}
-				]
-				,[
-					{label:'Name',xcolSpan:2
-						// ,render({groupData}){
-						// 	return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
-						// }
-					}
-					,{label:'2',colSpan:2}
-					,{label:'21'}
-				]
+			// 		}
+			// 		,{label:'Label',colSpan:2}
+			// 		,{label:'Address',rowSpan:4}
+			// 		,{label:'Address',rowSpan:4}
+			// 	]
+			// 	,[
+			// 		{label:'Name',xcolSpan:2
+			// 			// ,render({groupData}){
+			// 			// 	return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+			// 			// }
+			// 		}
+			// 		,{label:'2',colSpan:2}
+			// 		,{label:'21'}
+			// 	]
 				
-			]}
+			// ]}
+			delete={{
+				url:'aaa'
 
+			}}
+			deletable={{
+				name:'deletableDD'
+				,sendValue:'id'
+				,sendName:'itemsId'
+				,successMessage:'delete success'
+				,failedMessage:'delete failed'
+				,response(){
+					return {
+						status:200
+					}
+				}
+			}}
 			checkable={{
-				name:'selected'
+				name:'checkedCC'
 			}}
 			columns={[
 				{name:'selected',label:'selected'
@@ -177,16 +205,9 @@ function AppTable() {
 					,onChange(e,{value,onChange,me}){
 						onChange(e.target.checked)
 					}
-					,XtypeStyle({record}){
-						po(record)
+					,funcProps({value}){
 						return {
-							border:`1px solid ${record.name==null||record.name.trim()==''?'red':''}`
-							,width:'100%'
-						}
-					}
-					,Xstyle(){
-						return {
-							border:'1px solid red'
+							checked:value
 						}
 					}
 				}
@@ -197,16 +218,16 @@ function AppTable() {
 						,{name:'lastName',label:'Last Name',XgroupFootertype:JRInput}
 					]	
 				}
-				,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}
-				,{name:'address',label:'Address'}
-				,{name:'theMap',label:'Form'
-					,width:'280px'
-					,type:JRFields
-					,columns:[
-						{name:'dist',label:'Dist',type:Input}
-						,{name:'road',label:'Road',type:Input}
-					]
-				}
+				// ,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}
+				// ,{name:'address',label:'Address'}
+				// ,{name:'theMap',label:'Form'
+				// 	,width:'280px'
+				// 	,type:JRFields
+				// 	,columns:[
+				// 		{name:'dist',label:'Dist',type:Input}
+				// 		,{name:'road',label:'Road',type:Input}
+				// 	]
+				// }
 			]}
 			
 			// start={function({setStyle}){
@@ -216,36 +237,36 @@ function AppTable() {
 			// 	return <div>start</div>
 			// }}
 			right={function({setStyle}){
-				po('left this ',this)
 				setStyle({
-					flexBasis:'300px'
+					flexBasis:'250px'
 					,border:'1px solid gray'
 					,overflow: 'overlay'
 				})
 				return <pre>{JSON.stringify(this.getValue(),null,2)}</pre>
 			}}
-			Xheader={function({setStyle}){
-				setStyle({
-					border:'1px solid blue'
-					,flexBasis:'200px'
-					,overflow: 'overlay'
-				})
-				const me=this
-				return <div>
-					<button
-						onClick={()=>{
-							me.add({name:'Added name'},1,0)
-						}}
-					>Button</button>
-					<pre>{JSON.stringify(this.getValue(),null,4)}</pre>
-				</div>
-			}}
-			Xfooter={function({setStyle}){
-				setStyle({
-					border:'1px solid yellow'
-				})
-				return <div>AVC</div>
-			}}
+			// header={function({setStyle,...props}){
+			// 	po('propspropspropsprops',props)
+			// 	setStyle({
+			// 		border:'1px solid blue'
+			// 		// ,flexBasis:'200px'
+			// 		// ,overflow: 'overlay'
+			// 	})
+			// 	const me=this
+			// 	return <div>
+			// 		<button
+			// 			onClick={()=>{
+			// 				po('',this.getChecked())
+			// 				// me.add({name:'Added name'},1,0)
+			// 			}}
+			// 		>Button</button>
+			// 	</div>
+			// }}
+			// Xfooter={function({setStyle}){
+			// 	setStyle({
+			// 		border:'1px solid yellow'
+			// 	})
+			// 	return <div>AVC</div>
+			// }}
 			// right={function({setStyle}){
 			// 	setStyle({
 			// 		flexBasis:'200px'

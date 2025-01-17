@@ -3,6 +3,7 @@ import axios from 'axios'
 import { colonValueString, flexType, po } from './JRUtils'
 import { displaySpinner } from '../jrx/LoadingBar'
 import msg from '../jrx/IMessage'
+import styled from 'styled-components'
 
 
 const axiosSubmit = axios.create({
@@ -11,6 +12,13 @@ const axiosSubmit = axios.create({
     ,maxBodyLength: 104857600 //100mb 104857600
     ,maxContentLength: 104857600 //100mb
 })
+
+const StyledCover=styled.div`
+    border:2px solid red;
+`
+const Cover=({children})=>{
+    return <StyledCover>{children}</StyledCover>
+}
 
 export default class JRSubmit extends React.Component {
     #methods = ['get', 'post', 'put','patch','delete','download']
@@ -51,7 +59,6 @@ export default class JRSubmit extends React.Component {
             {
                 method:'post'
                 ,updateValue:false
-                // ,updateRawValue:true
             }
             ,this.props['post']
             ,config
@@ -71,6 +78,18 @@ export default class JRSubmit extends React.Component {
         this.submit(config)
     }
 
+    delete(config = {}) {
+        config = Object.assign(
+            {
+                method:'delete'
+                ,updateValue:false
+            }
+            ,this.props['delete']
+            ,config
+        )
+        this.submit(config)
+    }
+
     get from(){
         return this.props.value===undefined?'state':'props'
     }
@@ -82,7 +101,7 @@ export default class JRSubmit extends React.Component {
         this.setState({isDirty})
     }
     get rawValue(){
-        return this.state?.rawValue//{info:{1:1}}//
+        return this.state?.rawValue
     }
     setRawValue(rawValue){
         this.setState({rawValue:JSON.parse(JSON.stringify(rawValue??''))})
@@ -91,7 +110,6 @@ export default class JRSubmit extends React.Component {
         this.setValue(this.rawValue,true)
     }
     setValue(value,reset=false){
-        po('-----submit isetValue',value,this.props.me)
         if(this.props.onChange){
             this.props.onChange(value)
         }else{
@@ -161,6 +179,9 @@ export default class JRSubmit extends React.Component {
         if(method=='get'){
             if(sendValue==null || sendValue)params1.params=payload
             params1.headers=headers
+        }else if(method=='delete'){
+            if(sendValue==null || sendValue)params1.data=payload
+            params1.headers=headers
         }else{
             if(sendValue==null || sendValue){
                 params1=payload
@@ -178,8 +199,14 @@ export default class JRSubmit extends React.Component {
         }
     }
 
+    reload(){
+        po('reload 還沒有做 ')
+    }
+
     submit(config){
+        const me=this
         displaySpinner({mask:config.mask})
+        this.setState({loading:true})
         let _payload
         ;(()=>{
             if (Array.isArray(config.url)) {
@@ -207,13 +234,11 @@ export default class JRSubmit extends React.Component {
             .catch((res)=>{
                 this.handleResponse(res,_payload,config)
             })
-            // .finally(function (a,b,c) {
-            //     console.log('finally',a,b,c);
-            //     displaySpinner({mask:false})
-            // })
+            .finally(function (a,b,c) {
+                me.setState({loading:false})
+                displaySpinner({mask:false})
+            })
     }
-
-
 
     handleResponse=(response,payload,config)=>{
         if(Array.isArray(response)){
@@ -243,10 +268,15 @@ export default class JRSubmit extends React.Component {
             }
         }    
         config.callback?.bind(this)(isSuccess,response,payload)
-        displaySpinner({mask:false})
+    }
+    
+    renderer(){
+        return
     }
     
     render() {
-        return
+        return this.props.cover!=null && this.state?.lodaing
+            ?<Cover>{flexType(this.props.cover,this,null,null)}</Cover>
+            :this.renderer()
     }
 }

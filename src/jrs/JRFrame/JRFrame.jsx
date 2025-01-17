@@ -16,7 +16,7 @@ const FreeType=({tag:Tag,config,me,className})=>{
 
 export default class JRFrame extends JRSubmit {
 
-    render(){
+    renderer(){
         return <StyledJRFrame style={this.props.style} className={`${this.props.className} jr-frame`} >
             <FreeType tag='div' config={this.props.start} me={this} className={'start'}/>
             <main>

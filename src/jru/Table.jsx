@@ -4,6 +4,11 @@ import JRSubmit from "../jrs/JRSubmit";
 
 
 export const Table=styled(JRTable)`
+    .jr-group-footer{
+        XXposition: sticky;
+        XXbottom: 32.7px;
+    }
+
     XXborder:10px solid red;
     table{
         tbody{
@@ -11,6 +16,7 @@ export const Table=styled(JRTable)`
                 td{
                     padding: 4px;
                 }
+            }
         }
     }
 `

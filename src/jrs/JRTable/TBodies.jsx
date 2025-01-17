@@ -20,7 +20,8 @@ const Separator=({length,children})=>{
 
 
 const Ths=({table,groupData,groupIndex,deep,rowColumn,rowIndex})=>{
-    return rowColumn?.map(({type,render,...column},colIndex)=>{
+    return rowColumn?.map(({style:_style,align,type,render,...column},colIndex)=>{
+        const style=flexType(_style,table,{},{})
         let content
         if(type){
             content='type'
@@ -30,8 +31,10 @@ const Ths=({table,groupData,groupIndex,deep,rowColumn,rowIndex})=>{
         }else{
             content=column.label
         }
-
+        // style.textAlign=align
         return <th key={colIndex} 
+            
+            style={{textAlign:align,...style}}
             colSpan={column.colSpan} 
             rowSpan={column.isLeaf&&(deep>rowIndex)?deep-rowIndex+1:null} 
         >
@@ -92,7 +95,7 @@ const GroupFooter=(props)=>{
 ////////////////////////////////////////////////////////////////////////////
 const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     let content 
-    const {style:_style,align,type,typeStyle:_typeStyle,render,setValue,getValue,onChange:_onChange,funcConfig,...column}=_column
+    const {style:_style,align,vAlign='baseline',type,typeStyle:_typeStyle,render,setValue,getValue,onChange:_onChange,funcProps,...column}=_column
     const onChange=(inputValue)=>{
         const targetValue=inputValue?.target?.value ?? inputValue
         setValue(record,targetValue)
@@ -115,7 +118,7 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
             ,style:typeStyle
             ,render
             ,...column
-            ,...funcConfig?.bind(this)({value})
+            ,...funcProps?.bind(this)({value})
 
         })
     }else if(render){
@@ -126,6 +129,7 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     return <td 
         style={{
             textAlign:align
+            ,verticalAlign:vAlign
             ,...style
         }}
         key={tdIndex}
@@ -186,7 +190,7 @@ const TBody=({groupData,dataSource,groupHeader,leafColumns,groupFooter,table,tbo
             />}
 
         </tbody>
-        {(dataSource.length > (tbodyIndex+1)) && <Separator length={leafColumns.length} key={`sp-${tbodyIndex}`}></Separator>}
+        {/* {(dataSource.length > (tbodyIndex+1)) && <Separator length={leafColumns.length} key={`sp-${tbodyIndex}`}></Separator>} */}
     </>
 }
 
@@ -210,7 +214,5 @@ export const TBodies=({groupHeader,leafColumns,groupFooter,dataSource:_dataSourc
                 leafColumns={leafColumns} 
                 groupFooter={groupFooter}
             /> 
-            
-            
     })
 }
