@@ -104,8 +104,8 @@ export default class JRTable extends JRFrame {
             ?[...names,column.name]
             :names
         if(isBranch){
-            if(column.label)result[level].push(column)
-            const c=this.initColumns(column.columns,level+(column.label?1:0),result,leafColumns,_names)
+            if(column.label!==null)result[level].push(column)
+            const c=this.initColumns(column.columns,level+(column.label!==null?1:0),result,leafColumns,_names)
             column.colSpan=c.colSpan
             return {
                 colSpan:column.colSpan
@@ -203,10 +203,6 @@ export default class JRTable extends JRFrame {
                     dataSource={this.getDataSource()} 
                     onRowClick={this.props.onRowClick}
                 />
-                {/* <tbody className={'empty-tbody'}style={{height:'100%'}}>
-                    <tr><td colSpan={this.state?.leafColumns?.length}></td></tr>
-                </tbody>
-                <div className={'empty-div'}>AAAAAAAAAAAAA</div> */}
                 <TFoot 
                     columns={this.props.footColumns} 
                     deep={this.props.footColumns?.length} 

@@ -254,7 +254,7 @@ export default class JRSubmit extends React.Component {
             response.payload=payload
         }
             
-        response = config?.response?.(response,payload) ?? response
+        response = config?.response?.bind(this)(response,payload) ?? response
         const isSuccess = response.status >= 200 && response.status <= 299
         
         this.setRes(isSuccess,response,config)

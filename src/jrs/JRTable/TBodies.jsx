@@ -101,10 +101,16 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
         setValue(record,targetValue)
         table.setValue(table.getValue())
     }
-    const style=flexType(_style,table,{},{})
 
+    const setStyle=(_style)=>{
+        style=_style
+    }
+    setStyle.bind(this)
     render?.bind(table)
     const value=getValue(record)
+    
+    let style=render?{}:flexType(_style,table,{value,record},{})
+
     if(type){
         const typeStyle=flexType(_typeStyle,table,{record},{})
         
@@ -122,9 +128,9 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
 
         })
     }else if(render){
-        content=render({index:trIndex,groupIndex:tbodyIndex,value,record,onChange})
+        content=render({index:trIndex,groupIndex:tbodyIndex,value,record,onChange,setStyle})
     }else{
-        content=getValue(record)
+        content=value//getValue(record)
     }
     return <td 
         style={{

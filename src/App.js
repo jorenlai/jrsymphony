@@ -19,6 +19,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AppTable from './AppTable';
 import AppFrame from './AppFrame';
 import AppForm from './AppForm';
+import AppModal from './AppModal';
 
 
 let count=0
@@ -28,6 +29,7 @@ function App() {
 			<Route path="/table" element={<AppTable/>}/>
 			<Route path="/form" element={<AppForm/>}/>
 			<Route path="/frame" element={<AppFrame/>}/>
+			<Route path="/modal" element={<AppModal/>}/>
 		</Routes>
 	</BrowserRouter>
 }

@@ -195,11 +195,27 @@ function AppTable() {
 			}}
 			checkable={{
 				name:'checkedCC'
+
 			}}
 			columns={[
-				{name:'selected',label:'selected'
+
+				{name:'id',label:'ID'
+					,style(a,b,c){
+						po('style',a,b,c,this)
+						return {
+							background: 'black'
+						}
+					}
+					,xrender({value,setStyle,...param}){
+						setStyle({
+							background:'red'
+						})
+						po('render',param,this)
+						return value
+					}
+				}
+				,{name:'selected',label:'selected'
 					,type:Input}
-				,{name:'id',label:'ID'}
 				,{name:'selected',label:'selected'
 					,type:Checkbox
 					,onChange(e,{value,onChange,me}){
@@ -214,8 +230,14 @@ function AppTable() {
 				,{name:'fullName',label:'Full Name'
 					// ,type:JRFields
 					,columns:[
-						{name:'firstName',label:'First Name',type:Input,align:'end'}
-						,{name:'lastName',label:'Last Name',XgroupFootertype:JRInput}
+						{
+							name:'test'
+							,label:''
+							,columns:[
+								{name:'firstName',label:'First Name',type:Input,align:'end'}
+								,{name:'lastName',label:'Last Name',type:JRInput}
+							]
+						}
 					]	
 				}
 				// ,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}

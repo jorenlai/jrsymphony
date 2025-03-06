@@ -54,11 +54,11 @@ function AppForm() {
 			"gender": {
 				"$message": "This field is required"
 			}
-			// ,address:{
-			// 	dist: {
-			// 		"$message": "This field is required"
-			// 	}
-			// }
+			,address:{
+				dist: {
+					"$message": "This field is required"
+				}
+			}
 					
 		}
 	)
@@ -159,7 +159,7 @@ function AppForm() {
 				</button>
 			</div>
 			<Form
-				debugMode={false}
+				debugMode={true}
 	
 				ref={ref1}
 				cols={2}
@@ -195,7 +195,9 @@ function AppForm() {
 					// 	}
 					// }
 					// ,
-					{label:'Dist',name:'dist',type:JRInput,required:true},
+					{label:'Dist',name:'dist',type:JRInput
+						,required:true
+					},
 					{
 						label:'Name A'
 						,required:{
@@ -277,20 +279,6 @@ function AppForm() {
 						,height:'200px'
 					}
 					
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
-					,{name:'test',label:'BR',type:Input}
 
 				]}
 				Xheader={function({setStyle}){
