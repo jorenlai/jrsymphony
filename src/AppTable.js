@@ -203,16 +203,17 @@ function AppTable() {
 					,style(a,b,c){
 						po('style',a,b,c,this)
 						return {
-							background: 'black'
+							background: 'white'
 						}
 					}
-					,xrender({value,setStyle,...param}){
-						setStyle({
-							background:'red'
-						})
-						po('render',param,this)
-						return value
-					}
+					// ,render({value,setStyle,...param}){
+					// 	// setStyle({
+					// 	// 	background:'red'
+					// 	// })
+					// 	po('render',param,this)
+					// 	return `== ${value}`
+					// }
+					// ,type:JValue
 				}
 				,{name:'selected',label:'selected'
 					,type:Input}

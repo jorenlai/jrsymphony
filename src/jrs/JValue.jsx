@@ -24,8 +24,8 @@ const StyleJValue=styled.div`
     transition: all 0.2s;
     min-height:30px;
 `
-export default function JValue({value,record,menu,render,style,align='align',...param}){
-    const _value=render?.({value,record}) ?? value
+export default function JValue({value,record,menu,render,style,setStyle,align='align',...param}){
+    const _value=render?.({value,record,setStyle}) ?? value
     return <StyleJValue style={{textAlign:align,...style}}>
         {_value}
     </StyleJValue>
