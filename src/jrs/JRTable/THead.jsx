@@ -22,6 +22,7 @@ const Ths=({deep,rowColumn,rowIndex,table})=>{
             rowSpan={column.isLeaf&&(deep>rowIndex)?deep-rowIndex+1:null} 
         >
             {flexType(column.label,table)}
+            {table.props.resizableColumns===true && <div className={'slider'}></div>}
         </th>
     })
 }

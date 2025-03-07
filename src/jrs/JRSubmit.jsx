@@ -152,11 +152,11 @@ export default class JRSubmit extends React.Component {
         return this.getValue()
     }
 
-    getAxiosParams({url,method,value,extraValue,sendValue,...params}){
+    getAxiosParams({url,method,value,extraValue,sendValue,transformValue,...params}){
         const _extraValue=typeof extraValue === 'function'
             ?extraValue.bind(this)()
             :extraValue
-        const payload=typeof value === 'function'
+        let payload=typeof value === 'function'
             ?value.bind(this)({
                 ...this.getSubmitValue()
                 ,..._extraValue
@@ -170,7 +170,9 @@ export default class JRSubmit extends React.Component {
                     ...value
                     ,...extraValue
                 }
-
+        if(transformValue){
+            payload=transformValue.bind(this)(payload)
+        }
         const headers={
            authorization: `Bearer ${localStorage.getItem("accessToken")}`
         }    

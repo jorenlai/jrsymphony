@@ -75,8 +75,19 @@ function AppTable() {
 					},0,0)
 				}}
 			>Add to group</button>
+
+			<button
+				onClick={()=>{
+					ref1.current.get({
+						value:{
+							aaa:1111
+						}
+					})
+				}}
+			>Get</button>
 		</div>
 		<Table
+			resizableColumns={true}
 			cover={'aaaaaaaaaaaaaaaa'}
 			XXonRowClick={({record})=>{
 				alert(JSON.stringify(record))
@@ -93,6 +104,12 @@ function AppTable() {
 				,autoRun:true
 				// ,successMessage:'yyyyyyyyyyy'
 				// ,failedMessage:'ffffffffffffff'
+				,value(a,b,c){
+					po('vvvvvvvvvvvvvvvv',a,b,c)
+					return {
+						bbb:2222
+					}
+				}
 			}}
 			initValue={[
 					{name:'Joren'}
@@ -206,6 +223,7 @@ function AppTable() {
 							background: 'white'
 						}
 					}
+					,width:'100px'
 					// ,render({value,setStyle,...param}){
 					// 	// setStyle({
 					// 	// 	background:'red'
@@ -240,8 +258,9 @@ function AppTable() {
 							]
 						}
 					]	
+
 				}
-				// ,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}
+				,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}
 				// ,{name:'address',label:'Address'}
 				// ,{name:'theMap',label:'Form'
 				// 	,width:'280px'

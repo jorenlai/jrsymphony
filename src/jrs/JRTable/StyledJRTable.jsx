@@ -13,6 +13,8 @@ export const StyledJRTable=styled.div`
     flex:1;
     overflow: overlay;
 
+
+
     .empty{
         color:#848484;
 
@@ -56,6 +58,22 @@ export const StyledJRTable=styled.div`
                 box-shadow: 2px 2px 2px 0 #ffffffd6 inset, -1px -1px 2px 0px #8a847dbf inset;
                 color: #525252;
                 white-space: nowrap;
+
+                position: relative;
+                .slider{
+                    xborder:1px solid blue;
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    height:100%;
+                    cursor: col-resize;
+                    width:5px;
+                    user-select: none;
+                }
+                .slider:hover{
+                    border-right:2px solid gray;
+                    border-right-style: dashed;
+                }
             }
         }
 

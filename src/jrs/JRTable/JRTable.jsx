@@ -203,6 +203,10 @@ export default class JRTable extends JRFrame {
                     dataSource={this.getDataSource()} 
                     onRowClick={this.props.onRowClick}
                 />
+                {/* <tbody className={'empty-tbody'}style={{height:'100%'}}>
+                    <tr><td colSpan={this.state?.leafColumns?.length}></td></tr>
+                </tbody>
+                <div className={'empty-div'}>AAAAAAAAAAAAA</div> */}
                 <TFoot 
                     columns={this.props.footColumns} 
                     deep={this.props.footColumns?.length} 

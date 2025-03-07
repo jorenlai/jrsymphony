@@ -110,7 +110,6 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
     }
     setStyle.bind(this)
     render?.bind(table)
-
     if(type){
         const typeStyle=flexType(_typeStyle,table,{record},{})
         
@@ -133,6 +132,8 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
         content=value
     }
     return <td 
+        colspan={style.colSpan}
+        rowspan={style.rowSpan}
         style={{
             textAlign:align
             ,verticalAlign:vAlign
