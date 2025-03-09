@@ -1,8 +1,10 @@
+import React, { useRef } from "react"
 import { flexType, po, whatType } from "../JRUtils"
+import Slider from "./Slider"
 
 
-const Colgroup=({leafColumns})=>{
-    return <colgroup>
+const Colgroup=({leafColumns,colGroupRef})=>{
+    return <colgroup ref={colGroupRef}>
     {
         leafColumns?.map((_column,index)=>{
             const {width,...column}=_column
@@ -17,12 +19,17 @@ const Colgroup=({leafColumns})=>{
 
 const Ths=({deep,rowColumn,rowIndex,table})=>{
     return rowColumn?.map((column,colIndex)=>{
+        const thRef=React.createRef()
         return <th key={colIndex} 
+            ref={thRef}
             colSpan={column.colSpan} 
             rowSpan={column.isLeaf&&(deep>rowIndex)?deep-rowIndex+1:null} 
         >
             {flexType(column.label,table)}
-            {table.props.resizableColumns===true && <div className={'slider'}></div>}
+            {
+                table.props.resizableColumns===true 
+                && <Slider table={table} thRef={thRef}/>
+            }
         </th>
     })
 }
@@ -39,16 +46,11 @@ export const HeadTrs=({columns:_columns,trClassName,table})=>{
 }
 
 export const THead=({columns,leafColumns,table})=>{
-    const trs=columns?.map((rowColumn,rowIndex)=>{
-        return <tr key={rowIndex}>
-            <Ths deep={columns.length-1} rowColumn={rowColumn} rowIndex={rowIndex}/>
-        </tr>
-    })
     return <>
         <thead>
             <HeadTrs columns={columns} table={table}/>
         </thead>
-        <Colgroup leafColumns={leafColumns}/>
+        <Colgroup leafColumns={leafColumns} colGroupRef={table.colGroupRef}/>
     </>
 }
 

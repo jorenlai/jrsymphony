@@ -218,7 +218,6 @@ function AppTable() {
 
 				{name:'id',label:'ID'
 					,style(a,b,c){
-						po('style',a,b,c,this)
 						return {
 							background: 'white'
 						}
@@ -249,15 +248,9 @@ function AppTable() {
 				,{name:'fullName',label:'Full Name'
 					// ,type:JRFields
 					,columns:[
-						{
-							name:'test'
-							,label:''
-							,columns:[
-								{name:'firstName',label:'First Name',type:Input,align:'end'}
-								,{name:'lastName',label:'Last Name',type:JRInput}
-							]
-						}
-					]	
+						{name:'firstName',label:'First Name',type:Input,align:'end'}
+						,{name:'lastName',label:'Last Name',type:JRInput}
+					]
 
 				}
 				,{name:'age',label:'Age',Xtype:InputNumber,width:'80px'}

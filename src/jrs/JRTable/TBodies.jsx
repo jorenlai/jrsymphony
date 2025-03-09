@@ -132,8 +132,8 @@ const Td=({column:_column,record,tbodyIndex,trIndex,tdIndex,table})=>{
         content=value
     }
     return <td 
-        colspan={style.colSpan}
-        rowspan={style.rowSpan}
+        colSpan={style.colSpan}
+        rowSpan={style.rowSpan}
         style={{
             textAlign:align
             ,verticalAlign:vAlign
@@ -162,7 +162,6 @@ const Tds=({leafColumns,record,table,tbodyIndex,trIndex})=>{
 
 
 const TBody=({groupData,dataSource,groupHeader,leafColumns,groupFooter,table,tbodyIndex})=>{
-    // const dataGroup=dataSource[tbodyIndex]
 
     const neededProps={table,tbodyIndex}
     return <>

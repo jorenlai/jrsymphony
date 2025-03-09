@@ -4,6 +4,8 @@ import { TBodies } from "./TBodies";
 import { StyledJRTable } from "./StyledJRTable";
 import JRFrame from "../JRFrame/JRFrame";
 import { Button, Checkbox } from "antd";
+import React from "react";
+import SliderLine from "./SliderLine";
 
 const getMapObject=(map,names)=>{
     const name=names.shift(names)
@@ -26,6 +28,12 @@ const setMapObject=(map,names,value)=>{
 }
 
 export default class JRTable extends JRFrame {
+    constructor(props) {
+        super(props);
+        this.sliderLineRef = React.createRef()
+        this.colGroupRef = React.createRef()
+    }
+
     UNSAFE_componentWillMount(){
         this.setColumns(this.props.columns)
     }
@@ -193,32 +201,35 @@ export default class JRTable extends JRFrame {
         return<StyledJRTable
             className={`${this.props.className??''} jr-table ${this.props.onRowClick?'row-highlightable':''}`}
         >
-            <table className={'jr-table-table'}>
-                <TBodies 
-                    table={this}
-                    leafColumns={this.state.leafColumns} 
-                    groupHeader={this.props.groupHeader}
-                    groupFooter={this.props.groupFooter}
+            <div>
+                <table className={'jr-table-table'}>
+                    <TBodies 
+                        table={this}
+                        leafColumns={this.state.leafColumns} 
+                        groupHeader={this.props.groupHeader}
+                        groupFooter={this.props.groupFooter}
 
-                    dataSource={this.getDataSource()} 
-                    onRowClick={this.props.onRowClick}
-                />
-                {/* <tbody className={'empty-tbody'}style={{height:'100%'}}>
-                    <tr><td colSpan={this.state?.leafColumns?.length}></td></tr>
-                </tbody>
-                <div className={'empty-div'}>AAAAAAAAAAAAA</div> */}
-                <TFoot 
-                    columns={this.props.footColumns} 
-                    deep={this.props.footColumns?.length} 
-                    table={this}
-                />
-                <THead 
-                    columns={this.state.columns} 
-                    leafColumns={this.state.leafColumns}
-                    table={this}
-                />
-            </table>
-            <div className={'empty'}>{this.noData() && '無資料'}</div>
+                        dataSource={this.getDataSource()} 
+                        onRowClick={this.props.onRowClick}
+                    />
+                    {/* <tbody className={'empty-tbody'}style={{height:'100%'}}>
+                        <tr><td colSpan={this.state?.leafColumns?.length}></td></tr>
+                    </tbody>
+                    <div className={'empty-div'}>AAAAAAAAAAAAA</div> */}
+                    <TFoot 
+                        columns={this.props.footColumns} 
+                        deep={this.props.footColumns?.length} 
+                        table={this}
+                    />
+                    <THead 
+                        columns={this.state.columns} 
+                        leafColumns={this.state.leafColumns}
+                        table={this}
+                    />
+                </table>
+                <div className={'empty'}>{this.noData() && '無資料'}</div>
+                <SliderLine ref={this.sliderLineRef} table={this}/>
+            </div>
         </StyledJRTable>
     }
 }
