@@ -23,7 +23,7 @@ const Ths=({deep,rowColumn,rowIndex,table})=>{
         return <th key={colIndex} 
             ref={thRef}
             colSpan={column.colSpan} 
-            rowSpan={column.isLeaf&&(deep>rowIndex)?deep-rowIndex+1:null} 
+            rowSpan={column.rowSpan ?? (column.isLeaf&&(deep>rowIndex)?deep-rowIndex+1:null)} 
         >
             {flexType(column.label,table)} 
             [s={column.colSpan??0}]

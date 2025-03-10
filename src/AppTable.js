@@ -314,7 +314,7 @@ function AppTable() {
 					]
 				}
 				,{name:'Test2',label:'4'
-					,rowSpan:2
+					,rowSpan:3
 					,columns:[
 						{name:'Test21',label:'4_1'}
 						,{name:'Test21',label:'4_2'}

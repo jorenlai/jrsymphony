@@ -102,7 +102,7 @@ export default class JRTable extends JRFrame {
             :names
         if(isBranch){
             if(column.label!==null)result[level].push(column)
-                const c=this.initColumns(column.columns,level+(column.label!==null?1:0),result,leafColumns,_names,lastColSpan)
+                const c=this.initColumns(column.columns,level+(column.label!==null?1:0)+(column.rowSpan!=null?column.rowSpan-1:0),result,leafColumns,_names,lastColSpan)
             column.colSpan=c.colSpan
             column.columnNo=lastColSpan
             return {
