@@ -29,7 +29,7 @@ const setMapObject=(map,names,value)=>{
 
 export default class JRTable extends JRFrame {
     constructor(props) {
-        super(props);
+        super(props)
         this.sliderLineRef = React.createRef()
         this.colGroupRef = React.createRef()
     }
@@ -94,37 +94,29 @@ export default class JRTable extends JRFrame {
             ,...props
         }
     }
-    setColumns([..._columns]){
-        if(this.props.checkable) 
-            _columns.unshift(this.checkableColumn(this.props.checkable))
-        if(this.props.deletable){
-            _columns.unshift(this.deletableColumn(this.props.deletable))
-        }
-        const columns=[]
-        const leafColumns=[]
-        const initColumns=this.initColumns(_columns,0,columns,leafColumns,[])
-        this.setState({columns,leafColumns})
-    }
 
-    initColumn(column,level,result,leafColumns,names){
+    initColumn(column,level,result,leafColumns,names,lastColSpan){
         const isBranch=column.type===undefined&&column?.columns&&column?.columns.length
         const _names=column.name
             ?[...names,column.name]
             :names
         if(isBranch){
             if(column.label!==null)result[level].push(column)
-            const c=this.initColumns(column.columns,level+(column.label!==null?1:0),result,leafColumns,_names)
+                const c=this.initColumns(column.columns,level+(column.label!==null?1:0),result,leafColumns,_names,lastColSpan)
             column.colSpan=c.colSpan
+            column.columnNo=lastColSpan
             return {
                 colSpan:column.colSpan
             }
         }else{
+            column.columnNo=lastColSpan
             result[level].push({
                 ...column
                 ,isLeaf:true
             })
             leafColumns.push(column)
             column.names=_names
+            
 
             if(_names?.length>1){
                 column.setValue=function(record,value){
@@ -152,18 +144,33 @@ export default class JRTable extends JRFrame {
             }
         }
     }
-    initColumns(columns,level,result,leafColumns,names){
+    initColumns(columns,level,result,leafColumns,names,lastColSpan){
         if(!result[level]){
             result.push([])
         }
+        let _lastColSpan=lastColSpan
         const childrenLength=columns?.reduce((acc,column)=>{
-            const c=this.initColumn(column,level,result,leafColumns,names)
+            const c=this.initColumn(column,level,result,leafColumns,names,_lastColSpan)
             acc.colSpan+=c.colSpan
+            _lastColSpan+=c.colSpan
             return acc
         },{
             colSpan:0
         })
         return childrenLength
+    }
+
+    setColumns([..._columns]){
+        if(this.props.checkable) 
+            _columns.unshift(this.checkableColumn(this.props.checkable))
+        if(this.props.deletable){
+            _columns.unshift(this.deletableColumn(this.props.deletable))
+        }
+        const columns=[]
+        const leafColumns=[]
+        const initColumns=this.initColumns(_columns,0,columns,leafColumns,[],0)
+        // po('initColumns',initColumns)
+        this.setState({columns,leafColumns})
     }
     //------------------------------------------------------------------------------------
     setDataSource(dataSource){
@@ -212,10 +219,6 @@ export default class JRTable extends JRFrame {
                         dataSource={this.getDataSource()} 
                         onRowClick={this.props.onRowClick}
                     />
-                    {/* <tbody className={'empty-tbody'}style={{height:'100%'}}>
-                        <tr><td colSpan={this.state?.leafColumns?.length}></td></tr>
-                    </tbody>
-                    <div className={'empty-div'}>AAAAAAAAAAAAA</div> */}
                     <TFoot 
                         columns={this.props.footColumns} 
                         deep={this.props.footColumns?.length} 
@@ -233,6 +236,3 @@ export default class JRTable extends JRFrame {
         </StyledJRTable>
     }
 }
-
-
-//202412/07 要解決type=JRFields的讀寫問題

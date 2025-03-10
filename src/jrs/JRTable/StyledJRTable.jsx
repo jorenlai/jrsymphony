@@ -122,9 +122,8 @@ export const StyledJRTable=styled.div`
 
 
         > .empty{
+            user-select: none;
             color:#848484;
-
-
             height:100%;
             flex:1;
             display:flex;

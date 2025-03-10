@@ -161,7 +161,7 @@ const Tds=({leafColumns,record,table,tbodyIndex,trIndex})=>{
 ////////////////////////////////////////////////////////////////////////////
 
 
-const TBody=({groupData,dataSource,groupHeader,leafColumns,groupFooter,table,tbodyIndex})=>{
+const TBody=({groupData,groupHeader,leafColumns,groupFooter,table,tbodyIndex})=>{
 
     const neededProps={table,tbodyIndex}
     return <>
@@ -201,18 +201,20 @@ const TBody=({groupData,dataSource,groupHeader,leafColumns,groupFooter,table,tbo
 }
 
 export const TBodies=({groupHeader,leafColumns,groupFooter,dataSource:_dataSource,table})=>{
+    // po('--TBodies--')
     const isGroupDataType=Array.isArray(_dataSource?.[0])
 
     const dataSource=isGroupDataType
         ?_dataSource
         :[_dataSource]
 
+    // po('dataSource',dataSource)    
     return dataSource?.map((groupData,tbodyIndex,c)=>{
         return  <TBody 
                 key={`tbody${tbodyIndex}`} 
                 table={table}
-                dataSource={dataSource}
-                dataGroup={groupData} 
+                // dataSource={dataSource}
+                // dataGroup={groupData} 
                 groupData={groupData}
                 tbodyIndex={tbodyIndex}
                 

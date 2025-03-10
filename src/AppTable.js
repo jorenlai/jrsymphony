@@ -78,14 +78,18 @@ function AppTable() {
 
 			<button
 				onClick={()=>{
-					ref1.current.get({
-						value:{
-							aaa:1111
-						}
-					})
+					ref1.current.get()
 				}}
 			>Get</button>
+			<button
+				onClick={()=>{
+					ref1.current.setColumns([
+						{name:'name',label:'Resetted name'}
+					])
+				}}
+			>Set columns</button>
 		</div>
+{/* 
 		<Table
 			resizableColumns={true}
 			cover={'aaaaaaaaaaaaaaaa'}
@@ -101,7 +105,7 @@ function AppTable() {
 			get={{
 				url:'api/list.json'
 				// url:'api/groupList.json'
-				,autoRun:true
+				// ,autoRun:true
 				// ,successMessage:'yyyyyyyyyyy'
 				// ,failedMessage:'ffffffffffffff'
 				,value(a,b,c){
@@ -140,60 +144,7 @@ function AppTable() {
 					}
 				}
 			]}
-			// groupFooter={[
-			// 	[
-			// 		{label:'Name',colSpan:2
-			// 			,render({groupData}){
-			// 				return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
-			// 			}
-			// 		}
-			// 		,{}
-			// 		,{label:'Address',colSpan:4}
-			// 	]
-			// 	,[
-			// 		{label:'Group Footer 3',colSpan:7
-			// 			,render({groupData,groupIndex}){
-			// 				return ` All ${groupIndex} record`
-			// 			}
-			// 		}
-			// 	]
-			// ]}
 
-			// footColumns={[
-			// 	[
-			// 		{label:'Name A',xcolSpan:2
-			// 			,style(){
-			// 				return {
-			// 					border:'10px solid green'
-			// 					,color:'red'
-			// 				}
-			// 			}
-			// 			// ,type:Input
-			// 			,render(a,b,c){
-			// 				po('a,b,c',a,b,c)
-			// 				po('this',this.getDataSource())
-			// 				return 'render AA'
-			// 			}
-			// 		}
-			// 		,{label:'Address',xcolSpan:4
-			// 			,type:Input
-						
-			// 		}
-			// 		,{label:'Label',colSpan:2}
-			// 		,{label:'Address',rowSpan:4}
-			// 		,{label:'Address',rowSpan:4}
-			// 	]
-			// 	,[
-			// 		{label:'Name',xcolSpan:2
-			// 			// ,render({groupData}){
-			// 			// 	return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
-			// 			// }
-			// 		}
-			// 		,{label:'2',colSpan:2}
-			// 		,{label:'21'}
-			// 	]
-				
-			// ]}
 			delete={{
 				url:'aaa'
 
@@ -316,6 +267,65 @@ function AppTable() {
 			// 	return <div>End</div>
 			// }}
 		/>
+<div></div> */}
+		<Table
+			resizableColumns={true}
+			ref={ref1}
+			columns={[
+				{name:'Test',label:'1'
+					// ,columns:[
+					// 	{name:'Test21',label:'1_1'
+					// 		,columns:[
+					// 			{name:'Test21',label:'1_1_1'}
+					// 			,{name:'Test21',label:'1_1_2'}
+					// 		]
+					// 	}
+					// 	,{name:'Test22',label:'1_2'}
+					// 	,{name:'Test22',label:'1_3'}
+					// ]
+				}
+				,{name:'Test2',label:'2'
+					,columns:[
+						{name:'Test21',label:'2_1'}
+						,{name:'Test21',label:'2_2'
+							,columns:[
+								{name:'Test21',label:'2_2_1'}
+								,{name:'Test21',label:'2_2_2'}
+							]
+						}
+					]
+				}
+				,{name:'Test',label:'3'
+					,columns:[
+						{name:'Test21',label:'3_1'}
+						,{name:'Test22',label:'3_2'}
+						,{name:'Test22',label:'3_3'
+							,columns:[
+								{name:'Test21',label:'3_3_1'}
+								,{name:'Test21',label:'3_3_2'
+									,columns:[
+										{name:'Test21',label:'3_3_2_1'}
+										,{name:'Test21',label:'3_3_2_2'}
+									]
+								}
+							]
+
+						}
+					]
+				}
+				,{name:'Test2',label:'4'
+					,rowSpan:2
+					,columns:[
+						{name:'Test21',label:'4_1'}
+						,{name:'Test21',label:'4_2'}
+					]
+				}
+			]}
+			get={{
+				url:'api/list.json'
+				,autoRun:true
+			}}
+		/>
 	</div>
 }
 export default AppTable
@@ -389,3 +399,61 @@ export default AppTable
 				// 		,{name:'lastName',label:'Last Name'}
 				// 	]
 				// }
+
+
+
+
+			// groupFooter={[
+			// 	[
+			// 		{label:'Name',colSpan:2
+			// 			,render({groupData}){
+			// 				return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+			// 			}
+			// 		}
+			// 		,{}
+			// 		,{label:'Address',colSpan:4}
+			// 	]
+			// 	,[
+			// 		{label:'Group Footer 3',colSpan:7
+			// 			,render({groupData,groupIndex}){
+			// 				return ` All ${groupIndex} record`
+			// 			}
+			// 		}
+			// 	]
+			// ]}
+
+			// footColumns={[
+			// 	[
+			// 		{label:'Name A',xcolSpan:2
+			// 			,style(){
+			// 				return {
+			// 					border:'10px solid green'
+			// 					,color:'red'
+			// 				}
+			// 			}
+			// 			// ,type:Input
+			// 			,render(a,b,c){
+			// 				po('a,b,c',a,b,c)
+			// 				po('this',this.getDataSource())
+			// 				return 'render AA'
+			// 			}
+			// 		}
+			// 		,{label:'Address',xcolSpan:4
+			// 			,type:Input
+						
+			// 		}
+			// 		,{label:'Label',colSpan:2}
+			// 		,{label:'Address',rowSpan:4}
+			// 		,{label:'Address',rowSpan:4}
+			// 	]
+			// 	,[
+			// 		{label:'Name',xcolSpan:2
+			// 			// ,render({groupData}){
+			// 			// 	return `My name is ${groupData?.[0]?.fullName?.firstName} ${groupData?.[0]?.fullName?.lastName}  `
+			// 			// }
+			// 		}
+			// 		,{label:'2',colSpan:2}
+			// 		,{label:'21'}
+			// 	]
+				
+			// ]}				

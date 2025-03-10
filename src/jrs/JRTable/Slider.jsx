@@ -23,10 +23,18 @@ export default class Slider extends React.Component {
 
     render(){
         const sliderLine=this.props.table.sliderLineRef.current
+        const column=this.props.column
         return <StyledSlider
             ref={this.sliderRef}
             onMouseDown={()=>{
-                sliderLine.start(true,this.sliderRef.current.getBoundingClientRect(),this.props.thRef.current.getBoundingClientRect())
+                // po('this.props.table.sliderLineRef',this.props.table.sliderLineRef)
+                po('column',column)
+                sliderLine?.start(
+                    true
+                    ,this.sliderRef.current.getBoundingClientRect()
+                    ,this.props.thRef.current.getBoundingClientRect()
+                    ,column
+                )
             }}
         />
     }

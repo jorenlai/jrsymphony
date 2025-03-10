@@ -5,7 +5,7 @@ import { po } from "../JRUtils";
 export const StyledSliderLine=styled.div`
     position: absolute;
     height: 100%;
-    width:1px;
+    width:0;
     color:black;
     border:0;
     user-select: none;
@@ -20,29 +20,32 @@ export default class SliderLine extends React.Component {
         }
     }
 
-    stop=()=>{
-        po('stop')
+    stop=(e)=>{
         this.setState({show:false})
         document.body.style.cursor='default'
         window.removeEventListener('mousemove',this.move)
         window.removeEventListener('mouseup',this.stop)
     }
     move=(e)=>{
-        po('--------------',this.props.table.colGroupRef)
         const min=this.thP.x+10
         const x=e.clientX>=min
             ?e.clientX
             :min
+
         this.ref.current.style.left=x+'px'
         document.body.style.cursor='col-resize'
+
+        const col=this.props.table.colGroupRef.current.children[this.column.columnNo]
+        col.style.width=2+(e.clientX-this.thP.x)+'px'
     }
-    start(show,p,thP){
+    start(show,p,thP,column){
         this.thP=thP
+        this.column=column
         this.setState({show:true})
         if(show) {
             window.addEventListener('mousemove',this.move)
             window.addEventListener('mouseup',this.stop)
-            this.ref.current.style.left=((p.x+p.width)-3)+'px'
+            this.ref.current.style.left=((p.x+p.width)-2)+'px'
         }
     }
     render(){
@@ -50,7 +53,7 @@ export default class SliderLine extends React.Component {
             $show={this.show}
             ref={this.ref}
             style={{
-                border:this.state?.show?'1px dashed gray':'0'
+                border:this.state?.show?'0.5px dashed gray':'0'
             }}
         />
     }

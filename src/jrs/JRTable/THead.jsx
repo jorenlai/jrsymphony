@@ -25,10 +25,12 @@ const Ths=({deep,rowColumn,rowIndex,table})=>{
             colSpan={column.colSpan} 
             rowSpan={column.isLeaf&&(deep>rowIndex)?deep-rowIndex+1:null} 
         >
-            {flexType(column.label,table)}
+            {flexType(column.label,table)} 
+            [s={column.colSpan??0}]
+            [c={column.columnNo??0}]
             {
                 table.props.resizableColumns===true 
-                && <Slider table={table} thRef={thRef}/>
+                && <Slider table={table} thRef={thRef} column={column}/>
             }
         </th>
     })
@@ -46,6 +48,8 @@ export const HeadTrs=({columns:_columns,trClassName,table})=>{
 }
 
 export const THead=({columns,leafColumns,table})=>{
+    // po('--THead--')
+    // po('columns',columns)
     return <>
         <thead>
             <HeadTrs columns={columns} table={table}/>
