@@ -26,14 +26,14 @@ export default class Slider extends React.Component {
         const column=this.props.column
         return <StyledSlider
             ref={this.sliderRef}
-            onMouseDown={()=>{
+            onMouseDown={(e)=>{
                 // po('this.props.table.sliderLineRef',this.props.table.sliderLineRef)
-                po('column',column)
+                // po('column',column)
                 sliderLine?.start(
-                    true
-                    ,this.sliderRef.current.getBoundingClientRect()
-                    ,this.props.thRef.current.getBoundingClientRect()
+                    this.sliderRef//.current.getBoundingClientRect()
+                    ,this.props.thRef//.current.getBoundingClientRect()
                     ,column
+                    ,e
                 )
             }}
         />

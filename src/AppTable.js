@@ -273,28 +273,20 @@ function AppTable() {
 			ref={ref1}
 			columns={[
 				{name:'Test',label:'1'
-					// ,columns:[
-					// 	{name:'Test21',label:'1_1'
-					// 		,columns:[
-					// 			{name:'Test21',label:'1_1_1'}
-					// 			,{name:'Test21',label:'1_1_2'}
-					// 		]
-					// 	}
-					// 	,{name:'Test22',label:'1_2'}
-					// 	,{name:'Test22',label:'1_3'}
-					// ]
-				}
-				,{name:'Test2',label:'2'
 					,columns:[
-						{name:'Test21',label:'2_1'}
-						,{name:'Test21',label:'2_2'
+						{name:'Test21',label:'1_1'
 							,columns:[
-								{name:'Test21',label:'2_2_1'}
-								,{name:'Test21',label:'2_2_2'}
+								{name:'Test21',label:'1_1_1',xdescribewidth:'20%'}
+								,{name:'Test21',label:'1_1_2',xwidth:'20%'}
+								,{name:'Test21',label:'1_1_3',xwidth:'20%'}
 							]
+
 						}
+						,{name:'Test22',label:'1_2',xwidth:'30%'}
+						,{name:'Test22',label:'1_3',xwidth:'30%'}
 					]
 				}
+
 				,{name:'Test',label:'3'
 					,columns:[
 						{name:'Test21',label:'3_1'}
@@ -305,7 +297,15 @@ function AppTable() {
 								,{name:'Test21',label:'3_3_2'
 									,columns:[
 										{name:'Test21',label:'3_3_2_1'}
-										,{name:'Test21',label:'3_3_2_2'}
+										,{name:'Test21',label:'3_3_2_2'
+											,columns:[
+												{name:'Test21',label:'3_3_2_2_1'
+													,columns:[
+														{name:'Test21',label:'3_3_2_2_1_1'}
+													]
+												}
+											]
+										}
 									]
 								}
 							]
@@ -313,13 +313,34 @@ function AppTable() {
 						}
 					]
 				}
-				,{name:'Test2',label:'4'
-					,rowSpan:3
-					,columns:[
-						{name:'Test21',label:'4_1'}
-						,{name:'Test21',label:'4_2'}
-					]
-				}
+
+				// ,{name:'Test2',label:'2'
+				// 	,columns:[
+				// 		{name:'Test21',label:'2_1'}
+				// 		,{name:'Test21',label:'2_2'
+				// 			,rowSpan:4
+				// 			,columns:[
+				// 				{name:'Test21',label:'2_2_1'}
+				// 				,{name:'Test21',label:'2_2_2'}
+				// 			]
+				// 		}
+				// 	]
+				// }
+
+				// ,{name:'Test2',label:'4'
+				// 	,columns:[
+				// 		{name:'Test21',label:'4_1'}
+				// 		,{name:'Test21',label:'4_2'
+				// 			,columns:[
+				// 				{name:'Test21',label:'4_2_1'}
+				// 			]
+				// 		}
+				// 	]
+				// }
+				,{name:'Test2',label:'5'}
+				,{name:'Test2',label:'6'}
+				// ,{name:'Test2',label:'7'}
+				// ,{name:'Test2',label:'8'}
 			]}
 			get={{
 				url:'api/list.json'

@@ -26,27 +26,48 @@ export default class SliderLine extends React.Component {
         window.removeEventListener('mousemove',this.move)
         window.removeEventListener('mouseup',this.stop)
     }
-    move=(e)=>{
-        const min=this.thP.x+10
-        const x=e.clientX>=min
-            ?e.clientX
+    move=({clientX,...e})=>{
+        const {th,selectedCols}=this.data
+        const {left}=th.getBoundingClientRect()
+
+        const min=left+10
+        const x=clientX>=min
+            ?clientX
             :min
 
+        const width=x-left
+        po(left,clientX,width)
         this.ref.current.style.left=x+'px'
-        document.body.style.cursor='col-resize'
 
-        const col=this.props.table.colGroupRef.current.children[this.column.columnNo]
-        col.style.width=2+(e.clientX-this.thP.x)+'px'
+
+        selectedCols.forEach((col,index)=>{
+            // po('col',col)
+            const totalWidth=selectedCols.reduce((aco,{offsetWidth})=>aco+offsetWidth,0)
+            const widthRates=selectedCols.map(({offsetWidth})=>{
+                return 100*(offsetWidth/totalWidth)
+            })
+
+            const _width=Math.round((width/100)*widthRates[index])
+            // po('width',width)
+            col.style.width=_width+'px'
+        })
     }
-    start(show,p,thP,column){
-        this.thP=thP
-        this.column=column
-        this.setState({show:true})
-        if(show) {
-            window.addEventListener('mousemove',this.move)
-            window.addEventListener('mouseup',this.stop)
-            this.ref.current.style.left=((p.x+p.width)-2)+'px'
+    start(sliderRef,thPRef,column){
+
+        const selectedCols=[...this.props.table.colGroupRef.current.children].slice(column.columnNo,column.columnNo+(column.colSpan??1))
+
+        this.data={
+            selectedCols
+            ,slider:sliderRef.current
+            ,th:thPRef.current
         }
+        this.ref.current.style.left=(thPRef.current.getBoundingClientRect().right-2)+'px'
+        this.setState({show:true})
+
+        document.body.style.cursor='col-resize'
+        window.addEventListener('mousemove',this.move)
+        window.addEventListener('mouseup',this.stop)
+            
     }
     render(){
         return <StyledSliderLine 
