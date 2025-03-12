@@ -89,7 +89,7 @@ function AppTable() {
 				}}
 			>Set columns</button>
 		</div>
-{/* 
+
 		<Table
 			resizableColumns={true}
 			cover={'aaaaaaaaaaaaaaaa'}
@@ -267,7 +267,7 @@ function AppTable() {
 			// 	return <div>End</div>
 			// }}
 		/>
-<div></div> */}
+<div></div> 
 		<Table
 			resizableColumns={true}
 			ref={ref1}
@@ -314,29 +314,29 @@ function AppTable() {
 					]
 				}
 
-				// ,{name:'Test2',label:'2'
-				// 	,columns:[
-				// 		{name:'Test21',label:'2_1'}
-				// 		,{name:'Test21',label:'2_2'
-				// 			,rowSpan:4
-				// 			,columns:[
-				// 				{name:'Test21',label:'2_2_1'}
-				// 				,{name:'Test21',label:'2_2_2'}
-				// 			]
-				// 		}
-				// 	]
-				// }
+				,{name:'Test2',label:'2'
+					,columns:[
+						{name:'Test21',label:'2_1'}
+						,{name:'Test21',label:'2_2'
+							,rowSpan:4
+							,columns:[
+								{name:'Test21',label:'2_2_1'}
+								,{name:'Test21',label:'2_2_2'}
+							]
+						}
+					]
+				}
 
-				// ,{name:'Test2',label:'4'
-				// 	,columns:[
-				// 		{name:'Test21',label:'4_1'}
-				// 		,{name:'Test21',label:'4_2'
-				// 			,columns:[
-				// 				{name:'Test21',label:'4_2_1'}
-				// 			]
-				// 		}
-				// 	]
-				// }
+				,{name:'Test2',label:'4'
+					,columns:[
+						{name:'Test21',label:'4_1'}
+						,{name:'Test21',label:'4_2'
+							,columns:[
+								{name:'Test21',label:'4_2_1'}
+							]
+						}
+					]
+				}
 				,{name:'Test2',label:'5'}
 				,{name:'Test2',label:'6'}
 				// ,{name:'Test2',label:'7'}
