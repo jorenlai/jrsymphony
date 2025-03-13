@@ -143,8 +143,11 @@ export default class JRTable extends JRFrame {
         }
     }
     initColumns(columns,level,result,leafColumns,names,lastColSpan){
-        if(!result[level]){
-            result.push([])
+        for(let i=result.length;i<=level;i++){
+
+            if(!result[i]){
+                result.push([])
+            }
         }
         let _lastColSpan=lastColSpan
         const childrenLength=columns?.reduce((acc,column)=>{

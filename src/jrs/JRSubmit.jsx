@@ -153,23 +153,35 @@ export default class JRSubmit extends React.Component {
     }
 
     getAxiosParams({url,method,value,extraValue,sendValue,transformValue,...params}){
-        const _extraValue=typeof extraValue === 'function'
-            ?extraValue.bind(this)()
-            :extraValue
-        let payload=typeof value === 'function'
-            ?value.bind(this)({
+        const _extraValue=extraValue?.bind?.(this)() ?? extraValue
+        // let payload=typeof value === 'function'
+        //     ?value.bind(this)({
+        //         ...this.getSubmitValue()
+        //         ,..._extraValue
+        //     })
+        //     :value==null
+        //         ?{
+        //             ...this.getSubmitValue()
+        //             ,..._extraValue
+        //         }
+        //         :{
+        //             ...value
+        //             ,..._extraValue
+        //         }
+        let payload=value?.bind?.(this)({
                 ...this.getSubmitValue()
                 ,..._extraValue
-            })
-            :value==null
+            }) 
+            ?? value==null
                 ?{
                     ...this.getSubmitValue()
-                    ,...extraValue
+                    ,..._extraValue
                 }
                 :{
                     ...value
-                    ,...extraValue
+                    ,..._extraValue
                 }
+            
         if(transformValue){
             payload=transformValue.bind(this)(payload)
         }

@@ -89,8 +89,9 @@ function AppTable() {
 				}}
 			>Set columns</button>
 		</div>
-
+{/* 
 		<Table
+			ref={ref1}
 			resizableColumns={true}
 			cover={'aaaaaaaaaaaaaaaa'}
 			XXonRowClick={({record})=>{
@@ -100,8 +101,6 @@ function AppTable() {
 			// style={{
 			// 	width:'800px',height:'500px',flex:1
 			// }}
-			ref={ref1}
-			
 			get={{
 				url:'api/list.json'
 				// url:'api/groupList.json'
@@ -268,11 +267,13 @@ function AppTable() {
 			// }}
 		/>
 <div></div> 
+ */}
 		<Table
 			resizableColumns={true}
-			ref={ref1}
+			
 			columns={[
 				{name:'Test',label:'1'
+					,rowSpan:4
 					,columns:[
 						{name:'Test21',label:'1_1'
 							,columns:[
@@ -339,8 +340,8 @@ function AppTable() {
 				}
 				,{name:'Test2',label:'5'}
 				,{name:'Test2',label:'6'}
-				// ,{name:'Test2',label:'7'}
-				// ,{name:'Test2',label:'8'}
+				,{name:'Test2',label:'7'}
+				,{name:'Test2',label:'8'}
 			]}
 			get={{
 				url:'api/list.json'
